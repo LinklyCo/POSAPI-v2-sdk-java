@@ -1,0 +1,232 @@
+
+* {
+  box-sizing: border-box;
+}
+
+/* Create three equal columns that floats next to each other */
+.page-column {
+  float: left;
+  width: 33.33%;
+  padding: 10px;
+  min-height: 800px;
+}
+
+/* Clear floats after the columns */
+#content:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+body {font-family: Arial;}
+
+#content {
+  margin-top: 50px;
+}
+table {
+  border-collapse: collapse;
+}
+.inputs table tr td {
+  padding: 5px 5px;
+}
+.inputs table tr td {
+  padding: 7px 10px;
+}
+span.advanced-settings:hover{
+  cursor:pointer;
+  color: #48535c;
+}
+table#buttons {
+  margin-left: 5px;
+  width: 90%;
+}
+
+.page-column:nth-child(1) {
+  padding-left: 2%;
+}
+
+table#buttons tr td {
+  border: 1px solid orange;
+}
+table#header-inputs input[type="text"]{
+  width: 120px;
+}
+table#header-inputs tr td {
+}
+table#buttons{
+  margin-top: 20px;
+}
+table#buttons tr td{
+  width: 150px;
+  padding: 25px 0px;
+  text-align: center;
+}
+table#buttons tr td:hover{
+  background: #a6cbf5;
+  cursor: pointer;
+  border: 1px solid #1361ba;
+}
+button[type="submit"] {
+  border: 1px solid #ff0000;
+  padding: 5px 20px;
+  background: #fff;
+}
+button[type="submit"]:hover {
+  background: #a6cbf5;
+  cursor: pointer;
+  border: 1px solid #1361ba;
+}
+td.advanced-settings{
+ padding-top: 15px; 
+}
+
+
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 520px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+  width: 520px;
+}
+
+#tip-option input {
+  width: 30px;
+}
+
+.tip-options {
+  display: none;
+}
+
+#advanced-settings {
+  display: none;
+}
+
+div.process.inputs {
+  display: none;
+}
+button.back {
+  margin-left: 0px;
+}
+button.go {
+  margin-left: 10px;
+  margin-top: 50px;
+}
+.divider {
+  border-left: 1px solid #000;
+}
+
+
+
+
+.tab-result-receipt {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 100%
+}
+
+/* Style the buttons inside the tab */
+.tab-result-receipt button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab-result-receipt button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab-result-receipt button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent-result-receipt {
+  padding: 6px 12px;
+  border-top: none;
+  width: 100%;
+  min-height: 600px;
+  overflow-y: scroll;
+}
+#receipt.tabcontent-result-receipt {
+	display: none;
+}
+
+
+#logs {
+  max-height: 600px;
+  overflow-y: scroll;
+  font-size: 15px;
+  line-height: 25px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.approveBox {
+  margin-top: 20px;
+  text-align: center;
+  height: 200px;
+  width: 90%;
+  border: 1px solid orange;
+  display: none;
+}
+
+.approveBox p {
+  font-size: 30px;
+}
+.approveBox button {
+  padding: 20px 140px;
+}
+#transaction .rfn, #transaction .totalCheques,
+#transaction .pai {
+  display: none;
+}
+
+#result table tr td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 5px 10px;
+}
+span.loading {
+	margin-left: 30px;
+	color: cornflowerblue;
+	display: none;
+}
