@@ -34,7 +34,7 @@ Add JAVA_HOME to environment variables with the installed Java bin path.
 
 2. Download the repository files (project) from the download section or clone this project by typing in the bash the following command:
 
-       git clone https://github.com/blacklabelsolutions/POSAPI-v2-sdk-java.git
+       git clone https://github.com/LinklyCo/POSAPI-v2-sdk-java.git
 3. Imported it in STS.
 4. Find main class and Run as SpringBoot Application.
 
