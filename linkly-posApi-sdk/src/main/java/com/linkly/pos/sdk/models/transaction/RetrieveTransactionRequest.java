@@ -57,12 +57,15 @@ public class RetrieveTransactionRequest implements IBaseRequest, IValidatable {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        return Arrays.asList(
+    public void validate() {
+        List<String> validationErrors = Arrays.asList(
             ValidatorUtil.isInEnum(ReferenceType.class, this.referenceType, "referenceType"),
             ValidatorUtil.notEmpty(this.reference, "reference"))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
+        if(validationErrors.size() > 0) {
+        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        }
     }
 }

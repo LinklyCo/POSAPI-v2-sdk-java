@@ -42,14 +42,15 @@ public class LogonRequest extends PosApiRequest {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        List<String> parentValidationErrors = super.validate();
+    public void validate() {
+        super.validate();
         List<String> validationErrors = Arrays.asList(
             ValidatorUtil.isInEnum(LogonType.class, this.logonType, "logonType"))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        validationErrors.addAll(parentValidationErrors);
-        return validationErrors;
+        if(validationErrors.size() > 0) {
+        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        }
     }
 }

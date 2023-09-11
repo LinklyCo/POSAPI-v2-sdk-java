@@ -326,8 +326,8 @@ public class TransactionRequest extends PosApiRequest {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        List<String> parentValidationErrors = super.validate();
+    public void validate() {
+        super.validate();
         List<String> validationErrors = Arrays.asList(
             ValidatorUtil.length(this.currencyCode, "currencyCode", 3),
             ValidatorUtil.notEmpty(this.txnRef, "txnRef"),
@@ -357,8 +357,8 @@ public class TransactionRequest extends PosApiRequest {
                 validationErrors.add(track2);
             }
         }
-
-        validationErrors.addAll(parentValidationErrors);
-        return validationErrors;
+        if(validationErrors.size() > 0) {
+        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        }
     }
 }

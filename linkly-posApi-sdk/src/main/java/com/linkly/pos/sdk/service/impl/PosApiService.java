@@ -118,7 +118,7 @@ public class PosApiService implements IPosApiService {
     public PosApiService(IPosApiEventListener eventListener, AsyncHttpClient httpClient,
         PosVendorDetails posVendorDetails, PosApiServiceOptions options,
         ApiServiceEndpoint serviceEndpoints, Logger logger) {
-        this.eventListener = eventListener;
+        this.eventListener = new PosApiEventListenerProxy(eventListener);
         httpClient = httpClient == null
             ? Dsl.asyncHttpClient()
             : httpClient;
@@ -272,9 +272,7 @@ public class PosApiService implements IPosApiService {
         logger.log(Level.INFO, "Starting sendKeyRequest");
         setPosVendorDetails(request);
         validatePairing("sendKeyRequest");
-        if (validateRequest(request)) {
-            return;
-        }
+        validateRequest(request);
 
         String unformattedUri = uri(ApiType.POS, ApiEndpoints.SEND_KEY_ENDPOINT);
         String uri = MessageFormat.format(unformattedUri, request.getSessionId());
@@ -327,7 +325,6 @@ public class PosApiService implements IPosApiService {
                 .getMessage() });
             throw new RuntimeException("retrieveTransactionRequest: Error!", e);
         }
-
     }
 
     private void authenticate() {
@@ -351,7 +348,6 @@ public class PosApiService implements IPosApiService {
         }
         catch (IOException e) {
             logger.log(Level.SEVERE, "authenticate: Error: {0}", new Object[] { e.getMessage() });
-            throw new RuntimeException("authenticate: Error parsing Token Request", e);
         }
     }
 
@@ -400,12 +396,9 @@ public class PosApiService implements IPosApiService {
 
     private <T extends IBaseRequest> UUID executeCommon(T request, String endpoint) {
         logger.log(Level.INFO, "Validating request");
-        if (validateRequest(request)) {
-            return null;
-        }
+        validateRequest(request);
 
         UUID sessionId = UUID.randomUUID();
-
         String unformattedUri = uri(ApiType.POS, endpoint);
         String uri = MessageFormat.format(unformattedUri, sessionId);
 
@@ -536,17 +529,9 @@ public class PosApiService implements IPosApiService {
         return posApiResponses;
     }
 
-    private boolean validateRequest(IBaseRequest validatableRequest) {
+    private void validateRequest(IBaseRequest validatableRequest) {
         IValidatable request = (IValidatable) validatableRequest;
-        List<String> errors = request.validate();
-        if (!errors.isEmpty()) {
-            String concatenatedErrors = String.join(", ", errors);
-            logger.log(Level.SEVERE, "Validation failed. {0}", new Object[] { concatenatedErrors });
-            eventListener.error(null, validatableRequest,
-                new ErrorResponse(ErrorSource.API, 500, concatenatedErrors, null));
-            return true;
-        }
-        return false;
+        request.validate();
     }
 
     private String uri(ApiType apiType, String relativeUri) {

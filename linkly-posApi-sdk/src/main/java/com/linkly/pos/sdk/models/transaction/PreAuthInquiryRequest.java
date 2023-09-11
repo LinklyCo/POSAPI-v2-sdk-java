@@ -1,7 +1,5 @@
 package com.linkly.pos.sdk.models.transaction;
 
-import java.util.List;
-
 import com.linkly.pos.sdk.models.enums.TxnType;
 
 /**
@@ -23,7 +21,7 @@ public class PreAuthInquiryRequest extends FollowUpTransactionRequest {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        return super.validate();
+    public void validate() {
+        super.validate();
     }
 }

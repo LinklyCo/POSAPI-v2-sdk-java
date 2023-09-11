@@ -698,8 +698,9 @@ function post(endpoint, body) {
     xhr.onload = function () {
         if(xhr.status !== 200) {
             var text = 'Error: ' + xhr.status;
-            if(xhr.statusText) {
-                text += '. ' + xhr.statusText;
+            if(xhr.responseText) {
+                var responseError = JSON.parse(xhr.responseText);
+                text += '. ' + responseError.message;
             }
             enableButtons();
             alert(text);

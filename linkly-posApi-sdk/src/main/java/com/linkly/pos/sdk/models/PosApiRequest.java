@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.linkly.pos.sdk.adapters.BoolToBitString;
 import com.linkly.pos.sdk.common.ValidatorUtil;
 import com.linkly.pos.sdk.models.enums.ReceiptAutoPrint;
+import com.linkly.pos.sdk.service.IPosApiService;
 
 /**
  * Common model for POS API requests.
@@ -179,8 +180,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
      * @return Validation results containing list of model errors (if any)
      */
     @Override
-    public List<String> validate() {
-        return Arrays.asList(
+    public void validate() {
+    	List<String> validationErrors = Arrays.asList(
             ValidatorUtil.notEmpty(this.merchant, "merchant"),
             ValidatorUtil.notEmpty(this.application, "application"),
             ValidatorUtil.isInEnum(ReceiptAutoPrint.class, this.receiptAutoPrint,
@@ -188,5 +189,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
+        if(validationErrors.size() > 0) {
+        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        }
     }
 }

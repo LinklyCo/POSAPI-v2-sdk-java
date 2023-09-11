@@ -70,10 +70,9 @@ public class DepositRequest extends TransactionRequest implements IValidatable {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        List<String> parentValidationErrors = super.validate();
+    public void validate() {
+        super.validate();
         List<String> validationErrors = new ArrayList<>();
-
         if (this.amountCheque == 0) {
             validationErrors.addAll(
                 Arrays.asList(
@@ -97,8 +96,9 @@ public class DepositRequest extends TransactionRequest implements IValidatable {
         if (totalChequesError != null) {
             validationErrors.add(totalChequesError);
         }
-        validationErrors.addAll(parentValidationErrors);
-        return validationErrors;
+        if(validationErrors.size() > 0) {
+        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        }
     }
 
 }

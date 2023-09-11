@@ -47,12 +47,15 @@ public class ResultRequest implements IBaseRequest, IValidatable {
      * @return Validation results containing list of model errors (if any)
      */
     @Override
-    public List<String> validate() {
-        return Arrays.asList(
+    public void validate() {
+    	List<String> validationErrors =  Arrays.asList(
             ValidatorUtil.notEmpty(sessionId, "sessionId"))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
+        if(validationErrors.size() > 0) {
+        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        }
     }
 
 }

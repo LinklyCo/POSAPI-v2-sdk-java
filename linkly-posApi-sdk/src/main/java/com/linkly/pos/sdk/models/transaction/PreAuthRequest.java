@@ -40,15 +40,16 @@ public class PreAuthRequest extends TransactionRequest {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        List<String> parentValidationErrors = super.validate();
+    public void validate() {
+        super.validate();
         List<String> validationErrors = Arrays.asList(
             ValidatorUtil.inclusiveBetween(this.amount, "amount", 0,
                 Constants.Validation.MAX_AMOUNT))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        validationErrors.addAll(parentValidationErrors);
-        return validationErrors;
+        if(validationErrors.size() > 0) {
+        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        }
     }
 }
