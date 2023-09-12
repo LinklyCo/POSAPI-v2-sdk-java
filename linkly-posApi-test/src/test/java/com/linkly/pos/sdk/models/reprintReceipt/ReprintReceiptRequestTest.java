@@ -1,6 +1,7 @@
 package com.linkly.pos.sdk.models.reprintReceipt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,15 +11,16 @@ class ReprintReceiptRequestTest {
     void should_return_messages_ifEmpty() {
         ReprintReceiptRequest request = new ReprintReceiptRequest();
         request.setReprintType(null);
-        assertEquals("[reprintType: Enum null not found in the list: [GetLast, Reprint].]", request
-            .validate()
-            .toString());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("reprintType: Enum null not found in the list: [GetLast, Reprint].", exception
+            .getMessage());
     }
 
     @Test
     void should_not_returnMessages_ifNotEmpty() {
-        ReprintReceiptRequest request = new ReprintReceiptRequest();
-        assertEquals(0, request.validate().size());
+        new ReprintReceiptRequest().validate();
     }
 
     @Test
@@ -27,9 +29,12 @@ class ReprintReceiptRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        assertEquals("[merchant: Must not be empty., application: Must not be empty.,"
-            + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].]", request
-                .validate().toString());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("merchant: Must not be empty., application: Must not be empty., "
+            + "receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].",
+            exception.getMessage());
     }
 
 }

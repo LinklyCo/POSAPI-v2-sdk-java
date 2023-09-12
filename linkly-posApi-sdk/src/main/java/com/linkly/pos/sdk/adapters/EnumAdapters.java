@@ -30,546 +30,635 @@ import com.squareup.moshi.ToJson;
  */
 public class EnumAdapters {
 
-	/**
-	 * Converts AccountType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts AccountType enums to json string representation and vice versa.
+     */
     public static class AccountTypeAdapter {
-    	
+
         /**
-        * Converts AccountType to json string representation.
-        * 
-        * @param value AccountType value to be converted.
-        */
+         * Converts AccountType to json string representation.
+         * 
+         * @param value
+         *            AccountType value to be converted.
+         * @return equivalent string value of AccountType
+         */
         @ToJson
         public String toJson(AccountType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json AccountType string representation to AccountType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json AccountType string representation to AccountType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return AccountType enum from string
+         */
         @FromJson
         public AccountType fromJson(String value) {
             return EnumLookup.findEnumValue(AccountType.class, value);
         }
     }
 
-	/**
-	 * Converts CardEntryType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts CardEntryType enums to json string representation and vice versa.
+     */
     public static class CardEntryTypeAdapter {
-    	
+
         /**
-        * Converts CardEntryType to json string representation.
-        * 
-        * @param value CardEntryType value to be converted.
-        */
+         * Converts CardEntryType to json string representation.
+         * 
+         * @param value
+         *            CardEntryType value to be converted.
+         * @return equivalent string value of CardEntryType
+         */
         @ToJson
         public String toJson(CardEntryType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json CardEntryType string representation to CardEntryType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json CardEntryType string representation to CardEntryType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return CardEntryType enum from string
+         */
         @FromJson
         public CardEntryType fromJson(String value) {
             return EnumLookup.findEnumValue(CardEntryType.class, value);
         }
     }
 
-	/**
-	 * Converts CommsMethodType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts CommsMethodType enums to json string representation and vice versa.
+     */
     public static class CommsMethodTypeAdapter {
-    	
+
         /**
-        * Converts CommsMethodType to json string representation.
-        * 
-        * @param value CommsMethodType value to be converted.
-        */
+         * Converts CommsMethodType to json string representation.
+         * 
+         * @param value
+         *            CommsMethodType value to be converted.
+         * @return equivalent string value of CommsMethodType
+         */
         @ToJson
         public String toJson(CommsMethodType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json CommsMethodType string representation to CommsMethodType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json CommsMethodType string representation to CommsMethodType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return CommsMethodType enum from string
+         */
         @FromJson
         public CommsMethodType fromJson(String value) {
             return EnumLookup.findEnumValue(CommsMethodType.class, value);
         }
     }
 
-	/**
-	 * Converts CurrencyStatus enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts CurrencyStatus enums to json string representation and vice versa.
+     */
     public static class CurrencyStatusAdapter {
-    	
+
         /**
-        * Converts CurrencyStatus to json string representation.
-        * 
-        * @param value CurrencyStatus value to be converted.
-        */
+         * Converts CurrencyStatus to json string representation.
+         * 
+         * @param value
+         *            CurrencyStatus value to be converted.
+         * @return equivalent string value of CurrencyStatus
+         */
         @ToJson
         public String toJson(CurrencyStatus value) {
             return value.getValue();
         }
 
         /**
-        * Converts json CurrencyStatus string representation to CurrencyStatus enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json CurrencyStatus string representation to CurrencyStatus enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return CurrencyStatus enum from string
+         */
         @FromJson
         public CurrencyStatus fromJson(String value) {
             return EnumLookup.findEnumValue(CurrencyStatus.class, value);
         }
     }
 
-	/**
-	 * Converts EftTerminalType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts EftTerminalType enums to json string representation and vice versa.
+     */
     public static class EftTerminalTypeAdapter {
-    	
+
         /**
-        * Converts EftTerminalType to json string representation.
-        * 
-        * @param value EftTerminalType value to be converted.
-        */
+         * Converts EftTerminalType to json string representation.
+         * 
+         * @param value
+         *            EftTerminalType value to be converted.
+         * @return equivalent string value of EftTerminalType
+         */
         @ToJson
         public String toJson(EftTerminalType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json EftTerminalType string representation to EftTerminalType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json EftTerminalType string representation to EftTerminalType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return EftTerminalType enum from string
+         */
         @FromJson
         public EftTerminalType fromJson(String value) {
             return EnumLookup.findEnumValue(EftTerminalType.class, value);
         }
     }
 
-	/**
-	 * Converts GraphicCode enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts GraphicCode enums to json string representation and vice versa.
+     */
     public static class GraphicCodeAdapter {
-    	
+
         /**
-        * Converts GraphicCode to json string representation.
-        * 
-        * @param value GraphicCode value to be converted.
-        */
+         * Converts GraphicCode to json string representation.
+         * 
+         * @param value
+         *            GraphicCode value to be converted.
+         * @return equivalent string value of GraphicCode
+         */
         @ToJson
         public String toJson(GraphicCode value) {
             return value.getValue();
         }
 
         /**
-        * Converts json GraphicCode string representation to GraphicCode enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json GraphicCode string representation to GraphicCode enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return GraphicCode enum from string
+         */
         @FromJson
         public GraphicCode fromJson(String value) {
             return EnumLookup.findEnumValue(GraphicCode.class, value);
         }
     }
 
-	/**
-	 * Converts InputType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts InputType enums to json string representation and vice versa.
+     */
     public static class InputTypeAdapter {
-    	
+
         /**
-        * Converts InputType to json string representation.
-        * 
-        * @param value InputType value to be converted.
-        */
+         * Converts InputType to json string representation.
+         * 
+         * @param value
+         *            InputType value to be converted.
+         * @return equivalent string value of InputType
+         */
         @ToJson
         public String toJson(InputType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json InputType string representation to InputType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json InputType string representation to InputType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return InputType enum from string
+         */
         @FromJson
         public InputType fromJson(String value) {
             return EnumLookup.findEnumValue(InputType.class, value);
         }
     }
 
-	/**
-	 * Converts KeyHandlingType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts KeyHandlingType enums to json string representation and vice versa.
+     */
     public static class KeyHandlingTypeAdapter {
-    	
+
         /**
-        * Converts KeyHandlingType to json string representation.
-        * 
-        * @param value KeyHandlingType value to be converted.
-        */
+         * Converts KeyHandlingType to json string representation.
+         * 
+         * @param value
+         *            KeyHandlingType value to be converted.
+         * @return equivalent string value of KeyHandlingType
+         */
         @ToJson
         public String toJson(KeyHandlingType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json KeyHandlingType string representation to KeyHandlingType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json KeyHandlingType string representation to KeyHandlingType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return KeyHandlingType enum from string
+         */
         @FromJson
         public KeyHandlingType fromJson(String value) {
             return EnumLookup.findEnumValue(KeyHandlingType.class, value);
         }
     }
 
-	/**
-	 * Converts LogonType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts LogonType enums to json string representation and vice versa.
+     */
     public static class LogonTypeAdapter {
-    	
+
         /**
-        * Converts LogonType to json string representation.
-        * 
-        * @param value LogonType value to be converted.
-        */
+         * Converts LogonType to json string representation.
+         * 
+         * @param value
+         *            LogonType value to be converted.
+         * @return equivalent string value of LogonType
+         */
         @ToJson
         public String toJson(LogonType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json LogonType string representation to LogonType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json LogonType string representation to LogonType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return LogonType enum from string
+         */
         @FromJson
         public LogonType fromJson(String value) {
             return EnumLookup.findEnumValue(LogonType.class, value);
         }
     }
 
-	/**
-	 * Converts NetworkType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts NetworkType enums to json string representation and vice versa.
+     */
     public static class NetworkTypeAdapter {
-    	
+
         /**
-        * Converts NetworkType to json string representation.
-        * 
-        * @param value NetworkType value to be converted.
-        */
+         * Converts NetworkType to json string representation.
+         * 
+         * @param value
+         *            NetworkType value to be converted.
+         * @return equivalent string value of NetworkType
+         */
         @ToJson
         public String toJson(NetworkType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json NetworkType string representation to NetworkType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json NetworkType string representation to NetworkType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return NetworkType enum from string
+         */
         @FromJson
         public NetworkType fromJson(String value) {
-            return EnumLookup.findEnumValue(NetworkType.class, value, NetworkType.Unknown.getValue());
+            return EnumLookup.findEnumValue(NetworkType.class, value, NetworkType.Unknown
+                .getValue());
         }
     }
 
-	/**
-	 * Converts PanSource enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts PanSource enums to json string representation and vice versa.
+     */
     public static class PanSourceAdapter {
-    	
+
         /**
-        * Converts PanSource to json string representation.
-        * 
-        * @param value PanSource value to be converted.
-        */
+         * Converts PanSource to json string representation.
+         * 
+         * @param value
+         *            PanSource value to be converted.
+         * @return equivalent string value of PanSource
+         */
         @ToJson
         public String toJson(PanSource value) {
             return value.getValue();
         }
 
         /**
-        * Converts json PanSource string representation to PanSource enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json PanSource string representation to PanSource enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return PanSource enum from string
+         */
         @FromJson
         public PanSource fromJson(String value) {
             return EnumLookup.findEnumValue(PanSource.class, value);
         }
     }
 
-	/**
-	 * Converts PayPassStatus enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts PayPassStatus enums to json string representation and vice versa.
+     */
     public static class PayPassStatusAdapter {
-    	
+
         /**
-        * Converts PayPassStatus to json string representation.
-        * 
-        * @param value PayPassStatus value to be converted.
-        */
+         * Converts PayPassStatus to json string representation.
+         * 
+         * @param value
+         *            PayPassStatus value to be converted.
+         * @return equivalent string value of PayPassStatus
+         */
         @ToJson
         public String toJson(PayPassStatus value) {
             return value.getValue();
         }
 
         /**
-        * Converts json PayPassStatus string representation to PayPassStatus enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json PayPassStatus string representation to PayPassStatus enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return PayPassStatus enum from string
+         */
         @FromJson
         public PayPassStatus fromJson(String value) {
-            return EnumLookup.findEnumValue(PayPassStatus.class, value, PayPassStatus.Unknown.getValue());
+            return EnumLookup.findEnumValue(PayPassStatus.class, value, PayPassStatus.Unknown
+                .getValue());
         }
     }
 
-	/**
-	 * Converts QueryCardType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts QueryCardType enums to json string representation and vice versa.
+     */
     public static class QueryCardTypeAdapter {
-    	
+
         /**
-        * Converts QueryCardType to json string representation.
-        * 
-        * @param value QueryCardType value to be converted.
-        */
+         * Converts QueryCardType to json string representation.
+         * 
+         * @param value
+         *            QueryCardType value to be converted.
+         * @return equivalent string value of QueryCardType
+         */
         @ToJson
         public String toJson(QueryCardType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json QueryCardType string representation to QueryCardType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json QueryCardType string representation to QueryCardType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return QueryCardType enum from string
+         */
         @FromJson
         public QueryCardType fromJson(String value) {
             return EnumLookup.findEnumValue(QueryCardType.class, value);
         }
     }
 
-	/**
-	 * Converts ReceiptAutoPrint enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts ReceiptAutoPrint enums to json string representation and vice versa.
+     */
     public static class ReceiptAutoPrintAdapter {
-    	
+
         /**
-        * Converts ReceiptAutoPrint to json string representation.
-        * 
-        * @param value ReceiptAutoPrint value to be converted.
-        */
+         * Converts ReceiptAutoPrint to json string representation.
+         * 
+         * @param value
+         *            ReceiptAutoPrint value to be converted.
+         * @return equivalent string value of ReceiptAutoPrint
+         */
         @ToJson
         public String toJson(ReceiptAutoPrint value) {
             return value.getValue();
         }
 
         /**
-        * Converts json ReceiptAutoPrint string representation to ReceiptAutoPrint enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json ReceiptAutoPrint string representation to ReceiptAutoPrint enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return ReceiptAutoPrint enum from string
+         */
         @FromJson
         public ReceiptAutoPrint fromJson(String value) {
             return EnumLookup.findEnumValue(ReceiptAutoPrint.class, value);
         }
     }
 
-	/**
-	 * Converts ReceiptType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts ReceiptType enums to json string representation and vice versa.
+     */
     public static class ReceiptTypeAdapter {
-    	
+
         /**
-        * Converts ReceiptType to json string representation.
-        * 
-        * @param value ReceiptType value to be converted.
-        */
+         * Converts ReceiptType to json string representation.
+         * 
+         * @param value
+         *            ReceiptType value to be converted.
+         * @return equivalent string value of ReceiptType
+         */
         @ToJson
         public String toJson(ReceiptType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json ReceiptType string representation to ReceiptType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json ReceiptType string representation to ReceiptType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return ReceiptType enum from string
+         */
         @FromJson
         public ReceiptType fromJson(String value) {
-            return EnumLookup.findEnumValue(ReceiptType.class, value, ReceiptType.Unknown.getValue());
+            return EnumLookup.findEnumValue(ReceiptType.class, value, ReceiptType.Unknown
+                .getValue());
         }
     }
 
-	/**
-	 * Converts ReprintType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts ReprintType enums to json string representation and vice versa.
+     */
     public static class ReprintTypeAdapter {
-    	
+
         /**
-        * Converts ReprintType to json string representation.
-        * 
-        * @param value ReprintType value to be converted.
-        */
+         * Converts ReprintType to json string representation.
+         * 
+         * @param value
+         *            ReprintType value to be converted.
+         * @return equivalent string value of ReprintType
+         */
         @ToJson
         public String toJson(ReprintType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json ReprintType string representation to ReprintType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json ReprintType string representation to ReprintType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return ReprintType enum from string
+         */
         @FromJson
         public ReprintType fromJson(String value) {
             return EnumLookup.findEnumValue(ReprintType.class, value);
         }
     }
 
-	/**
-	 * Converts ResponseType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts ResponseType enums to json string representation and vice versa.
+     */
     public static class ResponseTypeAdapter {
-    	
+
         /**
-        * Converts ResponseType to json string representation.
-        * 
-        * @param value ResponseType value to be converted.
-        */
+         * Converts ResponseType to json string representation.
+         * 
+         * @param value
+         *            ResponseType value to be converted.
+         * @return equivalent string value of ResponseType
+         */
         @ToJson
         public String toJson(ResponseType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json ResponseType string representation to ResponseType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json ResponseType string representation to ResponseType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return ResponseType enum from string
+         */
         @FromJson
         public ResponseType fromJson(String value) {
-            return EnumLookup.findEnumValue(ResponseType.class, value, ResponseType.Unknown.getValue());
+            return EnumLookup.findEnumValue(ResponseType.class, value, ResponseType.Unknown
+                .getValue());
         }
     }
 
-	/**
-	 * Converts SettlementType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts SettlementType enums to json string representation and vice versa.
+     */
     public static class SettlementTypeAdapter {
-    	
+
         /**
-        * Converts SettlementType to json string representation.
-        * 
-        * @param value SettlementType value to be converted.
-        */
+         * Converts SettlementType to json string representation.
+         * 
+         * @param value
+         *            SettlementType value to be converted.
+         * @return equivalent string value of SettlementType
+         */
         @ToJson
         public String toJson(SettlementType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json SettlementType string representation to SettlementType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json SettlementType string representation to SettlementType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return SettlementType enum from string
+         */
         @FromJson
         public SettlementType fromJson(String value) {
             return EnumLookup.findEnumValue(SettlementType.class, value);
         }
     }
 
-	/**
-	 * Converts StatusType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts StatusType enums to json string representation and vice versa.
+     */
     public static class StatusTypeAdapter {
-    	
+
         /**
-        * Converts StatusType to json string representation.
-        * 
-        * @param value StatusType value to be converted.
-        */
+         * Converts StatusType to json string representation.
+         * 
+         * @param value
+         *            StatusType value to be converted.
+         * @return equivalent string value of StatusType
+         */
         @ToJson
         public String toJson(StatusType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json StatusType string representation to StatusType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json StatusType string representation to StatusType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return StatusType enum from string
+         */
         @FromJson
         public StatusType fromJson(String value) {
             return EnumLookup.findEnumValue(StatusType.class, value);
         }
     }
 
-	/**
-	 * Converts TerminalCommsType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts TerminalCommsType enums to json string representation and vice versa.
+     */
     public static class TerminalCommsTypeAdapter {
-    	
+
         /**
-        * Converts TerminalCommsType to json string representation.
-        * 
-        * @param value TerminalCommsType value to be converted.
-        */
+         * Converts TerminalCommsType to json string representation.
+         * 
+         * @param value
+         *            TerminalCommsType value to be converted.
+         * @return equivalent string value of TerminalCommsType
+         */
         @ToJson
         public String toJson(TerminalCommsType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json TerminalCommsType string representation to TerminalCommsType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json TerminalCommsType string representation to TerminalCommsType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return TerminalCommsType enum from string
+         */
         @FromJson
         public TerminalCommsType fromJson(String value) {
-            return EnumLookup.findEnumValue(TerminalCommsType.class, value, TerminalCommsType.Unknown.getValue());
+            return EnumLookup.findEnumValue(TerminalCommsType.class, value,
+                TerminalCommsType.Unknown.getValue());
         }
     }
 
-	/**
-	 * Converts TxnType enums to json string representation and vice versa.
-	 */
+    /**
+     * Converts TxnType enums to json string representation and vice versa.
+     */
     public static class TxnTypeAdapter {
-    	
+
         /**
-        * Converts TxnType to json string representation.
-        * 
-        * @param value TxnType value to be converted.
-        */
+         * Converts TxnType to json string representation.
+         * 
+         * @param value
+         *            TxnType value to be converted.
+         * @return equivalent string value of TxnType
+         */
         @ToJson
         public String toJson(TxnType value) {
             return value.getValue();
         }
 
         /**
-        * Converts json TxnType string representation to TxnType enum.
-        * 
-        * @param value string representation value to be converted.
-        */
+         * Converts json TxnType string representation to TxnType enum.
+         * 
+         * @param value
+         *            string representation value to be converted.
+         * @return TxnType enum from string
+         */
         @FromJson
         public TxnType fromJson(String value) {
             return EnumLookup.findEnumValue(TxnType.class, value);

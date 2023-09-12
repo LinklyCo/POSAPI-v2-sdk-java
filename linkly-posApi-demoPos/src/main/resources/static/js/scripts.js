@@ -82,7 +82,6 @@ function getResponses() {
                             var myIdex = document.querySelector('#home select[name="users"] option[value="' 
                                 + username + '"]').index;
                             select.selectedIndex = myIdex;
-                            
                         }
                         changeLane(username);
                         displayHome();
@@ -323,27 +322,24 @@ document.getElementsByClassName('statusGo')[0].addEventListener('click', functio
         let body = JSON.stringify(request);
         post('status', body);
     } else {
-        alert('Please select Query Card Type.');
+        alert('Please select Status');
     }
 });
 
 document.getElementsByClassName('configureMerchantGo')[0].addEventListener('click', function(){
     var catId = document.querySelector('#configureMerchant input[name="catId"]').value;
     var caId = document.querySelector('#configureMerchant input[name="caId"]').value;
-    if(catId && caId){
-        populateLogs('Status requested type: ');
-        disableButtons();
-        let request = {
-            catId: catId,
-            caId: caId
-        };
-        var posApiRequest = buildPosApiRequestBody();
-        request = {...request, ...posApiRequest};
-        let body = JSON.stringify(request);
-        post('configureMerchant', body);
-    } else {
-        alert('Please select Query Card Type.');
-    }
+    
+    populateLogs('Status requested type: ');
+    disableButtons();
+    let request = {
+        catId: catId,
+        caId: caId
+    };
+    var posApiRequest = buildPosApiRequestBody();
+    request = {...request, ...posApiRequest};
+    let body = JSON.stringify(request);
+    post('configureMerchant', body);
 });
 
 

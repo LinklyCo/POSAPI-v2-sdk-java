@@ -1,6 +1,7 @@
 package com.linkly.pos.sdk.models.settlement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,17 +13,18 @@ class SettlementRequestTest {
     void should_return_messages_ifEmpty() {
         SettlementRequest request = new SettlementRequest();
         request.setSettlementType(null);
-        assertEquals(
-            "[settlementType: Enum null not found in the list: [Settlement, PreSettlement, "
-                + "LastSettlement, SummaryTotals, SubShiftTotals, DetailedTransactionListing, "
-                + "StartCash, StoreAndForwardTotals, DailyCashStatement].]", request.validate()
-                    .toString());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("settlementType: Enum null not found in the list: [Settlement, PreSettlement, "
+            + "LastSettlement, SummaryTotals, SubShiftTotals, DetailedTransactionListing, "
+            + "StartCash, StoreAndForwardTotals, DailyCashStatement].", exception.getMessage());
     }
 
     @Test
     void should_not_returnMessages_ifNotEmpty() {
-        ReprintReceiptRequest request = new ReprintReceiptRequest();
-        assertEquals(0, request.validate().size());
+        new ReprintReceiptRequest().validate();
     }
 
     @Test
@@ -31,10 +33,12 @@ class SettlementRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        assertEquals("[merchant: Must not be empty., application: Must not be empty.,"
-            + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].]", request
-                .validate()
-                .toString());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("merchant: Must not be empty., application: Must not be empty.,"
+            + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].", exception
+                .getMessage());
     }
 
 }

@@ -72,7 +72,8 @@ public final class MoshiUtil {
     /**
      * Retrieves the moshi adapter for the specified class.
      * 
-     * @param clasz The adapter class to retrieve from moshi.
+     * @param clasz
+     *            The adapter class to retrieve from moshi.
      */
     @SuppressWarnings("unchecked")
     public static <T> JsonAdapter<T> getAdapter(Class<?> clasz) {
@@ -82,7 +83,8 @@ public final class MoshiUtil {
     /**
      * Retrieves the moshi adapter for the specified type.
      * 
-     * @param type The Type adapter to retrieve from moshi.
+     * @param type
+     *            The Type adapter to retrieve from moshi.
      */
     @SuppressWarnings("unchecked")
     public static <T> JsonAdapter<T> getAdapter(Type type) {
@@ -92,8 +94,13 @@ public final class MoshiUtil {
     /**
      * Deserializes the provided string to an object specified by the adapter class.
      * 
-     * @param value The String value to be deserialized.
-     * @param clasz The adapter class to retrieve from moshi.
+     * @param <T>
+     *            value The String value to be deserialized.
+     * @param clasz
+     *            The adapter class to retrieve from moshi.
+     * @return object presentation of the string
+     * @throws IOException
+     *             if string cannot be converted to object
      */
     @SuppressWarnings("unchecked")
     public static <T> T fromJson(String value, Class<?> clasz) throws IOException {
@@ -104,8 +111,13 @@ public final class MoshiUtil {
     /**
      * Deserializes the provided string to an object specified by the adapter type.
      * 
-     * @param value The String value to be deserialized.
-     * @param type The Type adapter to retrieve from moshi.
+     * @param <T>
+     *            value The String value to be deserialized.
+     * @param type
+     *            The Type adapter to retrieve from moshi.
+     * @return object presentation of the string
+     * @throws IOException
+     *             if string cannot be converted to object
      */
     @SuppressWarnings("unchecked")
     public static <T> T fromJson(String value, Type type) throws IOException {

@@ -3,6 +3,7 @@ package com.linkly.pos.sdk.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -189,8 +190,11 @@ class PosApiServiceTest {
         pairingRequest();
         LogonRequest request = new LogonRequest();
         request.setLogonType(null);
-        service.logonRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.logonRequest(request);
+        });
+        assertEquals("logonType: Enum null not found in the list: [Standard, RSA, TmsFull, "
+            + "TmsParams, TmsSoftware, Logoff, Diagnostics].", exception.getMessage());
     }
 
     @Test
@@ -312,9 +316,10 @@ class PosApiServiceTest {
         when(response.getResponseBody()).thenReturn(responseContent);
         when(asyncHttpExecutor.post(anyString(), eq(requestContent)))
             .thenReturn(response);
-
-        service.transactionRequest(cashRequest);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.transactionRequest(cashRequest);
+        });
+        assertEquals("txnRef: Must not be empty.", exception.getMessage());
     }
 
     @Test
@@ -693,10 +698,8 @@ class PosApiServiceTest {
         when(asyncHttpExecutor.get(anyString(), eq("Bearer testvalidtoken")))
             .thenReturn(response);
 
-        RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            service.retrieveTransactionRequest(retrieveTransactionRequest);
-        });
-        assertEquals("No Implementation Yet!", exception.getMessage());
+        service.retrieveTransactionRequest(retrieveTransactionRequest);
+        assertTrue(eventListener.getResponseContent("unknown").contains("No Implementation Yet!"));
     }
 
     @Test
@@ -714,9 +717,12 @@ class PosApiServiceTest {
         pairingRequest();
         StatusRequest request = new StatusRequest();
         request.setStatusType(null);
-        service.statusRequest(request);
 
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.statusRequest(request);
+        });
+        assertEquals("statusType: Enum null not found in the list: [Standard, TerminalAppInfo, "
+            + "AppCpat, AppNameTable, Undefined, Preswipe].", exception.getMessage());
     }
 
     @Test
@@ -769,8 +775,12 @@ class PosApiServiceTest {
         pairingRequest();
         SettlementRequest request = SettlementMock.settlementRequest();
         request.setSettlementType(null);
-        service.settlementRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.settlementRequest(request);
+        });
+        assertEquals("settlementType: Enum null not found in the list: [Settlement, PreSettlement, "
+            + "LastSettlement, SummaryTotals, SubShiftTotals, DetailedTransactionListing, "
+            + "StartCash, StoreAndForwardTotals, DailyCashStatement].", exception.getMessage());
     }
 
     @Test
@@ -816,8 +826,13 @@ class PosApiServiceTest {
         pairingRequest();
         QueryCardRequest request = new QueryCardRequest();
         request.setQueryCardType(null);
-        service.queryCardRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.queryCardRequest(request);
+        });
+        assertEquals("queryCardType: Enum null not found in the list: [ReadCard, "
+            + "ReadCardAndSelectAccount, SelectAccount, PreSwipe, PreSwipeSpecial].", exception
+                .getMessage());
     }
 
     @Test
@@ -863,8 +878,10 @@ class PosApiServiceTest {
         eventListener.clear();
         pairingRequest();
         ConfigureMerchantRequest request = new ConfigureMerchantRequest();
-        service.configureMerchantRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.configureMerchantRequest(request);
+        });
+        assertEquals("catId: Must not be empty., caId: Must not be empty.", exception.getMessage());
     }
 
     @Test
@@ -910,12 +927,17 @@ class PosApiServiceTest {
         pairingRequest();
         ReprintReceiptRequest request = ReprintReceiptMock.request();
         request.setReceiptAutoPrint(null);
-        service.reprintReceiptRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.reprintReceiptRequest(request);
+        });
+        assertEquals("receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].",
+            exception.getMessage());
     }
 
     @Test
-    void reprintReceiptRequest_success() {
+    void reprintReceiptRequest_success() throws InterruptedException {
+        eventListener.clear();
         pairingRequest();
 
         when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
@@ -930,12 +952,15 @@ class PosApiServiceTest {
 
         UUID uuid = service.reprintReceiptRequest(ReprintReceiptMock.request());
 
-        String listener = eventListener.getResponseContent("reprintReceipt");
+        Thread.sleep(1000);
+        String listener = eventListener.getResponseContent("reprintreceipt");
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
 
         assertNotNull(uuid);
+        assertEquals("{\"Merchant\":\"01\",\"ReceiptText\":[\"Official Receipt\"],"
+            + "\"ResponseType\":\"reprintreceipt\",\"Success\":false}", listener);
     }
 
     @Test
@@ -951,8 +976,11 @@ class PosApiServiceTest {
     void sendKeyRequest_validaitonFailed() {
         eventListener.clear();
         pairingRequest();
-        service.sendKeyRequest(new SendKeyRequest());
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.sendKeyRequest(new SendKeyRequest());
+        });
+        assertEquals("sessionId: Must not be empty., key: Must not be empty.", exception
+            .getMessage());
     }
 
     @Test
@@ -977,7 +1005,6 @@ class PosApiServiceTest {
         verify(response, atLeast(3)).getResponseBody();
         assertEquals("{\"httpStatusCode\":500,\"message\":\"Internal server error!\","
             + "\"source\":\"API\"}", listener);
-
     }
 
     @Test

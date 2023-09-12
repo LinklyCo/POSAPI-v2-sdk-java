@@ -1,6 +1,7 @@
 package com.linkly.pos.sdk.models.result;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.UUID;
 
@@ -11,14 +12,15 @@ class ResultRequestTest {
     @Test
     void should_return_messages_ifEmpty() {
         ResultRequest request = new ResultRequest(null);
-        assertEquals("[sessionId: Must not be empty.]", request.validate()
-            .toString());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("sessionId: Must not be empty.", exception.getMessage());
     }
 
     @Test
     void should_not_returnMessages_ifNotEmpty() {
-        ResultRequest request = new ResultRequest(UUID.randomUUID());
-        assertEquals(0, request.validate().size());
+        new ResultRequest(UUID.randomUUID()).validate();
     }
 
 }

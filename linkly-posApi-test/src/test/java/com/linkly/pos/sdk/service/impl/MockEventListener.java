@@ -38,11 +38,11 @@ public class MockEventListener implements IPosApiEventListener {
     private final List<String> responseContents = new ArrayList<>();
 
     public String getResponseContent(String responseType) {
-    	for(String content : responseContents) {
-    		if(content.contains(responseType)) {
-    			return content;
-    		}
-    	}
+        for (String content : responseContents) {
+            if (content.contains(responseType)) {
+                return content;
+            }
+        }
         return String.join(", ", responseContents);
     }
 
@@ -122,10 +122,10 @@ public class MockEventListener implements IPosApiEventListener {
     @Override
     public void retrieveTransactionComplete(RetrieveTransactionRequest request,
         List<TransactionResponse> responses) {
-        throw new RuntimeException("No Implementation Yet!");
+        responseContents.add("No Implementation Yet!");
     }
 
     public void clear() {
-    	responseContents.clear();
+        responseContents.clear();
     }
 }

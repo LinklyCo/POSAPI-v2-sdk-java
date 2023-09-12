@@ -1,6 +1,7 @@
 package com.linkly.pos.sdk.models.sendKey;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.UUID;
 
@@ -14,8 +15,12 @@ class SendKeyRequestTest {
         request.setData("exceed limit test data. exceed limit test data. exceed limit test data."
             + "exceed limit test data. exceed limit test data. exceed limit test data. "
             + "exceed limit test data. exceed limit test data. exceed limit test data.");
-        assertEquals("[sessionId: Must not be empty., key: Must not be empty., data: Max length"
-            + " must not exceed 60.]", request.validate().toString());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("sessionId: Must not be empty., key: Must not be empty., data: Max length"
+            + " must not exceed 60.", exception.getMessage());
     }
 
     @Test
@@ -24,7 +29,7 @@ class SendKeyRequestTest {
         request.setSessionId(UUID.randomUUID());
         request.setKey("1");
         request.setData("test data");
-        assertEquals(0, request.validate().size());
+        request.validate();
     }
 
     @Test
@@ -36,10 +41,13 @@ class SendKeyRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        assertEquals("[merchant: Must not be empty., application: Must not be empty.,"
-            + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].]", request
-                .validate()
-                .toString());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("merchant: Must not be empty., application: Must not be empty.,"
+            + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].", exception
+                .getMessage());
     }
 
 }
