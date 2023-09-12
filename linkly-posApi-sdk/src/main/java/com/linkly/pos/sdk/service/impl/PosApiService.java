@@ -388,7 +388,7 @@ public class PosApiService implements IPosApiService {
                 responseBody);
         }
         catch (Exception e) {
-            eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.API, null, e
+            eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.Internal, null, e
                 .getMessage(), e));
             throw new RuntimeException(e);
         }
