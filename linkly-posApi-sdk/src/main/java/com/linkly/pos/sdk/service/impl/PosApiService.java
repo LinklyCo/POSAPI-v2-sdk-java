@@ -362,44 +362,37 @@ public class PosApiService implements IPosApiService {
     private <T extends IBaseRequest> ApiResponse sendPosRequestAsync(T request,
         HttpMethod method, String uri, UUID sessionId) {
 
-        try {
-            if (authToken == null || authToken.isExpiringSoon()) {
-                authenticate();
-            }
-            String authHeaderValue = AuthTokenExtensions.getAuthenticationHeaderValue(authToken);
-            Response completeResponse = null;
-
-            if (HttpMethod.POST == method) {
-                String requestBody = getAdapter(request.getClass()).toJson(request);
-                requestBody = JSONUtil.wrapRequest(COMMON_REQUEST_WRAPPER, requestBody);
-                completeResponse = asyncHttpExecutor.post(uri, authHeaderValue, requestBody);
-            }
-            else if (HttpMethod.GET == method) {
-                completeResponse = asyncHttpExecutor.get(uri, authHeaderValue);
-            }
-
-            int statusCode = completeResponse.getStatusCode();
-            if (statusCode == HttpResponseStatus.UNAUTHORIZED.code()) {
-                logger.log(Level.INFO,
-                    "sendPosRequestAsync: Clearing auth token due to failed authentication");
-                authToken = null;
-            }
-            String responseBody = completeResponse.getResponseBody();
-            if (!HttpStatusCodeUtil.isSuccess(statusCode) && !HttpStatusCodeUtil.tooEarly(
-                statusCode) && !(request instanceof SendKeyRequest)) {
-                logger.log(Level.SEVERE, "sendPosRequestAsync: Request unsuccessful. {0}",
-                    new Object[] { responseBody });
-                eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.API,
-                    statusCode, responseBody, null));
-            }
-            return new ApiResponse(HttpStatusCodeUtil.isSuccess(statusCode), statusCode,
-                responseBody);
+        if (authToken == null || authToken.isExpiringSoon()) {
+            authenticate();
         }
-        catch (Exception e) {
-            eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.API, null, e
-                .getMessage(), e));
-            throw new RuntimeException(e);
+        Response completeResponse = null;
+        String authHeaderValue = AuthTokenExtensions.getAuthenticationHeaderValue(authToken);
+
+        if (HttpMethod.POST == method) {
+            String requestBody = getAdapter(request.getClass()).toJson(request);
+            requestBody = JSONUtil.wrapRequest(COMMON_REQUEST_WRAPPER, requestBody);
+            completeResponse = asyncHttpExecutor.post(uri, authHeaderValue, requestBody);
         }
+        else if (HttpMethod.GET == method) {
+            completeResponse = asyncHttpExecutor.get(uri, authHeaderValue);
+        }
+
+        int statusCode = completeResponse.getStatusCode();
+        if (statusCode == HttpResponseStatus.UNAUTHORIZED.code()) {
+            logger.log(Level.INFO,
+                "sendPosRequestAsync: Clearing auth token due to failed authentication");
+            authToken = null;
+        }
+        String responseBody = completeResponse.getResponseBody();
+        if (!HttpStatusCodeUtil.isSuccess(statusCode) && !HttpStatusCodeUtil.tooEarly(
+            statusCode) && !(request instanceof SendKeyRequest)) {
+            logger.log(Level.SEVERE, "sendPosRequestAsync: Request unsuccessful. {0}",
+                new Object[] { responseBody });
+            eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.API,
+                statusCode, responseBody, null));
+        }
+        return new ApiResponse(HttpStatusCodeUtil.isSuccess(statusCode), statusCode,
+            responseBody);
     }
 
     private <T extends IBaseRequest> UUID executeCommon(T request, String endpoint) {
