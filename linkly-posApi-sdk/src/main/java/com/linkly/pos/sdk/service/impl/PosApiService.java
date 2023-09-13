@@ -163,27 +163,20 @@ public class PosApiService implements IPosApiService {
         String uri = uri(ApiType.AUTH, ApiEndpoints.PAIR_ENDPOINT);
         String requestBody = getAdapter(PairingRequest.class).toJson(request);
         Response completeResponse = asyncHttpExecutor.post(uri, requestBody);
-        if (!HttpStatusCodeUtil.isSuccess(completeResponse.getStatusCode())) {
-            String responseBody = completeResponse.getResponseBody();
-            if (StringUtil.isNullOrWhiteSpace(responseBody)) {
-                responseBody = completeResponse.getStatusText();
-            }
-            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API, completeResponse
-                .getStatusCode(), responseBody, null);
-            eventListener.error(null, request, errorResponse);
+
+        invokeErrorIfFailed(request, completeResponse, null);
+
+        try {
+            PairingResponse pairingResponse = MoshiUtil.fromJson(completeResponse
+                .getResponseBody(), PairingResponse.class);
+            setPairSecret(pairingResponse.getSecret());
+            eventListener.pairingComplete(request, pairingResponse);
         }
-        else {
-            try {
-                PairingResponse pairingResponse = MoshiUtil.fromJson(completeResponse
-                    .getResponseBody(), PairingResponse.class);
-                setPairSecret(pairingResponse.getSecret());
-                eventListener.pairingComplete(request, pairingResponse);
-            }
-            catch (IOException e) {
-                logger.log(Level.SEVERE, "pairingRequest: Error: {0}", new Object[] { e
-                    .getMessage() });
-            }
+        catch (IOException e) {
+            logger.log(Level.SEVERE, "pairingRequest: Error: {0}", new Object[] { e
+                .getMessage() });
         }
+
     }
 
     /**
@@ -329,11 +322,11 @@ public class PosApiService implements IPosApiService {
         catch (IOException e) {
             logger.log(Level.SEVERE, "retrieveTransactionRequest: Error: {0}", new Object[] { e
                 .getMessage() });
-            throw new RuntimeException("retrieveTransactionRequest: Error!", e);
+            throw new UnsupportedOperationException("retrieveTransactionRequest: Error!", e);
         }
     }
 
-    private void authenticate() {
+    private <T extends IBaseRequest> void authenticate(T request, UUID uuid) {
         logger.log(Level.INFO, "authenticate");
         TokenRequest tokenRequest = new TokenRequest(this.pairSecret, posVendorDetails.getPosName(),
             posVendorDetails.getPosVersion(), posVendorDetails.getPosId(), posVendorDetails
@@ -342,17 +335,15 @@ public class PosApiService implements IPosApiService {
             String uri = uri(ApiType.AUTH, ApiEndpoints.TOKENS_ENDPOINT);
             String requestBody = getAdapter(TokenRequest.class).toJson(tokenRequest);
             Response completeResponse = asyncHttpExecutor.post(uri, requestBody);
-            if (!HttpStatusCodeUtil.isSuccess(completeResponse.getStatusCode())) {
-                logger.log(Level.SEVERE, "authenticate: Error: {0}", new Object[] { completeResponse
-                    .getResponseBody() });
-            }
-            else {
-                TokenResponse tokenResponse = MoshiUtil.fromJson(completeResponse.getResponseBody(),
-                    TokenResponse.class);
-                LocalDateTime expiry = LocalDateTime.now().plus(tokenResponse.getExpirySeconds(),
-                    ChronoUnit.SECONDS);
-                authToken = new AuthToken(tokenResponse.getToken(), expiry);
-            }
+
+            invokeErrorIfFailed(request, completeResponse, uuid);
+
+            TokenResponse tokenResponse = MoshiUtil.fromJson(completeResponse.getResponseBody(),
+                TokenResponse.class);
+            LocalDateTime expiry = LocalDateTime.now().plus(tokenResponse.getExpirySeconds(),
+                ChronoUnit.SECONDS);
+            authToken = new AuthToken(tokenResponse.getToken(), expiry);
+
         }
         catch (IOException e) {
             logger.log(Level.SEVERE, "authenticate: Error: {0}", new Object[] { e.getMessage() });
@@ -363,7 +354,7 @@ public class PosApiService implements IPosApiService {
         HttpMethod method, String uri, UUID sessionId) {
 
         if (authToken == null || authToken.isExpiringSoon()) {
-            authenticate();
+            authenticate(request, sessionId);
         }
         Response completeResponse = null;
         String authHeaderValue = AuthTokenExtensions.getAuthenticationHeaderValue(authToken);
@@ -467,8 +458,9 @@ public class PosApiService implements IPosApiService {
                 sessionId });
             logger.log(Level.SEVERE, "HTTP Status: {0}", new Object[] { apiResponse
                 .getStatusCode() });
-            throw new RuntimeException("sendResultRequestAsync(). Result request unsuccessful."
-                + " Status: " + apiResponse.getStatusCode());
+            throw new UnsupportedOperationException(
+                "sendResultRequestAsync(). Result request unsuccessful."
+                    + " Status: " + apiResponse.getStatusCode());
         }
 
         logger.log(Level.INFO, "Result request successful. {0}", new Object[] { sessionId });
@@ -590,5 +582,21 @@ public class PosApiService implements IPosApiService {
         request.setPosName(posVendorDetails.getPosName());
         request.setPosVersion(posVendorDetails.getPosVersion());
         request.setPosId(posVendorDetails.getPosId());
+    }
+
+    private <T extends IBaseRequest> void invokeErrorIfFailed(T request, Response response,
+        UUID sessionId) {
+        if (!HttpStatusCodeUtil.isSuccess(response.getStatusCode())) {
+            String responseBody = response.getResponseBody();
+            if (StringUtil.isNullOrWhiteSpace(responseBody)) {
+                responseBody = response.getStatusText();
+            }
+            logger.log(Level.SEVERE, "{0}: Error: {1}", new Object[] { request.getClass()
+                .getSimpleName(), responseBody });
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API, response
+                .getStatusCode(), responseBody, null);
+            eventListener.error(sessionId, request, errorResponse);
+            throw new UnsupportedOperationException(responseBody);
+        }
     }
 }

@@ -693,13 +693,7 @@ function post(endpoint, body) {
     xhr.send(body);
     xhr.onload = function () {
         if(xhr.status !== 200) {
-            var text = 'Error: ' + xhr.status;
-            if(xhr.responseText) {
-                var responseError = JSON.parse(xhr.responseText);
-                text += '. ' + responseError.message;
-            }
             enableButtons();
-            alert(text);
         }
         if(xhr.status == 200 && xhr.responseText.length > 2){
             populateLogs('Session Id: ' + xhr.responseText);
