@@ -61,7 +61,7 @@ function getResponses() {
                             text += ' ' + body['httpStatusCode'];
                         }
                         if(body['message']) {
-                            text += '. ' + body['message'];
+                            text += ', ' + body['message'];
                         }
                         if(body['message'] !== 'Session Complete'){
                             alert(text);

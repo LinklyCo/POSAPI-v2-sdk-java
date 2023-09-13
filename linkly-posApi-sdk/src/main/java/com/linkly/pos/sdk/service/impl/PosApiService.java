@@ -163,8 +163,16 @@ public class PosApiService implements IPosApiService {
         String uri = uri(ApiType.AUTH, ApiEndpoints.PAIR_ENDPOINT);
         String requestBody = getAdapter(PairingRequest.class).toJson(request);
         Response completeResponse = asyncHttpExecutor.post(uri, requestBody);
-        boolean failed = invokeErrorIfFailed(request, completeResponse);
-        if (!failed) {
+        if (!HttpStatusCodeUtil.isSuccess(completeResponse.getStatusCode())) {
+            String responseBody = completeResponse.getResponseBody();
+            if (StringUtil.isNullOrWhiteSpace(responseBody)) {
+                responseBody = completeResponse.getStatusText();
+            }
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API, completeResponse
+                .getStatusCode(), responseBody, null);
+            eventListener.error(null, request, errorResponse);
+        }
+        else {
             try {
                 PairingResponse pairingResponse = MoshiUtil.fromJson(completeResponse
                     .getResponseBody(), PairingResponse.class);
@@ -174,8 +182,6 @@ public class PosApiService implements IPosApiService {
             catch (IOException e) {
                 logger.log(Level.SEVERE, "pairingRequest: Error: {0}", new Object[] { e
                     .getMessage() });
-                eventListener.error(null, request, new ErrorResponse(ErrorSource.Internal, null, e
-                    .getMessage(), e));
             }
         }
     }
@@ -336,9 +342,11 @@ public class PosApiService implements IPosApiService {
             String uri = uri(ApiType.AUTH, ApiEndpoints.TOKENS_ENDPOINT);
             String requestBody = getAdapter(TokenRequest.class).toJson(tokenRequest);
             Response completeResponse = asyncHttpExecutor.post(uri, requestBody);
-            boolean failed = invokeErrorIfFailed(tokenRequest, completeResponse);
-
-            if (!failed) {
+            if (!HttpStatusCodeUtil.isSuccess(completeResponse.getStatusCode())) {
+                logger.log(Level.SEVERE, "authenticate: Error: {0}", new Object[] { completeResponse
+                    .getResponseBody() });
+            }
+            else {
                 TokenResponse tokenResponse = MoshiUtil.fromJson(completeResponse.getResponseBody(),
                     TokenResponse.class);
                 LocalDateTime expiry = LocalDateTime.now().plus(tokenResponse.getExpirySeconds(),
@@ -388,7 +396,7 @@ public class PosApiService implements IPosApiService {
                 responseBody);
         }
         catch (Exception e) {
-            eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.Internal, null, e
+            eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.API, null, e
                 .getMessage(), e));
             throw new RuntimeException(e);
         }
@@ -589,15 +597,5 @@ public class PosApiService implements IPosApiService {
         request.setPosName(posVendorDetails.getPosName());
         request.setPosVersion(posVendorDetails.getPosVersion());
         request.setPosId(posVendorDetails.getPosId());
-    }
-
-    private boolean invokeErrorIfFailed(IBaseRequest request, Response response) {
-        if (!HttpStatusCodeUtil.isSuccess(response.getStatusCode())) {
-            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API, response
-                .getStatusCode(), response.getResponseBody(), null);
-            eventListener.error(null, request, errorResponse);
-            return true;
-        }
-        return false;
     }
 }
