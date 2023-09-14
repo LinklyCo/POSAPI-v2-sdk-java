@@ -254,9 +254,9 @@ class PosApiServiceTest {
     }
 
     @Test
-    void sendResultRequestAsync_timeExhausted_tooEarlyResponse() {
+    void sendResultRequestAsync_timeExhausted_tooEarlyResponse() throws InterruptedException {
+        reInitializeService();
         pairingRequest();
-        injectOptionValue();
 
         when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
         when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
@@ -270,13 +270,21 @@ class PosApiServiceTest {
 
         service.logonRequest(new LogonRequest());
 
-        eventListener.getResponseContent("");
+        /*
+         * wait is needed because the result process takes a minute to be exhausted
+         * 75000 is 1m 25s. Add 25 seconds to make sure that response has been capture by the
+         * listener
+         */
+        Thread.sleep(75000);
+        String errorResponse = eventListener.getResponseContent("Timed out");
+        assertEquals(errorResponse,
+            "{\"message\":\"Timed out waiting for response\",\"source\":\"Internal\"}");
     }
 
     @Test
     void sendResultRequestAsync_failed() throws InterruptedException {
+        reInitializeService();
         pairingRequest();
-        injectOptionValue();
 
         when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
         when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
@@ -1061,6 +1069,15 @@ class PosApiServiceTest {
         verify(response, atLeast(3)).getResponseBody();
         assertEquals("[{\"PurchaseAnalysisData\":{\"testkey\":\"Test Value\"},\"ResponseType\":"
             + "\"logon\"}]", listener);
+    }
+
+    public void reInitializeService() {
+        injectOptionValue();
+        eventListener = new MockEventListener();
+        service = new PosApiService(eventListener, httpClient, posVendorDetails, options,
+            serviceEndpoints, logger);
+        injectAsyncHttpExector();
+        reset(asyncHttpExecutor, response, httpClient);
     }
 
     private String pairingRequest() {
