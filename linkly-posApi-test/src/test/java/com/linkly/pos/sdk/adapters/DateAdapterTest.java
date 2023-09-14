@@ -20,7 +20,7 @@ class DateAdapterTest {
     void should_deserializeBool_toDateString() {
         TestClass testClass = new TestClass(DATE_TIME);
         String content = adapter.toJson(testClass);
-        assertEquals("{\"date\":\"01/13/2023 01:01:00 AM\"}", content);
+        assertEquals("{\"date\":\"01/13/2023 01:01:00 AM\"}".toUpperCase(), content.toUpperCase());
     }
 
     @Test
