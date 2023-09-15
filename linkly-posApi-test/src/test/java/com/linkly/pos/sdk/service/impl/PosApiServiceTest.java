@@ -263,8 +263,7 @@ class PosApiServiceTest {
         when(response.getStatusCode()).thenReturn(200).thenReturn(200).thenReturn(425);
         when(response.getResponseBody())
             .thenReturn(AuthTokenMock.tokenResponseContent())
-            .thenReturn("Mock content")
-            .thenReturn(LogonMock.logonResponseContent());
+            .thenReturn("Mock content");
 
         when(asyncHttpExecutor.post(anyString(), anyString(), anyString())).thenReturn(response);
 
