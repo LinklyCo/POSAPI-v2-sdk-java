@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.linkly.pos.sdk.models.enums.NetworkType;
-
 /**
  * Utility class that provides methods to perform enum lookups or creation.
  */
@@ -16,28 +14,35 @@ public class EnumLookup {
     /**
      * Finds the equivalent enum value for the provided String representation of the enum name.
      * 
-     * @param enumType Enum class that contains the value being looked up.
-     * @param findValue string representation of the enum constant value.
+     * @param enumType
+     *            Enum class that contains the value being looked up.
+     * @param findValue
+     *            string representation of the enum constant value.
+     * @return enum value
      */
     @SuppressWarnings("unchecked")
     public static <T extends Enum<T>> T findEnumValue(Class<T> enumType, String findValue) {
         Map<String, Object> map = findOrStore(enumType);
         return (T) map.get(findValue);
     }
-    
+
     /**
      * Finds the equivalent enum value for the provided String representation of the enum name.
      * 
-     * @param enumType Enum class that contains the value being looked up.
-     * @param findValue string representation of the enum constant value.
-     * @param defaultVal default value if findValue is not present
+     * @param enumType
+     *            Enum class that contains the value being looked up.
+     * @param findValue
+     *            string representation of the enum constant value.
+     * @param defaultVal
+     *            default value if findValue is not present
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Enum<T>> T findEnumValue(Class<T> enumType, String findValue, String defaultVal) {
+    public static <T extends Enum<T>> T findEnumValue(Class<T> enumType, String findValue,
+        String defaultVal) {
         Map<String, Object> map = findOrStore(enumType);
         Object val = map.get(findValue);
-        if(val == null) {
-        	return (T) map.get(defaultVal);
+        if (val == null) {
+            return (T) map.get(defaultVal);
         }
         return (T) val;
     }
@@ -45,7 +50,8 @@ public class EnumLookup {
     /**
      * Tries to find the enum values within the stored map, else stores the enum values.
      * 
-     * @param enumType Enum class to be searched within the store enum map.
+     * @param enumType
+     *            Enum class to be searched within the store enum map.
      */
     private static Map<String, Object> findOrStore(Class<?> enumType) {
         try {

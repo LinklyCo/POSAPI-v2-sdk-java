@@ -6,11 +6,14 @@ import java.util.List;
 import com.linkly.pos.sdk.models.PosApiResponse;
 import com.linkly.pos.sdk.models.enums.GraphicCode;
 import com.linkly.pos.sdk.models.enums.InputType;
+import com.linkly.pos.sdk.service.IPosApiEventListener;
 import com.squareup.moshi.Json;
 
 /**
  * This message is returned asynchronously when a display event occurs on the PIN pad. To handle
- * display events refer to {@link IPosApiEventListener#display}
+ * display events refer to
+ * {@link IPosApiEventListener#display(java.util.UUID, com.linkly.pos.sdk.models.PosApiRequest,
+ * DisplayResponse)}
  */
 public class DisplayResponse extends PosApiResponse {
 
@@ -56,7 +59,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the numberOfLines.
      * 
-     * @param numberOfLines The int value of numberOfLines.
+     * @param numberOfLines
+     *            The int value of numberOfLines.
      */
     public void setNumberOfLines(int numberOfLines) {
         this.numberOfLines = numberOfLines;
@@ -74,7 +78,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the lineLength.
      * 
-     * @param lineLength The int value of lineLength.
+     * @param lineLength
+     *            The int value of lineLength.
      */
     public void setLineLength(int lineLength) {
         this.lineLength = lineLength;
@@ -82,9 +87,9 @@ public class DisplayResponse extends PosApiResponse {
 
     /**
      * Text to be displayed. Each display line is concatenated.
-     * example: [&quot;     SWIPE CARD     &quot;,&quot;                    &quot;]
+     * example: [&quot; SWIPE CARD &quot;,&quot; &quot;]
      * 
-     * @return List<String>
+     * @return {@link List} of {@link String}
      */
     public List<String> getDisplayText() {
         return displayText;
@@ -93,7 +98,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the displayText.
      * 
-     * @param displayText The List<String> value of displayText.
+     * @param displayText
+     *            {@link List} of {@link String}.
      */
     public void setDisplayText(List<String> displayText) {
         this.displayText = displayText;
@@ -111,7 +117,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the cancelKeyFlag.
      * 
-     * @param cancelKeyFlag The boolean value of cancelKeyFlag.
+     * @param cancelKeyFlag
+     *            The boolean value of cancelKeyFlag.
      */
     public void setCancelKeyFlag(boolean cancelKeyFlag) {
         this.cancelKeyFlag = cancelKeyFlag;
@@ -129,7 +136,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the acceptYesKeyFlag.
      * 
-     * @param acceptYesKeyFlag The boolean value of acceptYesKeyFlag.
+     * @param acceptYesKeyFlag
+     *            The boolean value of acceptYesKeyFlag.
      */
     public void setAcceptYesKeyFlag(boolean acceptYesKeyFlag) {
         this.acceptYesKeyFlag = acceptYesKeyFlag;
@@ -147,7 +155,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the value of declineNoKeyFlag.
      * 
-     * @param declineNoKeyFlag The boolean value of declineNoKeyFlag.
+     * @param declineNoKeyFlag
+     *            The boolean value of declineNoKeyFlag.
      */
     public void setDeclineNoKeyFlag(boolean declineNoKeyFlag) {
         this.declineNoKeyFlag = declineNoKeyFlag;
@@ -165,7 +174,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the authoriseKeyFlag.
      * 
-     * @param authoriseKeyFlag The boolean value of authoriseKeyFlag.
+     * @param authoriseKeyFlag
+     *            The boolean value of authoriseKeyFlag.
      */
     public void setAuthoriseKeyFlag(boolean authoriseKeyFlag) {
         this.authoriseKeyFlag = authoriseKeyFlag;
@@ -183,7 +193,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the okKeyFlag.
      * 
-     * @param okKeyFlag The boolean value of okKeyFlag.
+     * @param okKeyFlag
+     *            The boolean value of okKeyFlag.
      */
     public void setOkKeyFlag(boolean okKeyFlag) {
         this.okKeyFlag = okKeyFlag;
@@ -201,7 +212,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the inputType.
      * 
-     * @param inputType The input type value of inputType.
+     * @param inputType
+     *            The input type value of inputType.
      */
     public void setInputType(InputType inputType) {
         this.inputType = inputType;
@@ -219,7 +231,8 @@ public class DisplayResponse extends PosApiResponse {
     /**
      * Sets the graphicCode.
      * 
-     * @param graphicCode The graphic code type value of graphicCode.
+     * @param graphicCode
+     *            The graphic code type value of graphicCode.
      */
     public void setGraphicCode(GraphicCode graphicCode) {
         this.graphicCode = graphicCode;

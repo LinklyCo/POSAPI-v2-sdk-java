@@ -82,7 +82,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  * which handles all the methods accordingly.
  * 
  * To use this service the PIN pad must first be paired using {@link PairingRequest} or if
- * the PIN pad was previously paired use {@link SetPairSecret} to set the pairing secret.
+ * the PIN pad was previously paired use {@link #setPairSecret(String)} to set the pairing secret.
  */
 public class PosApiService implements IPosApiService {
 
@@ -113,7 +113,7 @@ public class PosApiService implements IPosApiService {
      * @param serviceEndpoints
      *            Auth and POS API endpoint URIs.
      * @param logger
-     *            custom implementation of {@link java.util.logging.Logging Logger}
+     *            custom implementation of {@link Logger}
      */
     public PosApiService(IPosApiEventListener eventListener, AsyncHttpClient httpClient,
         PosVendorDetails posVendorDetails, PosApiServiceOptions options,

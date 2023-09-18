@@ -28,7 +28,8 @@ public class SettlementRequest extends PosApiRequest {
     /**
      * Sets the settlementType.
      * 
-     * @param settlementType The SettlementType value.
+     * @param settlementType
+     *            The SettlementType value.
      */
     public void setSettlementType(SettlementType settlementType) {
         this.settlementType = settlementType;
@@ -38,7 +39,7 @@ public class SettlementRequest extends PosApiRequest {
      * Reset totals after settlement. Only used for settlement type
      * {@link SettlementType#SubShiftTotals}
      * 
-     * @return
+     * @return boolean
      */
     public boolean isResetTotals() {
         return resetTotals;
@@ -47,7 +48,8 @@ public class SettlementRequest extends PosApiRequest {
     /**
      * Sets the resetTotals.
      * 
-     * @param resetTotals The boolean value of resetTotals.
+     * @param resetTotals
+     *            The boolean value of resetTotals.
      */
     public void setResetTotals(boolean resetTotals) {
         this.resetTotals = resetTotals;
@@ -64,8 +66,8 @@ public class SettlementRequest extends PosApiRequest {
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        if(validationErrors.size() > 0) {
-        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        if (validationErrors.size() > 0) {
+            throw new IllegalArgumentException(String.join(", ", validationErrors));
         }
     }
 }

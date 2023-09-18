@@ -13,26 +13,30 @@ import com.squareup.moshi.ToJson;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
 public @interface BoolToBitString {
-	
-	/**
-	 * Safely converts boolean values to json bit string representation and vice versa.
-	 */
+
+    /**
+     * Safely converts boolean values to json bit string representation and vice versa.
+     */
     public static class BoolToIntAdapter {
-        
-    	/**
-         * Safely converts java booleans to json bit string representation.
+
+        /**
+         * Safely converts java booleans to json bit {@link String} representation.
          * 
-         * @param value boolean value to be converted.
+         * @param value
+         *            boolean value to be converted.
+         * @return string value 1: true, 0: false
          */
-    	@ToJson
+        @ToJson
         public String toJson(@BoolToBitString boolean value) {
             return value ? "1" : "0";
         }
 
         /**
-         * Safely converts json bit string representation to java booleans.
+         * Safely converts json bit {@link String} representation to java booleans.
          * 
-         * @param value string representation value to be converted.
+         * @param value
+         *            {@link String} representation value to be converted.
+         * @return boolean
          */
         @FromJson
         @BoolToBitString

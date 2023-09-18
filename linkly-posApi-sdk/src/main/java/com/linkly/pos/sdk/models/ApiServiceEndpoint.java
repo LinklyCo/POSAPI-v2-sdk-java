@@ -3,6 +3,8 @@ package com.linkly.pos.sdk.models;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.linkly.pos.sdk.service.impl.PosApiService;
+
 /**
  * Configuration for a {@link PosApiService}
  */
@@ -15,10 +17,12 @@ public class ApiServiceEndpoint {
      * Specify API endpoints for {@link PosApiService}. This requires an endpoint for the POS
      * service and Auth service.
      * 
-     * @param authApiHost Base URI of the Auth API service.
-     * Example: http://auth.cloud.pceftpos.com
-     * @param posApiHost Base URI of the POS API service.
-     * Example: http://pos.cloud.pceftpos.com
+     * @param authApiHost
+     *            Base URI of the Auth API service.
+     *            Example: http://auth.cloud.pceftpos.com
+     * @param posApiHost
+     *            Base URI of the POS API service.
+     *            Example: http://pos.cloud.pceftpos.com
      */
     public ApiServiceEndpoint(String authApiHost, String posApiHost) {
         if (!isBaseUri(authApiHost)) {
@@ -43,7 +47,8 @@ public class ApiServiceEndpoint {
     /**
      * Sets the Base URI used for Auth API services.
      * 
-     * @param authApiHost The String value of authApiHost.
+     * @param authApiHost
+     *            The String value of authApiHost.
      */
     public void setAuthApiHost(String authApiHost) {
         this.authApiHost = authApiHost;
@@ -61,7 +66,8 @@ public class ApiServiceEndpoint {
     /**
      * Sets the Base URI used for POS API services.
      * 
-     * @param posApiHost The String value of posApiHost.
+     * @param posApiHost
+     *            The String value of posApiHost.
      */
     public void setPosApiHost(String posApiHost) {
         this.posApiHost = posApiHost;
@@ -70,9 +76,11 @@ public class ApiServiceEndpoint {
     /**
      * Validates that the provided str is a base URI.
      * 
-     * @param str The provided base URI for checking.
+     * @param str
+     *            The provided base URI for checking.
      * @return 'true' if the provided string matches a base URI, otherwise returns 'false'.
-     * @throws RuntimeException If the provided str does not match a valid URI.
+     * @throws RuntimeException
+     *             If the provided str does not match a valid URI.
      */
     private boolean isBaseUri(String str) {
         try {

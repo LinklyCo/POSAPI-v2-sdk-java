@@ -18,6 +18,8 @@ public class PosApiResponse {
 
     /**
      * Type of API response.
+     * 
+     * @return {@link ResponseType} type of response
      */
     public ResponseType getResponseType() {
         return responseType;
@@ -26,7 +28,8 @@ public class PosApiResponse {
     /**
      * Sets the type of API response.
      * 
-     * @param responseType The ResponseType value of API response.
+     * @param responseType
+     *            The ResponseType value of API response.
      */
     public void setResponseType(ResponseType responseType) {
         this.responseType = responseType;
@@ -34,6 +37,8 @@ public class PosApiResponse {
 
     /**
      * Additional data to be sent or received directly from the PIN pad.
+     * 
+     * @return {@link Map} key: {@link String}, value: {@link String}
      */
     public Map<String, String> getPurchaseAnalysisData() {
         return purchaseAnalysisData;
@@ -42,7 +47,8 @@ public class PosApiResponse {
     /**
      * Sets the purchaseAnalysisData.
      * 
-     * @param purchaseAnalysisData TheMap<String,String> value of purchaseAnalysisData.
+     * @param purchaseAnalysisData
+     *            {@link Map} key: {@link String}, value: {@link String}
      */
     public void setPurchaseAnalysisData(Map<String, String> purchaseAnalysisData) {
         this.purchaseAnalysisData = purchaseAnalysisData;

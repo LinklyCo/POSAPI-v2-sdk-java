@@ -5,11 +5,13 @@ import java.util.List;
 
 import com.linkly.pos.sdk.models.PosApiResponse;
 import com.linkly.pos.sdk.models.enums.ReceiptType;
+import com.linkly.pos.sdk.service.IPosApiEventListener;
 import com.squareup.moshi.Json;
 
 /**
  * This message is returned asynchronously when a receipt event occurs on the PIN pad. To handle
- * receipt events refer to {@link IPosApiEventListener#receipt}
+ * receipt events refer to
+ * {@link IPosApiEventListener#receipt(java.util.UUID, com.linkly.pos.sdk.models.PosApiRequest, ReceiptResponse)}
  */
 public class ReceiptResponse extends PosApiResponse {
 
@@ -34,7 +36,8 @@ public class ReceiptResponse extends PosApiResponse {
     /**
      * Sets the receiptType.
      * 
-     * @param receiptType The ReceiptType value.
+     * @param receiptType
+     *            The ReceiptType value.
      */
     public void setReceiptType(ReceiptType receiptType) {
         this.receiptType = receiptType;
@@ -43,7 +46,7 @@ public class ReceiptResponse extends PosApiResponse {
     /**
      * Receipt text to be printed.
      * 
-     * @return List<String>
+     * @return List of string
      */
     public List<String> getReceiptText() {
         return receiptText;
@@ -52,7 +55,8 @@ public class ReceiptResponse extends PosApiResponse {
     /**
      * Sets the receiptText.
      * 
-     * @param receiptText the List<String> value of receiptText.
+     * @param receiptText
+     *            {@link List} of {@link String} value of receiptText.
      */
     public void setReceiptText(List<String> receiptText) {
         this.receiptText = receiptText;
@@ -70,7 +74,8 @@ public class ReceiptResponse extends PosApiResponse {
     /**
      * Sets the isPrePrint.
      * 
-     * @param isPrePrint The boolean value of isPrePrint.
+     * @param isPrePrint
+     *            The boolean value of isPrePrint.
      */
     public void setPrePrint(boolean isPrePrint) {
         this.isPrePrint = isPrePrint;

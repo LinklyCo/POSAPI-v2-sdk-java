@@ -27,12 +27,12 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     protected String posName;
     protected String posVersion;
     protected UUID posId;
-    
+
     /**
      * Two digit merchant code. Defaults to "00" (EFTPOS).
      * example: 00
      * 
-     * @return String 
+     * @return String
      */
     public String getMerchant() {
         return merchant;
@@ -41,7 +41,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the merchant code.
      * 
-     * @param merchant The String value of merchant.
+     * @param merchant
+     *            The String value of merchant.
      */
     public void setMerchant(String merchant) {
         this.merchant = merchant;
@@ -60,7 +61,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the application.
      * 
-     * @param application The String value of application.
+     * @param application
+     *            The String value of application.
      */
     public void setApplication(String application) {
         this.application = application;
@@ -78,7 +80,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the receiptAutoPrint.
      * 
-     * @param receiptAutoPrint The ReceiptAutoPrint value.
+     * @param receiptAutoPrint
+     *            The ReceiptAutoPrint value.
      */
     public void setReceiptAutoPrint(ReceiptAutoPrint receiptAutoPrint) {
         this.receiptAutoPrint = receiptAutoPrint;
@@ -96,7 +99,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the cutReceipt.
      * 
-     * @param cutReceipt The boolean value of cutReceipt.
+     * @param cutReceipt
+     *            The boolean value of cutReceipt.
      */
     public void setCutReceipt(boolean cutReceipt) {
         this.cutReceipt = cutReceipt;
@@ -105,7 +109,7 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Additional data to be sent or received directly from the PIN pad.
      * 
-     * @return Map<String, String>
+     * @return {@link Map} of key: {@link String}, value: {@link String}
      */
     public Map<String, String> getPurchaseAnalysisData() {
         return purchaseAnalysisData;
@@ -114,7 +118,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the purchaseAnalysisData.
      * 
-     * @param purchaseAnalysisData The Map<String, String> value of purchaseAnalysisData.
+     * @param purchaseAnalysisData
+     *            {@link Map} value of purchaseAnalysisData.
      */
     public void setPurchaseAnalysisData(Map<String, String> purchaseAnalysisData) {
         this.purchaseAnalysisData = purchaseAnalysisData;
@@ -132,7 +137,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the posName.
      * 
-     * @param posName The String value of posName.
+     * @param posName
+     *            The String value of posName.
      */
     public void setPosName(String posName) {
         this.posName = posName;
@@ -150,12 +156,13 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the posVersion.
      * 
-     * @param posVersion The String value of posVersion.
+     * @param posVersion
+     *            The String value of posVersion.
      */
     public void setPosVersion(String posVersion) {
         this.posVersion = posVersion;
     }
-    
+
     /**
      * POS Id. Set by the PosApiService with details for the POS Vendor details
      * 
@@ -168,7 +175,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the posId.
      * 
-     * @param posId The UUID value of posId.
+     * @param posId
+     *            The UUID value of posId.
      */
     public void setPosId(UUID posId) {
         this.posId = posId;
@@ -177,11 +185,12 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Validate the model using {@link ValidatorUtil}
      * 
-     * @return Validation results containing list of model errors (if any)
+     * @throws IllegalArgumentException
+     *             throw if has validation errors
      */
     @Override
     public void validate() {
-    	List<String> validationErrors = Arrays.asList(
+        List<String> validationErrors = Arrays.asList(
             ValidatorUtil.notEmpty(this.merchant, "merchant"),
             ValidatorUtil.notEmpty(this.application, "application"),
             ValidatorUtil.isInEnum(ReceiptAutoPrint.class, this.receiptAutoPrint,
@@ -189,8 +198,8 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        if(validationErrors.size() > 0) {
-        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        if (validationErrors.size() > 0) {
+            throw new IllegalArgumentException(String.join(", ", validationErrors));
         }
     }
 }

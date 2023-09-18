@@ -16,8 +16,9 @@ public class ResultRequest implements IBaseRequest, IValidatable {
 
     private UUID sessionId;
 
-    public ResultRequest() { }
-    
+    public ResultRequest() {
+    }
+
     public ResultRequest(UUID sessionId) {
         super();
         this.sessionId = sessionId;
@@ -31,11 +32,12 @@ public class ResultRequest implements IBaseRequest, IValidatable {
     public UUID getSessionId() {
         return sessionId;
     }
- 
+
     /**
      * Sets the sessionId.
      * 
-     * @param sessionId The UUID value of sessionId.
+     * @param sessionId
+     *            The UUID value of sessionId.
      */
     public void setSessionId(UUID sessionId) {
         this.sessionId = sessionId;
@@ -44,17 +46,18 @@ public class ResultRequest implements IBaseRequest, IValidatable {
     /**
      * Validate the model using {@link ValidatorUtil}
      * 
-     * @return Validation results containing list of model errors (if any)
+     * @throws IllegalArgumentException
+     *             if contains validation errors
      */
     @Override
     public void validate() {
-    	List<String> validationErrors =  Arrays.asList(
+        List<String> validationErrors = Arrays.asList(
             ValidatorUtil.notEmpty(sessionId, "sessionId"))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        if(validationErrors.size() > 0) {
-        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        if (validationErrors.size() > 0) {
+            throw new IllegalArgumentException(String.join(", ", validationErrors));
         }
     }
 

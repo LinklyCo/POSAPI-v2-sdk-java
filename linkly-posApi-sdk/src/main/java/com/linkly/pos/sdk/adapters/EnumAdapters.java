@@ -26,21 +26,22 @@ import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;
 
 /**
- * Collection of Adapters that converts project enums to json string representation and vice versa.
+ * Collection of Adapters that converts project enums to {@link String} representation and vice
+ * versa.
  */
 public class EnumAdapters {
 
     /**
-     * Converts AccountType enums to json string representation and vice versa.
+     * Converts {@link AccountType} to {@link String} representation and vice versa.
      */
     public static class AccountTypeAdapter {
 
         /**
-         * Converts AccountType to json string representation.
+         * Converts {@link AccountType} to {@link String} representation.
          * 
          * @param value
          *            AccountType value to be converted.
-         * @return equivalent string value of AccountType
+         * @return equivalent String value of AccountType
          */
         @ToJson
         public String toJson(AccountType value) {
@@ -48,11 +49,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json AccountType string representation to AccountType enum.
+         * Converts {@link String} representation to {@link AccountType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return AccountType enum from string
+         *            String representation value to be converted.
+         * @return AccountType enum from String
          */
         @FromJson
         public AccountType fromJson(String value) {
@@ -61,16 +62,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts CardEntryType enums to json string representation and vice versa.
+     * Converts {@link CardEntryType} to {@link String} representation and vice versa.
      */
     public static class CardEntryTypeAdapter {
 
         /**
-         * Converts CardEntryType to json string representation.
+         * Converts {@link CardEntryType} to {@link String} representation.
          * 
          * @param value
          *            CardEntryType value to be converted.
-         * @return equivalent string value of CardEntryType
+         * @return equivalent String value of CardEntryType
          */
         @ToJson
         public String toJson(CardEntryType value) {
@@ -78,11 +79,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json CardEntryType string representation to CardEntryType enum.
+         * Converts {@link String} representation to {@link CardEntryType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return CardEntryType enum from string
+         *            String representation value to be converted.
+         * @return CardEntryType enum from String
          */
         @FromJson
         public CardEntryType fromJson(String value) {
@@ -91,16 +92,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts CommsMethodType enums to json string representation and vice versa.
+     * Converts {@link CommsMethodType} to {@link String} representation and vice versa.
      */
     public static class CommsMethodTypeAdapter {
 
         /**
-         * Converts CommsMethodType to json string representation.
+         * Converts {@link CommsMethodType} to {@link String} representation.
          * 
          * @param value
          *            CommsMethodType value to be converted.
-         * @return equivalent string value of CommsMethodType
+         * @return equivalent String value of CommsMethodType
          */
         @ToJson
         public String toJson(CommsMethodType value) {
@@ -108,11 +109,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json CommsMethodType string representation to CommsMethodType enum.
+         * Converts {@link String} representation to {@link CommsMethodType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return CommsMethodType enum from string
+         *            String representation value to be converted.
+         * @return CommsMethodType enum from String
          */
         @FromJson
         public CommsMethodType fromJson(String value) {
@@ -121,16 +122,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts CurrencyStatus enums to json string representation and vice versa.
+     * Converts {@link CurrencyStatus} to {@link String} representation and vice versa.
      */
     public static class CurrencyStatusAdapter {
 
         /**
-         * Converts CurrencyStatus to json string representation.
+         * Converts {@link CurrencyStatus} to {@link String} representation.
          * 
          * @param value
          *            CurrencyStatus value to be converted.
-         * @return equivalent string value of CurrencyStatus
+         * @return equivalent String value of CurrencyStatus
          */
         @ToJson
         public String toJson(CurrencyStatus value) {
@@ -138,11 +139,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json CurrencyStatus string representation to CurrencyStatus enum.
+         * Converts {@link String} representation to {@link CurrencyStatus}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return CurrencyStatus enum from string
+         *            String representation value to be converted.
+         * @return CurrencyStatus enum from String
          */
         @FromJson
         public CurrencyStatus fromJson(String value) {
@@ -151,16 +152,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts EftTerminalType enums to json string representation and vice versa.
+     * Converts {@link EftTerminalType} to {@link String} representation and vice versa.
      */
     public static class EftTerminalTypeAdapter {
 
         /**
-         * Converts EftTerminalType to json string representation.
+         * Converts {@link EftTerminalType} to {@link String} representation.
          * 
          * @param value
          *            EftTerminalType value to be converted.
-         * @return equivalent string value of EftTerminalType
+         * @return equivalent String value of EftTerminalType
          */
         @ToJson
         public String toJson(EftTerminalType value) {
@@ -168,11 +169,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json EftTerminalType string representation to EftTerminalType enum.
+         * Converts {@link String} representation to {@link EftTerminalType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return EftTerminalType enum from string
+         *            String representation value to be converted.
+         * @return EftTerminalType enum from String
          */
         @FromJson
         public EftTerminalType fromJson(String value) {
@@ -181,16 +182,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts GraphicCode enums to json string representation and vice versa.
+     * Converts {@link GraphicCode} to String representation and vice versa.
      */
     public static class GraphicCodeAdapter {
 
         /**
-         * Converts GraphicCode to json string representation.
+         * Converts {@link GraphicCode} to {@link String} representation.
          * 
          * @param value
          *            GraphicCode value to be converted.
-         * @return equivalent string value of GraphicCode
+         * @return equivalent String value of GraphicCode
          */
         @ToJson
         public String toJson(GraphicCode value) {
@@ -198,11 +199,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json GraphicCode string representation to GraphicCode enum.
+         * Converts {@link String} representation to {@link GraphicCode}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return GraphicCode enum from string
+         *            String representation value to be converted.
+         * @return GraphicCode enum from String
          */
         @FromJson
         public GraphicCode fromJson(String value) {
@@ -211,16 +212,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts InputType enums to json string representation and vice versa.
+     * Converts {@link InputType} enums to {@link String} representation and vice versa.
      */
     public static class InputTypeAdapter {
 
         /**
-         * Converts InputType to json string representation.
+         * Converts {@link InputType} to {@link String} representation.
          * 
          * @param value
          *            InputType value to be converted.
-         * @return equivalent string value of InputType
+         * @return equivalent String value of InputType
          */
         @ToJson
         public String toJson(InputType value) {
@@ -228,11 +229,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json InputType string representation to InputType enum.
+         * Converts {@link String} representation to {@link InputType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return InputType enum from string
+         *            String representation value to be converted.
+         * @return InputType enum from String
          */
         @FromJson
         public InputType fromJson(String value) {
@@ -241,16 +242,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts KeyHandlingType enums to json string representation and vice versa.
+     * Converts {@link KeyHandlingType} to {@link String} representation and vice versa.
      */
     public static class KeyHandlingTypeAdapter {
 
         /**
-         * Converts KeyHandlingType to json string representation.
+         * Converts {@link KeyHandlingType} to {@link String} representation.
          * 
          * @param value
          *            KeyHandlingType value to be converted.
-         * @return equivalent string value of KeyHandlingType
+         * @return equivalent String value of KeyHandlingType
          */
         @ToJson
         public String toJson(KeyHandlingType value) {
@@ -258,11 +259,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json KeyHandlingType string representation to KeyHandlingType enum.
+         * Converts {@link String} representation to {@link KeyHandlingType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return KeyHandlingType enum from string
+         *            String representation value to be converted.
+         * @return KeyHandlingType enum from String
          */
         @FromJson
         public KeyHandlingType fromJson(String value) {
@@ -271,16 +272,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts LogonType enums to json string representation and vice versa.
+     * Converts {@link LogonType} to {@link String} representation and vice versa.
      */
     public static class LogonTypeAdapter {
 
         /**
-         * Converts LogonType to json string representation.
+         * Converts {@link LogonType} to {@link String} representation.
          * 
          * @param value
          *            LogonType value to be converted.
-         * @return equivalent string value of LogonType
+         * @return equivalent String value of LogonType
          */
         @ToJson
         public String toJson(LogonType value) {
@@ -288,11 +289,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json LogonType string representation to LogonType enum.
+         * Converts {@link String} representation to {@link LogonType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return LogonType enum from string
+         *            String representation value to be converted.
+         * @return LogonType enum from String
          */
         @FromJson
         public LogonType fromJson(String value) {
@@ -301,16 +302,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts NetworkType enums to json string representation and vice versa.
+     * Converts {@link NetworkType} to {@link String} representation and vice versa.
      */
     public static class NetworkTypeAdapter {
 
         /**
-         * Converts NetworkType to json string representation.
+         * Converts {@link NetworkType} to {@link String} representation.
          * 
          * @param value
          *            NetworkType value to be converted.
-         * @return equivalent string value of NetworkType
+         * @return equivalent String value of NetworkType
          */
         @ToJson
         public String toJson(NetworkType value) {
@@ -318,11 +319,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json NetworkType string representation to NetworkType enum.
+         * Converts {@link String} representation to {@link NetworkType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return NetworkType enum from string
+         *            String representation value to be converted.
+         * @return NetworkType enum from String
          */
         @FromJson
         public NetworkType fromJson(String value) {
@@ -332,16 +333,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts PanSource enums to json string representation and vice versa.
+     * Converts {@link PanSource} to {@link String} representation and vice versa.
      */
     public static class PanSourceAdapter {
 
         /**
-         * Converts PanSource to json string representation.
+         * Converts {@link PanSource} to {@link String} representation.
          * 
          * @param value
          *            PanSource value to be converted.
-         * @return equivalent string value of PanSource
+         * @return equivalent String value of PanSource
          */
         @ToJson
         public String toJson(PanSource value) {
@@ -349,11 +350,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json PanSource string representation to PanSource enum.
+         * Converts {@link String} representation to {@link PanSource}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return PanSource enum from string
+         *            String representation value to be converted.
+         * @return PanSource enum from String
          */
         @FromJson
         public PanSource fromJson(String value) {
@@ -362,16 +363,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts PayPassStatus enums to json string representation and vice versa.
+     * Converts {@link PayPassStatus} to {@link String} representation and vice versa.
      */
     public static class PayPassStatusAdapter {
 
         /**
-         * Converts PayPassStatus to json string representation.
+         * Converts {@link PayPassStatus} to {@link String} representation.
          * 
          * @param value
          *            PayPassStatus value to be converted.
-         * @return equivalent string value of PayPassStatus
+         * @return equivalent String value of PayPassStatus
          */
         @ToJson
         public String toJson(PayPassStatus value) {
@@ -379,11 +380,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json PayPassStatus string representation to PayPassStatus enum.
+         * Converts {@link String} representation to {@link PayPassStatus}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return PayPassStatus enum from string
+         *            String representation value to be converted.
+         * @return PayPassStatus enum from String
          */
         @FromJson
         public PayPassStatus fromJson(String value) {
@@ -393,16 +394,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts QueryCardType enums to json string representation and vice versa.
+     * Converts {@link QueryCardType} to {@link String} representation and vice versa.
      */
     public static class QueryCardTypeAdapter {
 
         /**
-         * Converts QueryCardType to json string representation.
+         * Converts {@link QueryCardType} to {@link String} representation.
          * 
          * @param value
          *            QueryCardType value to be converted.
-         * @return equivalent string value of QueryCardType
+         * @return equivalent String value of QueryCardType
          */
         @ToJson
         public String toJson(QueryCardType value) {
@@ -410,11 +411,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json QueryCardType string representation to QueryCardType enum.
+         * Converts {@link String} representation to {@link QueryCardType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return QueryCardType enum from string
+         *            String representation value to be converted.
+         * @return QueryCardType enum from String
          */
         @FromJson
         public QueryCardType fromJson(String value) {
@@ -423,16 +424,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts ReceiptAutoPrint enums to json string representation and vice versa.
+     * Converts {@link ReceiptAutoPrint} to {@link String} representation and vice versa.
      */
     public static class ReceiptAutoPrintAdapter {
 
         /**
-         * Converts ReceiptAutoPrint to json string representation.
+         * Converts {@link ReceiptAutoPrint} to {@link String} representation.
          * 
          * @param value
          *            ReceiptAutoPrint value to be converted.
-         * @return equivalent string value of ReceiptAutoPrint
+         * @return equivalent String value of ReceiptAutoPrint
          */
         @ToJson
         public String toJson(ReceiptAutoPrint value) {
@@ -440,11 +441,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json ReceiptAutoPrint string representation to ReceiptAutoPrint enum.
+         * Converts {@link String} representation to {@link ReceiptAutoPrint}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return ReceiptAutoPrint enum from string
+         *            String representation value to be converted.
+         * @return ReceiptAutoPrint enum from String
          */
         @FromJson
         public ReceiptAutoPrint fromJson(String value) {
@@ -453,16 +454,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts ReceiptType enums to json string representation and vice versa.
+     * Converts {@link ReceiptType} to {@link String} representation and vice versa.
      */
     public static class ReceiptTypeAdapter {
 
         /**
-         * Converts ReceiptType to json string representation.
+         * Converts {@link ReceiptType} to {@link String} representation.
          * 
          * @param value
          *            ReceiptType value to be converted.
-         * @return equivalent string value of ReceiptType
+         * @return equivalent String value of ReceiptType
          */
         @ToJson
         public String toJson(ReceiptType value) {
@@ -470,11 +471,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json ReceiptType string representation to ReceiptType enum.
+         * Converts {@link String} representation to {@link ReceiptType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return ReceiptType enum from string
+         *            String representation value to be converted.
+         * @return ReceiptType enum from String
          */
         @FromJson
         public ReceiptType fromJson(String value) {
@@ -484,16 +485,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts ReprintType enums to json string representation and vice versa.
+     * Converts {@link ReprintType} to {@link String} representation and vice versa.
      */
     public static class ReprintTypeAdapter {
 
         /**
-         * Converts ReprintType to json string representation.
+         * Converts {@link ReprintType} to {@link String} representation.
          * 
          * @param value
          *            ReprintType value to be converted.
-         * @return equivalent string value of ReprintType
+         * @return equivalent String value of ReprintType
          */
         @ToJson
         public String toJson(ReprintType value) {
@@ -501,11 +502,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json ReprintType string representation to ReprintType enum.
+         * Converts {@link String} representation to {@link ReprintType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return ReprintType enum from string
+         *            String representation value to be converted.
+         * @return ReprintType enum from String
          */
         @FromJson
         public ReprintType fromJson(String value) {
@@ -514,16 +515,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts ResponseType enums to json string representation and vice versa.
+     * Converts {@link ResponseType} to {@link String} representation and vice versa.
      */
     public static class ResponseTypeAdapter {
 
         /**
-         * Converts ResponseType to json string representation.
+         * Converts {@link ResponseType} to {@link String} representation.
          * 
          * @param value
          *            ResponseType value to be converted.
-         * @return equivalent string value of ResponseType
+         * @return equivalent String value of ResponseType
          */
         @ToJson
         public String toJson(ResponseType value) {
@@ -531,11 +532,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json ResponseType string representation to ResponseType enum.
+         * Converts {@link String} representation to {@link ResponseType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return ResponseType enum from string
+         *            String representation value to be converted.
+         * @return ResponseType enum from String
          */
         @FromJson
         public ResponseType fromJson(String value) {
@@ -545,16 +546,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts SettlementType enums to json string representation and vice versa.
+     * Converts {@link SettlementType} to {@link String} representation and vice versa.
      */
     public static class SettlementTypeAdapter {
 
         /**
-         * Converts SettlementType to json string representation.
+         * Converts {@link SettlementType} to {@link String} representation.
          * 
          * @param value
          *            SettlementType value to be converted.
-         * @return equivalent string value of SettlementType
+         * @return equivalent String value of SettlementType
          */
         @ToJson
         public String toJson(SettlementType value) {
@@ -562,11 +563,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json SettlementType string representation to SettlementType enum.
+         * Converts {@link String} representation to {@link SettlementType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return SettlementType enum from string
+         *            String representation value to be converted.
+         * @return SettlementType enum from String
          */
         @FromJson
         public SettlementType fromJson(String value) {
@@ -575,16 +576,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts StatusType enums to json string representation and vice versa.
+     * Converts {@link StatusType} to {@link String} representation and vice versa.
      */
     public static class StatusTypeAdapter {
 
         /**
-         * Converts StatusType to json string representation.
+         * Converts {@link StatusType} to {@link String} representation.
          * 
          * @param value
          *            StatusType value to be converted.
-         * @return equivalent string value of StatusType
+         * @return equivalent String value of StatusType
          */
         @ToJson
         public String toJson(StatusType value) {
@@ -592,11 +593,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json StatusType string representation to StatusType enum.
+         * Converts {@link String} representation to {@link StatusType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return StatusType enum from string
+         *            String representation value to be converted.
+         * @return StatusType enum from String
          */
         @FromJson
         public StatusType fromJson(String value) {
@@ -605,16 +606,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts TerminalCommsType enums to json string representation and vice versa.
+     * Converts {@link TerminalCommsType} to {@link String} representation and vice versa.
      */
     public static class TerminalCommsTypeAdapter {
 
         /**
-         * Converts TerminalCommsType to json string representation.
+         * Converts {@link TerminalCommsType} to {@link String} representation.
          * 
          * @param value
          *            TerminalCommsType value to be converted.
-         * @return equivalent string value of TerminalCommsType
+         * @return equivalent String value of TerminalCommsType
          */
         @ToJson
         public String toJson(TerminalCommsType value) {
@@ -622,11 +623,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json TerminalCommsType string representation to TerminalCommsType enum.
+         * Converts String representation to {@link TerminalCommsType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return TerminalCommsType enum from string
+         *            String representation value to be converted.
+         * @return TerminalCommsType enum from String
          */
         @FromJson
         public TerminalCommsType fromJson(String value) {
@@ -636,16 +637,16 @@ public class EnumAdapters {
     }
 
     /**
-     * Converts TxnType enums to json string representation and vice versa.
+     * Converts {@link TxnType} to {@link String} representation and vice versa.
      */
     public static class TxnTypeAdapter {
 
         /**
-         * Converts TxnType to json string representation.
+         * Converts {@link TxnType} to {@link String} representation.
          * 
          * @param value
          *            TxnType value to be converted.
-         * @return equivalent string value of TxnType
+         * @return equivalent String value of TxnType
          */
         @ToJson
         public String toJson(TxnType value) {
@@ -653,11 +654,11 @@ public class EnumAdapters {
         }
 
         /**
-         * Converts json TxnType string representation to TxnType enum.
+         * Converts {@link String} representation to {@link TxnType}.
          * 
          * @param value
-         *            string representation value to be converted.
-         * @return TxnType enum from string
+         *            String representation value to be converted.
+         * @return TxnType enum from String
          */
         @FromJson
         public TxnType fromJson(String value) {
