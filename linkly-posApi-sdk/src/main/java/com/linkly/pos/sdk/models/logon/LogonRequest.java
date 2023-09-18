@@ -14,7 +14,6 @@ import com.linkly.pos.sdk.models.enums.LogonType;
 public class LogonRequest extends PosApiRequest {
 
     private LogonType logonType = LogonType.Standard;
-    private boolean isLogon = false;
 
     /**
      * Specify type of logon. Defaults to {@link LogonType#Standard}.
@@ -25,14 +24,11 @@ public class LogonRequest extends PosApiRequest {
         return logonType;
     }
 
-    public boolean isLogon() {
-        return isLogon;
-    }
-
     /**
      * Sets logonType
      * 
-     * @param logonType The LogonType value.
+     * @param logonType
+     *            The LogonType value.
      */
     public void setLogonType(LogonType logonType) {
         this.logonType = logonType;
@@ -49,8 +45,8 @@ public class LogonRequest extends PosApiRequest {
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        if(validationErrors.size() > 0) {
-        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        if (validationErrors.size() > 0) {
+            throw new IllegalArgumentException(String.join(", ", validationErrors));
         }
     }
 }

@@ -2,8 +2,12 @@ package com.linkly.pos.sdk.models.logon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.models.enums.LogonType;
 
 class LogonRequestTest {
 
@@ -37,4 +41,12 @@ class LogonRequestTest {
             exception.getMessage());
     }
 
+    @Test
+    void should_deserialize_success() {
+        LogonRequest request = new LogonRequest();
+        request.setLogonType(LogonType.TmsParams);
+
+        String json = MoshiUtil.getAdapter(LogonRequest.class).toJson(request);
+        assertTrue(json.contains("\"logonType\":\"6\""));
+    }
 }

@@ -2,10 +2,13 @@ package com.linkly.pos.sdk.models.sendKey;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
+
+import com.linkly.pos.sdk.common.MoshiUtil;
 
 class SendKeyRequestTest {
 
@@ -48,6 +51,20 @@ class SendKeyRequestTest {
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"
             + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].", exception
                 .getMessage());
+    }
+
+    @Test
+    void should_deserialize_success() {
+        UUID uuid = UUID.randomUUID();
+        SendKeyRequest request = new SendKeyRequest();
+        request.setSessionId(uuid);
+        request.setKey("1");
+        request.setData("test data");
+
+        String json = MoshiUtil.getAdapter(SendKeyRequest.class).toJson(request);
+        assertTrue(json.contains("\"sessionId\":\"" + uuid.toString() + "\""));
+        assertTrue(json.contains("\"key\":\"1\""));
+        assertTrue(json.contains("\"data\":\"test data\""));
     }
 
 }

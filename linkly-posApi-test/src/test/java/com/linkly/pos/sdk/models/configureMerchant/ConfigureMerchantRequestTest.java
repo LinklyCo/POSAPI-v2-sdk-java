@@ -2,8 +2,11 @@ package com.linkly.pos.sdk.models.configureMerchant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import com.linkly.pos.sdk.common.MoshiUtil;
 
 class ConfigureMerchantRequestTest {
 
@@ -39,4 +42,14 @@ class ConfigureMerchantRequestTest {
             exception.getMessage());
     }
 
+    @Test
+    void should_deserialize_success() {
+        ConfigureMerchantRequest request = new ConfigureMerchantRequest();
+        request.setCaId("123");
+        request.setCatId("1234");
+
+        String json = MoshiUtil.getAdapter(ConfigureMerchantRequest.class).toJson(request);
+        assertTrue(json.contains("\"caId\":\"123\""));
+        assertTrue(json.contains("\"catId\":\"1234\""));
+    }
 }

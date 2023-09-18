@@ -65,6 +65,7 @@ function getResponses() {
                         }
                         if(body['message'] !== 'Session Complete'){
                             alert(text);
+                            populateLogs(text);
                         }
                         enableButtons();
                       break;

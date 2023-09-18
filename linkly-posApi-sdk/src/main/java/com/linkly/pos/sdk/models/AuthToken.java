@@ -28,7 +28,8 @@ public class AuthToken {
     /**
      * Sets the token for bearer authentication.
      * 
-     * @param token The String value of token.
+     * @param token
+     *            The String value of token.
      */
     public void setToken(String token) {
         this.token = token;
@@ -46,7 +47,8 @@ public class AuthToken {
     /**
      * Sets the expiry date of token.
      * 
-     * @param expiry The LocalDateTime value of API request.
+     * @param expiry
+     *            The LocalDateTime value of API request.
      */
     public void setExpiry(LocalDateTime expiry) {
         this.expiry = expiry;

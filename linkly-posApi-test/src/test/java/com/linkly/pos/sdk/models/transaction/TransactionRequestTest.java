@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.Constants;
+import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.models.enums.AccountType;
 import com.linkly.pos.sdk.models.enums.PanSource;
 import com.linkly.pos.sdk.models.transaction.surcharge.FixedSurcharge;
 import com.linkly.pos.sdk.models.transaction.surcharge.PercentageSurcharge;
@@ -104,5 +106,46 @@ class TransactionRequestTest {
             request.validate();
         });
         assertEquals("track2: Must not be empty.", exception.getMessage());
+    }
+
+    @Test
+    void should_deserialize_success() {
+        TransactionRequest request = new TransactionRequest();
+        request.setTxnRef("1234567");
+        request.setCurrencyCode("USD");
+        request.setEnableTip(true);
+        request.setTrainingMode(true);
+        request.setAuthCode(100);
+        request.setPanSource(PanSource.Installment);
+        request.setPan("testpan");
+        request.setDateExpiry("1224");
+        request.setTrack2("track2");
+        request.setAccountType(AccountType.Default);
+        request.setRrn("123456789123");
+        request.setCvv(221);
+
+        byte[] tipOptions = new byte[] { 1, 24, 5 };
+        request.setTipOptions(new TippingOptions(tipOptions));
+
+        request.setTipAmount(10);
+        request.setProductLevelBlock(true);
+
+        SurchargeRule rule1 = new FixedSurcharge("bin123", 5);
+        SurchargeRule rule2 = new PercentageSurcharge("bin12", 10);
+        SurchargeOptions options = new SurchargeOptions();
+        options.add(rule1);
+        options.add(rule2);
+        request.setSurchargeOptions(options);
+
+        String json = MoshiUtil.getAdapter(TransactionRequest.class).toJson(request);
+        assertEquals("{\"accountType\":\" \",\"application\":\"00\",\"authCode\":100,"
+            + "\"currencyCode\":\"USD\",\"cutReceipt\":\"0\",\"cvv\":221,\"dateExpiry\":\"1224\","
+            + "\"enableTip\":true,\"merchant\":\"00\",\"pan\":\"testpan\",\"panSource\":\"5\","
+            + "\"purchaseAnalysisData\":{\"TPO\":\"[01,24,05]\",\"SC2\":\"[{\\\"b\\\":"
+            + "\\\"bin123\\\",\\\"t\\\":\\\"$\\\",\\\"v\\\":5},{\\\"b\\\":\\\"bin12\\\","
+            + "\\\"v\\\":10}]\",\"PLB\":\"1\",\"TIP\":\"10\"},\"receiptAutoPrint\":\"0\","
+            + "\"rrn\":\"123456789123\",\"track2\":\"track2\",\"trainingMode\":true,"
+            + "\"txnRef\":\"1234567\"}",
+            json);
     }
 }

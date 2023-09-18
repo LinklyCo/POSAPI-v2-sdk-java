@@ -6,14 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 class AuthTokenTest {
-
-    @AfterAll
-    static void tearDownAfterClass() throws Exception {
-    }
 
     @Test
     void should_validateToken_notExpiringSoon() {

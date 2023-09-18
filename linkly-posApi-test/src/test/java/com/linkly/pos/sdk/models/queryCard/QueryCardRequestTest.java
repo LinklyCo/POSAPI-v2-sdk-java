@@ -2,8 +2,12 @@ package com.linkly.pos.sdk.models.queryCard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.models.enums.QueryCardType;
 
 class QueryCardRequestTest {
 
@@ -36,6 +40,15 @@ class QueryCardRequestTest {
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"
             + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].", exception
                 .getMessage());
+    }
+
+    @Test
+    void should_deserialize_success() {
+        QueryCardRequest request = new QueryCardRequest();
+        request.setQueryCardType(QueryCardType.ReadCardAndSelectAccount);
+
+        String json = MoshiUtil.getAdapter(QueryCardRequest.class).toJson(request);
+        assertTrue(json.contains("\"queryCardType\":\"1\""));
     }
 
 }

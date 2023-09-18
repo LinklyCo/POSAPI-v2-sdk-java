@@ -2,9 +2,11 @@ package com.linkly.pos.sdk.models.transaction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.linkly.pos.sdk.common.MoshiUtil;
 import com.linkly.pos.sdk.models.enums.PanSource;
 import com.linkly.pos.sdk.models.enums.TxnType;
 
@@ -78,5 +80,15 @@ class PreAuthRequestTest {
             request.validate();
         });
         assertEquals("track2: Must not be empty.", exception.getMessage());
+    }
+
+    @Test
+    void should_deserialize_success() {
+        PreAuthRequest request = new PreAuthRequest(10);
+        request.setTxnRef("1234567");
+
+        String json = MoshiUtil.getAdapter(PreAuthRequest.class).toJson(request);
+        assertTrue(json.contains("\"txnRef\":\"1234567\""));
+        assertTrue(json.contains("\"AmtPurchase\":10"));
     }
 }

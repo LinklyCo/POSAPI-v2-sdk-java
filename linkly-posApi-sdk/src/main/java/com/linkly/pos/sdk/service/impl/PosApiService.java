@@ -162,10 +162,19 @@ public class PosApiService implements IPosApiService {
 
         String uri = uri(ApiType.AUTH, ApiEndpoints.PAIR_ENDPOINT);
         String requestBody = getAdapter(PairingRequest.class).toJson(request);
-        Response completeResponse = asyncHttpExecutor.post(uri, requestBody);
+
+        Response completeResponse;
+        try {
+            completeResponse = asyncHttpExecutor.post(uri, requestBody);
+        }
+        catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API,
+                HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), e.getMessage(), e);
+            eventListener.error(null, request, errorResponse);
+            throw e;
+        }
 
         invokeErrorIfFailed(request, completeResponse, null);
-
         try {
             PairingResponse pairingResponse = MoshiUtil.fromJson(completeResponse
                 .getResponseBody(), PairingResponse.class);
@@ -175,8 +184,10 @@ public class PosApiService implements IPosApiService {
         catch (IOException e) {
             logger.log(Level.SEVERE, "pairingRequest: Error: {0}", new Object[] { e
                 .getMessage() });
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.Internal, null, e
+                .getMessage(), e);
+            eventListener.error(null, request, errorResponse);
         }
-
     }
 
     /**
@@ -331,13 +342,21 @@ public class PosApiService implements IPosApiService {
         TokenRequest tokenRequest = new TokenRequest(this.pairSecret, posVendorDetails.getPosName(),
             posVendorDetails.getPosVersion(), posVendorDetails.getPosId(), posVendorDetails
                 .getPosVendorId());
+
+        String uri = uri(ApiType.AUTH, ApiEndpoints.TOKENS_ENDPOINT);
+        String requestBody = getAdapter(TokenRequest.class).toJson(tokenRequest);
+        Response completeResponse = null;
         try {
-            String uri = uri(ApiType.AUTH, ApiEndpoints.TOKENS_ENDPOINT);
-            String requestBody = getAdapter(TokenRequest.class).toJson(tokenRequest);
-            Response completeResponse = asyncHttpExecutor.post(uri, requestBody);
-
+            completeResponse = asyncHttpExecutor.post(uri, requestBody);
             invokeErrorIfFailed(request, completeResponse, uuid);
-
+        }
+        catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API,
+                HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), e.getMessage(), e);
+            eventListener.error(uuid, request, errorResponse);
+            throw e;
+        }
+        try {
             TokenResponse tokenResponse = MoshiUtil.fromJson(completeResponse.getResponseBody(),
                 TokenResponse.class);
             LocalDateTime expiry = LocalDateTime.now().plus(tokenResponse.getExpirySeconds(),
@@ -359,13 +378,21 @@ public class PosApiService implements IPosApiService {
         Response completeResponse = null;
         String authHeaderValue = AuthTokenExtensions.getAuthenticationHeaderValue(authToken);
 
-        if (HttpMethod.POST == method) {
-            String requestBody = getAdapter(request.getClass()).toJson(request);
-            requestBody = JSONUtil.wrapRequest(COMMON_REQUEST_WRAPPER, requestBody);
-            completeResponse = asyncHttpExecutor.post(uri, authHeaderValue, requestBody);
+        try {
+            if (HttpMethod.POST == method) {
+                String requestBody = getAdapter(request.getClass()).toJson(request);
+                requestBody = JSONUtil.wrapRequest(COMMON_REQUEST_WRAPPER, requestBody);
+                completeResponse = asyncHttpExecutor.post(uri, authHeaderValue, requestBody);
+            }
+            else if (HttpMethod.GET == method) {
+                completeResponse = asyncHttpExecutor.get(uri, authHeaderValue);
+            }
         }
-        else if (HttpMethod.GET == method) {
-            completeResponse = asyncHttpExecutor.get(uri, authHeaderValue);
+        catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API,
+                HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), e.getMessage(), e);
+            eventListener.error(sessionId, request, errorResponse);
+            throw e;
         }
 
         int statusCode = completeResponse.getStatusCode();

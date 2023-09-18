@@ -382,7 +382,7 @@
 			  <tr>
 				<td>POS URL:</td>
 				<td>
-				  <input type="text" name="posUrl"  value="${endpoints[0]}" required/>
+				  <input type="text" name="posUrl"  value="${endpoints[1]}" required/>
 				</td>
 			  </tr>
 			  <tr>

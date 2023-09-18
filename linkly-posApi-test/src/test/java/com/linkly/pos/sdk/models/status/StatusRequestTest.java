@@ -2,8 +2,12 @@ package com.linkly.pos.sdk.models.status;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.models.enums.StatusType;
 
 class StatusRequestTest {
 
@@ -36,5 +40,14 @@ class StatusRequestTest {
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"
             + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].", exception
                 .getMessage());
+    }
+
+    @Test
+    void should_deserialize_success() {
+        StatusRequest request = new StatusRequest();
+        request.setStatusType(StatusType.TerminalAppInfo);
+
+        String json = MoshiUtil.getAdapter(StatusRequest.class).toJson(request);
+        assertTrue(json.contains("\"statusType\":\"1\""));
     }
 }

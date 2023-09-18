@@ -31,7 +31,6 @@ class DateAdapterTest {
     }
 
     private static class TestClass {
-
         private LocalDateTime date;
 
         public TestClass(LocalDateTime date) {

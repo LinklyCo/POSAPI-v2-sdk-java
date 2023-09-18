@@ -2,9 +2,13 @@ package com.linkly.pos.sdk.models.transaction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+
+import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.models.enums.ReferenceType;
 
 class RetrieveTransactionRequestTest {
 
@@ -30,4 +34,14 @@ class RetrieveTransactionRequestTest {
         request.validate();
     }
 
+    @Test
+    void should_deserialize_success() {
+        RetrieveTransactionRequest request = new RetrieveTransactionRequest();
+        request.setReferenceType(ReferenceType.RRN);
+        request.setReference("123456");
+
+        String json = MoshiUtil.getAdapter(RetrieveTransactionRequest.class).toJson(request);
+        assertTrue(json.contains("\"reference\":\"123456\""));
+        assertTrue(json.contains("\"referenceType\":\"RRN\""));
+    }
 }

@@ -2,9 +2,11 @@ package com.linkly.pos.sdk.models.transaction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.linkly.pos.sdk.common.MoshiUtil;
 import com.linkly.pos.sdk.models.enums.TxnType;
 
 class DepositRequestTest {
@@ -109,5 +111,17 @@ class DepositRequestTest {
         assertEquals("amountCash: Must be between 1 and 999,999,999. Entered value: 0, "
             + "amountCheque: Must be between 1 and 999,999,999. Entered value: 0", exception
                 .getMessage());
+    }
+
+    @Test
+    void should_deserialize_success() {
+        DepositRequest request = new DepositRequest(150, 20, 10);
+        request.setTxnRef("1234567");
+
+        String json = MoshiUtil.getAdapter(DepositRequest.class).toJson(request);
+        assertTrue(json.contains("\"txnRef\":\"1234567\""));
+        assertTrue(json.contains("\"AmtCash\":150"));
+        assertTrue(json.contains("\"AmtPurchase\":20"));
+        assertTrue(json.contains("\"TotalPurchaseCount\":10"));
     }
 }

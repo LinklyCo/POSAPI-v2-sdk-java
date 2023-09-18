@@ -2,9 +2,11 @@ package com.linkly.pos.sdk.models.transaction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.linkly.pos.sdk.common.MoshiUtil;
 import com.linkly.pos.sdk.models.enums.PanSource;
 import com.linkly.pos.sdk.models.enums.TxnType;
 
@@ -90,4 +92,14 @@ class PurchaseRequestTest {
         assertEquals("track2: Must not be empty.", exception.getMessage());
     }
 
+    @Test
+    void should_deserialize_success() {
+        PurchaseRequest request = new PurchaseRequest(10, 20);
+        request.setTxnRef("1234567");
+
+        String json = MoshiUtil.getAdapter(PurchaseRequest.class).toJson(request);
+        assertTrue(json.contains("\"txnRef\":\"1234567\""));
+        assertTrue(json.contains("\"AmtPurchase\":10"));
+        assertTrue(json.contains("\"AmtCash\":20"));
+    }
 }

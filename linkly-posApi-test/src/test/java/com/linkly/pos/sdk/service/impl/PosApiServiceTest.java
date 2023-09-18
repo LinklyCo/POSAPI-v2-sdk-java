@@ -1,6 +1,7 @@
 package com.linkly.pos.sdk.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -25,6 +27,7 @@ import org.asynchttpclient.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import com.linkly.pos.sdk.models.ApiServiceEndpoint;
 import com.linkly.pos.sdk.models.AuthToken;
@@ -102,6 +105,148 @@ class PosApiServiceTest {
             serviceEndpoints, logger);
         injectAsyncHttpExector();
         reset(asyncHttpExecutor, response, httpClient);
+    }
+
+    @Test
+    void pairingRequest_throws_apiCallException() throws InterruptedException {
+        when(asyncHttpExecutor.post(anyString(), anyString()))
+            .thenThrow(new RuntimeException("socket timeout"));
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+            () -> {
+                service.pairingRequest(PairingMock.request());
+            });
+        Thread.sleep(1000);
+        String listenerResponse = eventListener.getResponseContent("500");
+        assertEquals("{\"httpStatusCode\":500,\"message\":\"socket timeout\",\"source\":\"API\"}",
+            listenerResponse);
+        assertEquals("socket timeout", thrown.getMessage());
+    }
+
+    @Test
+    void authenticate_throws_apiCallException() throws InterruptedException {
+        pairingRequest();
+
+        when(asyncHttpExecutor.post(anyString(), anyString()))
+            .thenThrow(new RuntimeException("unknown host")); // authenticate mock call
+
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+            () -> {
+                service.logonRequest(new LogonRequest());
+            });
+
+        Thread.sleep(1000);
+        String listenerResponse = eventListener.getResponseContent("500");
+        assertEquals("{\"httpStatusCode\":500,\"message\":\"unknown host\",\"source\":\"API\"}",
+            listenerResponse);
+        assertEquals("unknown host", thrown.getMessage());
+    }
+
+    @Test
+    void logonRequest_throws_apiCallException() throws InterruptedException {
+        pairingRequest();
+
+        when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.post(anyString(), anyString(), anyString()))
+            .thenThrow(new RuntimeException("no route to host exception"));
+        when(response.getStatusCode()).thenReturn(200).thenReturn(200);
+        when(response.getResponseBody())
+            .thenReturn(AuthTokenMock.tokenResponseContent());
+
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+            () -> {
+                service.logonRequest(new LogonRequest());
+            });
+
+        Thread.sleep(1000);
+        String listenerResponse = eventListener.getResponseContent("500");
+        assertEquals(
+            "{\"httpStatusCode\":500,\"message\":\"no route to host exception\",\"source\":\"API\"}",
+            listenerResponse);
+        assertEquals("no route to host exception", thrown.getMessage());
+    }
+
+    @Test
+    void resultRequest_throws_apiCallException() throws InterruptedException {
+        pairingRequest();
+
+        when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.get(anyString(), anyString()))
+            .thenThrow(new RuntimeException("port unreachable exception"));
+        when(response.getStatusCode()).thenReturn(200).thenReturn(200);
+        when(response.getResponseBody())
+            .thenReturn(AuthTokenMock.tokenResponseContent());
+
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+            () -> {
+                service.resultRequest(new ResultRequest(UUID.randomUUID()));
+            });
+
+        Thread.sleep(1000);
+        String listenerResponse = eventListener.getResponseContent("500");
+        assertEquals(
+            "{\"httpStatusCode\":500,\"message\":\"port unreachable exception\",\"source\":\"API\"}",
+            listenerResponse);
+        assertEquals("port unreachable exception", thrown.getMessage());
+    }
+
+    @Test
+    void should_not_refreshSession_success() {
+        pairingRequest();
+        injectAuthTokenNotExpiringSoon();
+
+        when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.post(anyString(), anyString(), anyString())).thenReturn(response);
+        when(response.getStatusCode()).thenReturn(200).thenReturn(200);
+        when(response.getResponseBody())
+            .thenReturn("Mock content")
+            .thenReturn(LogonMock.logonResponseContent());
+
+        service.logonRequest(new LogonRequest());
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(asyncHttpExecutor, atLeast(1)).post(argumentCaptor.capture(), argumentCaptor
+            .capture());
+
+        List<String> arguments = argumentCaptor.getAllValues();
+        for (String arg : arguments) {
+            // verify that the captured argument does not contain the endpoint for Authentication
+            // This simply means that refreshing of session is not invoked.
+            assertFalse(arg.contains("/v1/tokens/cloudpos"));
+        }
+    }
+
+    @Test
+    void should_refreshSession_success() {
+        pairingRequest();
+
+        LocalDateTime dateDateTimeNow = LocalDateTime.now();
+        injectAuthToken(dateDateTimeNow);
+
+        when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.post(anyString(), anyString(), anyString())).thenReturn(response);
+        when(response.getStatusCode()).thenReturn(200).thenReturn(200).thenReturn(200);
+        when(response.getResponseBody())
+            .thenReturn(AuthTokenMock.tokenResponseContent())
+            .thenReturn("Mock content")
+            .thenReturn(LogonMock.logonResponseContent());
+
+        service.logonRequest(new LogonRequest());
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(asyncHttpExecutor, atLeast(1)).post(argumentCaptor.capture(), argumentCaptor
+            .capture());
+
+        List<String> arguments = argumentCaptor.getAllValues();
+
+        // Verify that token is in the capture argument
+        // If value below is present, it means that session is refreshed
+        // by calling the authenticate method
+        assertEquals("http://auth.mock/v1/tokens/cloudpos", arguments.get(2));
+
+        // Verify that session token expiry has been increased to 30 minutes
+        AuthToken authToken = getAuthToken();
+        assertEquals(30, ChronoUnit.MINUTES.between(dateDateTimeNow, authToken.getExpiry()));
     }
 
     @Test
@@ -762,13 +907,12 @@ class PosApiServiceTest {
         assertEquals("{\"AIIC\":\"TESTAIIC\",\"CardMisreadCount\":0,\"CashoutLimit\":0,"
             + "\"FreeMemoryInTerminal\":0,\"LoggedOn\":false,\"MaxSaf\":0,\"NII\":0,"
             + "\"NumAppsInTerminal\":0,\"NumLinesOnDisplay\":0,\"OptionsFlags\":"
-            + "{\"\":false,\"AutoCompletion\":false,\"Balance\":false,\"CashOut\":"
-            + "false,\"Completions\":false,\"Deposit\":false,\"EFB\":false,\"EMV\":"
-            + "false,\"Moto\":false,\"PreAuth\":false,\"Refund\":false,\"Tipping\":"
-            + "false,\"Training\":false,\"Transfer\":false,\"Voucher\":false,"
-            + "\"Withdrawal\":false},\"RefundLimit\":0,\"ResponseType\":\"status\","
-            + "\"SafCount\":0,\"SafCreditLimit\":0,\"SafDebitLimit\":0,\"Success\":"
-            + "false,\"TimeOut\":0,\"TotalMemoryInTerminal\":0}", listener);
+            + "{\"AutoCompletion\":false,\"Balance\":false,\"CashOut\":false,\"Completions\":"
+            + "false,\"Deposit\":false,\"EFB\":false,\"EMV\":false,\"Moto\":false,\"PreAuth\":"
+            + "false,\"Refund\":false,\"StartCash\":false,\"Tipping\":false,\"Training\":false,"
+            + "\"Transfer\":false,\"Voucher\":false,\"Withdrawal\":false},\"RefundLimit\":0,"
+            + "\"ResponseType\":\"status\",\"SafCount\":0,\"SafCreditLimit\":0,\"SafDebitLimit\":"
+            + "0,\"Success\":false,\"TimeOut\":0,\"TotalMemoryInTerminal\":0}", listener);
     }
 
     @Test
@@ -1050,6 +1194,8 @@ class PosApiServiceTest {
     void resultRequest_success() throws InterruptedException {
         pairingRequest();
 
+        UUID uuid = UUID.randomUUID();
+
         when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
         when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
         when(response.getStatusCode()).thenReturn(200).thenReturn(200);
@@ -1059,10 +1205,25 @@ class PosApiServiceTest {
 
         when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
 
-        service.resultRequest(new ResultRequest(UUID.randomUUID()));
+        service.resultRequest(new ResultRequest(uuid));
 
         Thread.sleep(2000);
         String listener = eventListener.getResponseContent("logon");
+
+        ArgumentCaptor<String> getArgument = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> postArgument = ArgumentCaptor.forClass(String.class);
+        verify(asyncHttpExecutor, times(1)).get(getArgument.capture(), getArgument.capture());
+        verify(asyncHttpExecutor, times(2)).post(postArgument.capture(), postArgument.capture());
+
+        List<String> getArguments = getArgument.getAllValues();
+        List<String> postArguments = postArgument.getAllValues();
+
+        assertEquals("http://pos.mock/v2/sessions/" + uuid.toString() + "/result?all=true",
+            getArguments.get(0));
+        assertEquals("Bearer testvalidtoken", getArguments.get(1));
+        assertEquals("http://auth.mock/v1/tokens/cloudpos", postArguments.get(2));
+        assertEquals("{\"pairCode\":\"testcode\",\"password\":\"p@szw0rd\",\"username\":"
+            + "\"testuser\"}", postArguments.get(1));
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -1110,16 +1271,24 @@ class PosApiServiceTest {
         }
     }
 
-    private void injectAuthToken() {
+    private void injectAuthTokenNotExpiringSoon() {
+        injectAuthToken(LocalDateTime.now().plus(1, ChronoUnit.HOURS));
+    }
+
+    private void injectAuthToken(LocalDateTime dateTime) {
         Field authTokenField;
         try {
             authTokenField = service.getClass().getDeclaredField("authToken");
             authTokenField.setAccessible(true);
-            authTokenField.set(service, new AuthToken("validtoken", LocalDateTime.now()));
+            authTokenField.set(service, new AuthToken("validtoken", dateTime));
         }
         catch (Exception e) {
             throw new AssertionError(e);
         }
+    }
+
+    private void injectAuthToken() {
+        injectAuthToken(LocalDateTime.now());
     }
 
     private AuthToken getAuthToken() {
@@ -1148,11 +1317,10 @@ class PosApiServiceTest {
     private void verifySecretAndAuthTokenAfterPair(boolean failed) {
         try {
             Field secretField = service.getClass().getDeclaredField("pairSecret");
-            Field authTokenField = service.getClass().getDeclaredField("authToken");
+
             secretField.setAccessible(true);
-            authTokenField.setAccessible(true);
             String secret = (String) secretField.get(service);
-            AuthToken authToken = (AuthToken) authTokenField.get(service);
+            AuthToken authToken = getAuthToken();
             if (failed) {
                 assertNull(secret);
             }
