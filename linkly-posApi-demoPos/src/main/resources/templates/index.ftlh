@@ -101,7 +101,14 @@
 			  <tr class="rfn">
 				<td>RFN:</td>
 				<td>
-				  <input type="text" name="rfn" />
+				    <input type="text" list="rfn" name="rfn" autocomplete="off"/>
+                    <datalist id="rfn">
+                      <#if rfnList?size gt 0>
+                          <#list rfnList as rfn>
+                            <option>${rfn}</option>
+                          </#list>
+                      </#if>
+                    </datalist>
 				</td>
 			  </tr>
 			  <tr class="amount">

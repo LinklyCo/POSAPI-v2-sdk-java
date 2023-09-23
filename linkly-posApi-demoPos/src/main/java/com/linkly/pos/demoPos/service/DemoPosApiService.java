@@ -66,4 +66,6 @@ public interface DemoPosApiService {
     List<String> changeLane(String username);
 
     List<String> getLogs();
+
+    List<String> rfnList();
 }

@@ -173,8 +173,9 @@ public class PosApiService implements IPosApiService {
             eventListener.error(null, request, errorResponse);
             throw e;
         }
-
-        invokeErrorIfFailed(request, completeResponse, null);
+        if (isRequestFailed(request, completeResponse, null)) {
+            return;
+        }
         try {
             PairingResponse pairingResponse = MoshiUtil.fromJson(completeResponse
                 .getResponseBody(), PairingResponse.class);
@@ -348,7 +349,9 @@ public class PosApiService implements IPosApiService {
         Response completeResponse = null;
         try {
             completeResponse = asyncHttpExecutor.post(uri, requestBody);
-            invokeErrorIfFailed(request, completeResponse, uuid);
+            if (isRequestFailed(request, completeResponse, uuid)) {
+                return;
+            }
         }
         catch (Exception e) {
             ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API,
@@ -611,7 +614,7 @@ public class PosApiService implements IPosApiService {
         request.setPosId(posVendorDetails.getPosId());
     }
 
-    private <T extends IBaseRequest> void invokeErrorIfFailed(T request, Response response,
+    private <T extends IBaseRequest> boolean isRequestFailed(T request, Response response,
         UUID sessionId) {
         if (!HttpStatusCodeUtil.isSuccess(response.getStatusCode())) {
             String responseBody = response.getResponseBody();
@@ -623,7 +626,8 @@ public class PosApiService implements IPosApiService {
             ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API, response
                 .getStatusCode(), responseBody, null);
             eventListener.error(sessionId, request, errorResponse);
-            throw new UnsupportedOperationException(responseBody);
+            return true;
         }
+        return false;
     }
 }

@@ -228,7 +228,7 @@ public class SessionData {
         private String requestTimestamp;
         private String responseTimestamp;
         private Object request;
-        private Object response;
+        private PosApiResponse response;
         private ErrorResponse error;
 
         public TransactionSessions() {
@@ -288,11 +288,11 @@ public class SessionData {
             this.request = request;
         }
 
-        public Object getResponse() {
+        public PosApiResponse getResponse() {
             return response;
         }
 
-        public void setResponse(Object response) {
+        public void setResponse(PosApiResponse response) {
             this.response = response;
         }
 

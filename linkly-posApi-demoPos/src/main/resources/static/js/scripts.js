@@ -193,6 +193,7 @@ function getResponses() {
                         populateLogs('TransactionComplete: ' + body['responseText'].replace(/\s/g, '&nbsp;'));
                         document.querySelector('.approveBox').style.display = 'none';
                         enableButtons();
+                        updateRfnList(body);
                       break;
                       
                       default:
@@ -853,4 +854,15 @@ function saveLogs(event) {
 
   element.click();
   document.body.removeChild(element); 
+}
+
+
+function updateRfnList(body){
+    var rfn = body.rfn;
+    if(rfn && rfn.trim().length > 0){
+        let dataList = document.querySelector('datalist#rfn');
+        var option = document.createElement('option');
+        option.value = rfn;
+        dataList.appendChild(option);
+    }
 }

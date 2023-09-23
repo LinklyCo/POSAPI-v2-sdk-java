@@ -65,6 +65,7 @@ public class IndexController {
         predefinedValue.put("currentUser", posService.currentUser());
         predefinedValue.put("pads", posService.purchaseAnalysisData());
         predefinedValue.put("surchargeRates", posService.surchargeRates());
+        predefinedValue.put("rfnList", posService.rfnList());
 
         return new ModelAndView("index", predefinedValue);
     }

@@ -34,6 +34,7 @@ import com.linkly.pos.demoPos.utils.NumberUtils;
 import com.linkly.pos.demoPos.utils.SessionData.Lane;
 import com.linkly.pos.demoPos.utils.SessionData.Pad;
 import com.linkly.pos.demoPos.utils.SessionData.SurchargeRates;
+import com.linkly.pos.demoPos.utils.SessionData.TransactionSessions;
 import com.linkly.pos.sdk.common.StringUtil;
 import com.linkly.pos.sdk.models.ApiServiceEndpoint;
 import com.linkly.pos.sdk.models.ErrorResponse;
@@ -623,5 +624,24 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
     public List<String> getLogs() {
         var demoLogger = (DemoLogger) logger;
         return demoLogger.getLogs();
+    }
+
+    @Override
+    public List<String> rfnList() {
+        if (CollectionUtils.isEmpty(dataManager.getCurrentLane().getTrasactions())) {
+            return Collections.emptyList();
+        }
+        List<String> rfnList = new ArrayList<>();
+        for (TransactionSessions session : dataManager.getCurrentLane().getTrasactions()) {
+            PosApiResponse response = session.getResponse();
+            if (response != null && response instanceof TransactionResponse) {
+                TransactionResponse transactionResponse = (TransactionResponse) session
+                    .getResponse();
+                if (!isNullOrWhiteSpace(transactionResponse.getRfn())) {
+                    rfnList.add(transactionResponse.getRfn());
+                }
+            }
+        }
+        return rfnList;
     }
 }

@@ -91,9 +91,12 @@ public class DataManager {
                 lanes.set(0, lane);
                 anyMatch = true;
             }
-            anyMatch = sessions.getLanes()
-                .stream().anyMatch(l -> l.getUsername() != null
-                    && lane.getUsername().equals(l.getUsername()));
+            for (Lane l : lanes) {
+                if (l.getUsername() != null && l.getUsername().equals(lane.getUsername())) {
+                    l.setSecret(lane.getSecret());
+                    anyMatch = true;
+                }
+            }
 
             lane.setLastActive(true);
             currentLane = lane;
@@ -144,8 +147,7 @@ public class DataManager {
     }
 
     public void saveTransaction(UUID sessionId, String type, IBaseRequest request,
-        PosApiResponse response,
-        ErrorResponse errorResponse) {
+        PosApiResponse response, ErrorResponse errorResponse) {
         if (currentLane != null) {
             TransactionSessions transaction = currentLane.getTrasactions().stream()
                 .filter(l -> l.getSessionId().equals(sessionId)).findFirst().orElse(null);
