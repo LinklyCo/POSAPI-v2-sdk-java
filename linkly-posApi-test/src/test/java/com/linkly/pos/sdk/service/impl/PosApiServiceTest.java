@@ -269,11 +269,7 @@ class PosApiServiceTest {
         when(asyncHttpExecutor.post(AUTH_API + "/v1/pairing/cloudpos", requestContent))
             .thenReturn(response);
 
-        UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
-            () -> {
-                service.pairingRequest(pairingRequest);
-            });
-        assertEquals(exception.getClass(), UnsupportedOperationException.class);
+        service.pairingRequest(pairingRequest);
         assertEquals("{\"httpStatusCode\":401,\"message\":\"Error\",\"source\":\"API\"}",
             eventListener.getResponseContent("pairing"));
         verify(asyncHttpExecutor, times(1)).post(AUTH_API + "/v1/pairing/cloudpos", requestContent);
