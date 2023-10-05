@@ -46,6 +46,7 @@ public class PosApiEventListenerProxy implements IPosApiEventListener {
      * Initialise a new Pos Api Event Listener Proxy.
      * 
      * @param eventListener listener to use.
+     * @throws IllegalArgumentException
      */
     public PosApiEventListenerProxy(IPosApiEventListener eventListener) {
         if (eventListener == null) {

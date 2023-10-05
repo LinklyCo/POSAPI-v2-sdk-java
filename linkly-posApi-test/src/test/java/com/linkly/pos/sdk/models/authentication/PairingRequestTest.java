@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 
 class PairingRequestTest {
 
@@ -14,7 +15,7 @@ class PairingRequestTest {
         PairingRequest request = new PairingRequest();
         Integer.parseInt("1");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("username: Must not be empty., pairCode: Must not be empty.,"

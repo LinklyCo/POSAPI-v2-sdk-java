@@ -31,6 +31,7 @@ import com.linkly.pos.sdk.common.HttpStatusCodeUtil;
 import com.linkly.pos.sdk.common.JSONUtil;
 import com.linkly.pos.sdk.common.MoshiUtil;
 import com.linkly.pos.sdk.common.StringUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.ApiServiceEndpoint;
 import com.linkly.pos.sdk.models.AuthToken;
 import com.linkly.pos.sdk.models.ErrorResponse;
@@ -138,7 +139,7 @@ public class PosApiService implements IPosApiService {
         logger.log(Level.INFO, "Setting pair-secret");
         if (StringUtil.isNullOrWhiteSpace(pairSecret)) {
             logger.log(Level.WARNING, "pairSecret must not be null or whitespace");
-            throw new IllegalArgumentException("Required pairSecret");
+            throw new InvalidArgumentException("Required pairSecret");
         }
         // Pair secret has not changed. Do nothing.
         if (this.pairSecret != null && this.pairSecret.equals(pairSecret)) {
@@ -604,7 +605,7 @@ public class PosApiService implements IPosApiService {
     private void validatePairing(String method) {
         if (pairSecret == null) {
             logger.log(Level.SEVERE, "{0}: Invoked without pairing", new Object[] { method });
-            throw new IllegalArgumentException("Pairing is required");
+            throw new InvalidArgumentException("Pairing is required");
         }
     }
 

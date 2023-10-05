@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.SettlementType;
 import com.linkly.pos.sdk.models.reprintReceipt.ReprintReceiptRequest;
 
@@ -17,7 +18,7 @@ class SettlementRequestTest {
         SettlementRequest request = new SettlementRequest();
         request.setSettlementType(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("settlementType: Enum null not found in the list: [Settlement, PreSettlement, "
@@ -36,7 +37,7 @@ class SettlementRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"

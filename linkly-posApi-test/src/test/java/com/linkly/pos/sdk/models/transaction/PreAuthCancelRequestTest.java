@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.Constants;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.TxnType;
 
 class PreAuthCancelRequestTest {
@@ -19,7 +20,7 @@ class PreAuthCancelRequestTest {
         request.setTrack2("invalid track2");
         request.setAccountType(null);
         request.setRrn("invalid rrn");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("txnRef: Must not be empty., "
@@ -39,7 +40,7 @@ class PreAuthCancelRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"
@@ -63,7 +64,7 @@ class PreAuthCancelRequestTest {
         PreAuthCancelRequest request = new PreAuthCancelRequest(null);
         request.setTxnRef("1234567");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("RFN does not exist in map.", exception

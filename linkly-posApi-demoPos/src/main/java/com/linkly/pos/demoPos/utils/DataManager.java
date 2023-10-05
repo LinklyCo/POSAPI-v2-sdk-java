@@ -142,6 +142,7 @@ public class DataManager {
             }
         }
         catch (IOException e) {
+        	e.printStackTrace();
             // happening in the background and not user-facing
         }
     }
@@ -152,9 +153,8 @@ public class DataManager {
             TransactionSessions transaction = currentLane.getTrasactions().stream()
                 .filter(l -> l.getSessionId().equals(sessionId)).findFirst().orElse(null);
             if (transaction == null) {
-                var newTransaction = new TransactionSessions(type, sessionId, type, type, request,
-                    response,
-                    errorResponse);
+                var newTransaction = new TransactionSessions(type, sessionId, LocalDateTime.now()
+                		.toString(), type, request, response, errorResponse);
                 currentLane.getTrasactions().add(newTransaction);
             }
             else {

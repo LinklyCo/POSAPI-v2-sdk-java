@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.IBaseRequest;
 import com.linkly.pos.sdk.models.IValidatable;
 import com.linkly.pos.sdk.models.enums.ReferenceType;
@@ -65,7 +66,7 @@ public class RetrieveTransactionRequest implements IBaseRequest, IValidatable {
             .filter(m -> m != null)
             .collect(Collectors.toList());
         if(validationErrors.size() > 0) {
-        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }
 }

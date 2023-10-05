@@ -416,7 +416,8 @@
 		  </div>
 		  <div class="approveBox">
 			<p></p>
-			<button type="submit" class="approveCancel" onclick="sendKey(event)" data-key=""></button>
+			<button type="submit" class="btn1" onclick="sendKey(event)" data-key="">Okay</button>
+			<button type="submit" class="btn2" onclick="sendKey(event)" data-key="">Cancel</button>
 		  </div>
 		</div>
 		<div class="page-column divider">
@@ -437,7 +438,7 @@
 			<tr>
 				<td><input type="checkbox" name="trace" />&nbsp;Trace&nbsp;&nbsp;</td>
 				<td><button type="submit" name="save" onclick="saveLogs(event)">Save</button>&nbsp;&nbsp;</td>
-				<td><button type="submit" name="clear" onclick="clearLogs(event)">Clear</button>&nbsp;&nbsp;</td>
+				<td><button type="submit" name="clear" onclick="clearLogs()">Clear</button>&nbsp;&nbsp;</td>
 			</tr>
 		  </table>
 		  <br />
@@ -473,8 +474,8 @@
 			  <tr>
 				<td>PAN Source:</td>
 				<td>
-				  <select name="panSource">
-					<option dsiabled></option>
+				  <select name="panSource" onchange="panSourceSelections(event)">
+					<option disabled selected></option>
 					<#list panSources as panSource>
 				      <option value="${panSource}">${panSource}</option>
 				    </#list>
@@ -485,7 +486,7 @@
 				<td>Account Type:</td>
 				<td>
 				  <select name="accountType">
-					<option dsiabled></option>
+					<option disabled selected></option>
 					<#list accountTypes as accountType>
 				      <option value="${accountType}">${accountType}</option>
 				    </#list>
@@ -523,7 +524,7 @@
 				<td>Original Txn Type:</td>
 				<td>
 				  <select name="txnType">
-					<option dsiabled></option>
+					<option disabled selected></option>
 					<#list txnTypes as txnType>
 				      <option value="${txnType}">${txnType}</option>
 				    </#list>

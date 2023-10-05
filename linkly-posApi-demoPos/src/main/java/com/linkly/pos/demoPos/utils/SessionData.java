@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.linkly.pos.sdk.models.ErrorResponse;
-import com.linkly.pos.sdk.models.PosApiResponse;
 import com.linkly.pos.sdk.models.enums.ReceiptAutoPrint;
 
 public class SessionData {
@@ -228,7 +227,7 @@ public class SessionData {
         private String requestTimestamp;
         private String responseTimestamp;
         private Object request;
-        private PosApiResponse response;
+        private Object response;
         private ErrorResponse error;
 
         public TransactionSessions() {
@@ -236,7 +235,7 @@ public class SessionData {
         }
 
         public TransactionSessions(String type, UUID sessionId, String requestTimestamp,
-            String responseTimestamp, Object request, PosApiResponse response,
+            String responseTimestamp, Object request, Object response,
             ErrorResponse error) {
             super();
             this.type = type;
@@ -288,11 +287,11 @@ public class SessionData {
             this.request = request;
         }
 
-        public PosApiResponse getResponse() {
+        public Object getResponse() {
             return response;
         }
 
-        public void setResponse(PosApiResponse response) {
+        public void setResponse(Object response) {
             this.response = response;
         }
 

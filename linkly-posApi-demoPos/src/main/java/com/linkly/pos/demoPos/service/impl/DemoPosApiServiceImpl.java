@@ -13,6 +13,7 @@ import static com.linkly.pos.sdk.models.enums.ResponseType.Transaction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -35,6 +36,7 @@ import com.linkly.pos.demoPos.utils.SessionData.Lane;
 import com.linkly.pos.demoPos.utils.SessionData.Pad;
 import com.linkly.pos.demoPos.utils.SessionData.SurchargeRates;
 import com.linkly.pos.demoPos.utils.SessionData.TransactionSessions;
+import com.linkly.pos.sdk.common.Constants.ResponseType;
 import com.linkly.pos.sdk.common.StringUtil;
 import com.linkly.pos.sdk.models.ApiServiceEndpoint;
 import com.linkly.pos.sdk.models.ErrorResponse;
@@ -230,17 +232,11 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
 
         var options = surchargeOptions(request);
         var transactionRequest = transactionRequestFactory(request);
-        if (!isNullOrWhiteSpace(request.getPanSourceTemp())) {
-            transactionRequest.setPanSource(PanSource.valueOf(request.getPanSourceTemp()));
-        }
-        if (!isNullOrWhiteSpace(request.getAccountTypeTemp())) {
-            transactionRequest.setAccountType(AccountType.valueOf(request.getAccountTypeTemp()));
-        }
+        
         transactionRequest.setTxnRef(request.getTxnRef());
         transactionRequest.setCurrencyCode(request.getCurrencyCode());
         transactionRequest.setTrainingMode(request.isTrainingMode());
         transactionRequest.setAuthCode(request.getAuthCode());
-        transactionRequest.setDateExpiry(request.getDateExpiry());
         transactionRequest.setProductLevelBlock(request.isPlb());
         transactionRequest.setRrn(request.getRrn());
         transactionRequest.setMerchant(request.getMerchant());
@@ -510,19 +506,24 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
 
     private void updatePanSource(DemoPosTransactionRequest request,
         TransactionRequest transactionRequest) {
-        if (!isNullOrWhiteSpace(request.getPanSourceTemp())) {
-            PanSource panSource = PanSource.valueOf(request.getPanSourceTemp());
-            if (PanSource.PinPad != panSource) {
-                if (isNullOrWhiteSpace(request.getAccountTypeTemp())) {
-                    transactionRequest.setAccountType(AccountType.valueOf(request
-                        .getAccountTypeTemp()));
-                }
-                if (PanSource.PosSwiped != panSource) {
-                    transactionRequest.setPan(request.getPan());
-                }
-                else {
-                    transactionRequest.setTrack2(request.getTrack2());
-                }
+
+        var panSource = isNullOrWhiteSpace(request.getPanSourceTemp())
+        			? PanSource.PinPad : PanSource.valueOf(request.getPanSourceTemp());
+        var accountType = isNullOrWhiteSpace(request.getAccountTypeTemp())
+        			? AccountType.Default : AccountType.valueOf(request.getAccountTypeTemp());
+        transactionRequest.setPanSource(panSource);
+        transactionRequest.setAccountType(accountType);
+    	
+    	if (PanSource.PinPad != panSource) {
+            if (PanSource.PosSwiped != panSource || PanSource.PinPad != panSource) {
+                transactionRequest.setPan(request.getPan());
+                transactionRequest.setDateExpiry(request.getDateExpiry());
+                transactionRequest.setTrack2(null);
+            }
+            else {
+            	transactionRequest.setPan(null);
+                transactionRequest.setDateExpiry(null);
+                transactionRequest.setTrack2(request.getTrack2());
             }
         }
     }
@@ -627,19 +628,23 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
     }
 
     @Override
+	@SuppressWarnings("unchecked")
     public List<String> rfnList() {
         if (CollectionUtils.isEmpty(dataManager.getCurrentLane().getTrasactions())) {
             return Collections.emptyList();
         }
         List<String> rfnList = new ArrayList<>();
         for (TransactionSessions session : dataManager.getCurrentLane().getTrasactions()) {
-            PosApiResponse response = session.getResponse();
-            if (response != null && response instanceof TransactionResponse) {
-                TransactionResponse transactionResponse = (TransactionResponse) session
-                    .getResponse();
-                if (!isNullOrWhiteSpace(transactionResponse.getRfn())) {
-                    rfnList.add(transactionResponse.getRfn());
-                }
+            Object response = session.getResponse();
+            if (response != null && response instanceof LinkedHashMap) {
+				LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) response;
+            	if(map.get("responseType") != null && ((String)map.get("responseType"))
+            			.equalsIgnoreCase(ResponseType.TRANSACTION)) {
+                    String rfn = map.get("rfn") != null ? (String) map.get("rfn") : null;
+                    if (rfn!= null && !isNullOrWhiteSpace(rfn)) {
+                        rfnList.add(rfn);
+                    }
+            	}
             }
         }
         return rfnList;

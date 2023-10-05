@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.adapters.BoolToBitString;
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.ReceiptAutoPrint;
 import com.linkly.pos.sdk.service.IPosApiService;
 
@@ -185,7 +186,7 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
     /**
      * Validate the model using {@link ValidatorUtil}
      * 
-     * @throws IllegalArgumentException
+     * @throws InvalidArgumentException
      *             throw if has validation errors
      */
     @Override
@@ -199,7 +200,7 @@ public class PosApiRequest implements IBaseRequest, IValidatable {
             .filter(m -> m != null)
             .collect(Collectors.toList());
         if (validationErrors.size() > 0) {
-            throw new IllegalArgumentException(String.join(", ", validationErrors));
+            throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }
 }

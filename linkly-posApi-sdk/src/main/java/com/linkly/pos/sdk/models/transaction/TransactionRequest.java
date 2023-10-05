@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import com.linkly.pos.sdk.common.Constants;
 import com.linkly.pos.sdk.common.IPurchaseAnalysisDataConverter;
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.PosApiRequest;
 import com.linkly.pos.sdk.models.enums.AccountType;
 import com.linkly.pos.sdk.models.enums.PanSource;
@@ -350,7 +351,7 @@ public class TransactionRequest extends PosApiRequest {
     /**
      * Validate fields
      * 
-     * @throws IllegalArgumentException
+     * @throws InvalidArgumentException
      *             throw if has validation errors
      */
     @Override
@@ -369,6 +370,7 @@ public class TransactionRequest extends PosApiRequest {
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
+        
         if (this.panSource == PanSource.PosKeyed) {
             String panError = ValidatorUtil.notEmpty(this.pan, "pan");
             String dateExpiryError = ValidatorUtil.notEmpty(this.dateExpiry, "dateExpiry");
@@ -386,7 +388,7 @@ public class TransactionRequest extends PosApiRequest {
             }
         }
         if (validationErrors.size() > 0) {
-            throw new IllegalArgumentException(String.join(", ", validationErrors));
+            throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }
 }

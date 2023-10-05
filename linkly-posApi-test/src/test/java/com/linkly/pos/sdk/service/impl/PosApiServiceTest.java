@@ -29,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.ApiServiceEndpoint;
 import com.linkly.pos.sdk.models.AuthToken;
 import com.linkly.pos.sdk.models.PosApiServiceOptions;
@@ -288,7 +289,7 @@ class PosApiServiceTest {
         when(asyncHttpExecutor.post(AUTH_API + "/v1/pairing/cloudpos", requestContent))
             .thenReturn(response);
 
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.pairingRequest(pairingRequest);
             });
@@ -322,7 +323,7 @@ class PosApiServiceTest {
     @Test
     void logonRequest_pairingFailed() {
 
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.logonRequest(new LogonRequest());
             });
@@ -335,7 +336,7 @@ class PosApiServiceTest {
         pairingRequest();
         LogonRequest request = new LogonRequest();
         request.setLogonType(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             service.logonRequest(request);
         });
         assertEquals("logonType: Enum null not found in the list: [Standard, RSA, TmsFull, "
@@ -448,7 +449,7 @@ class PosApiServiceTest {
 
     @Test
     void transactionRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.transactionRequest(new CashRequest(0));
             });
@@ -468,7 +469,7 @@ class PosApiServiceTest {
         when(response.getResponseBody()).thenReturn(responseContent);
         when(asyncHttpExecutor.post(anyString(), eq(requestContent)))
             .thenReturn(response);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             service.transactionRequest(cashRequest);
         });
         assertEquals("txnRef: Must not be empty.", exception.getMessage());
@@ -856,7 +857,7 @@ class PosApiServiceTest {
 
     @Test
     void statusRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.statusRequest(new StatusRequest());
             });
@@ -870,7 +871,7 @@ class PosApiServiceTest {
         StatusRequest request = new StatusRequest();
         request.setStatusType(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             service.statusRequest(request);
         });
         assertEquals("statusType: Enum null not found in the list: [Standard, TerminalAppInfo, "
@@ -913,7 +914,7 @@ class PosApiServiceTest {
 
     @Test
     void settlementRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.settlementRequest(SettlementMock.settlementRequest());
             });
@@ -926,7 +927,7 @@ class PosApiServiceTest {
         pairingRequest();
         SettlementRequest request = SettlementMock.settlementRequest();
         request.setSettlementType(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             service.settlementRequest(request);
         });
         assertEquals("settlementType: Enum null not found in the list: [Settlement, PreSettlement, "
@@ -964,7 +965,7 @@ class PosApiServiceTest {
 
     @Test
     void queryCardRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.queryCardRequest(new QueryCardRequest());
             });
@@ -978,7 +979,7 @@ class PosApiServiceTest {
         QueryCardRequest request = new QueryCardRequest();
         request.setQueryCardType(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             service.queryCardRequest(request);
         });
         assertEquals("queryCardType: Enum null not found in the list: [ReadCard, "
@@ -1017,7 +1018,7 @@ class PosApiServiceTest {
 
     @Test
     void configureMerchantRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.configureMerchantRequest(new ConfigureMerchantRequest());
             });
@@ -1029,7 +1030,7 @@ class PosApiServiceTest {
         eventListener.clear();
         pairingRequest();
         ConfigureMerchantRequest request = new ConfigureMerchantRequest();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             service.configureMerchantRequest(request);
         });
         assertEquals("catId: Must not be empty., caId: Must not be empty.", exception.getMessage());
@@ -1065,7 +1066,7 @@ class PosApiServiceTest {
 
     @Test
     void reprintReceiptRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.reprintReceiptRequest(new ReprintReceiptRequest());
             });
@@ -1079,7 +1080,7 @@ class PosApiServiceTest {
         ReprintReceiptRequest request = ReprintReceiptMock.request();
         request.setReceiptAutoPrint(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             service.reprintReceiptRequest(request);
         });
         assertEquals("receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].",
@@ -1116,7 +1117,7 @@ class PosApiServiceTest {
 
     @Test
     void sendKeyRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.sendKeyRequest(new SendKeyRequest());
             });
@@ -1127,7 +1128,7 @@ class PosApiServiceTest {
     void sendKeyRequest_validaitonFailed() {
         eventListener.clear();
         pairingRequest();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             service.sendKeyRequest(new SendKeyRequest());
         });
         assertEquals("sessionId: Must not be empty., key: Must not be empty.", exception
@@ -1179,7 +1180,7 @@ class PosApiServiceTest {
 
     @Test
     void resultRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.resultRequest(new ResultRequest(UUID.randomUUID()));
             });

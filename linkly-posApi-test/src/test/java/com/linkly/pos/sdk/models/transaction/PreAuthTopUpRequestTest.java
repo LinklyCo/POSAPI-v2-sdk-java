@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.Constants;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.TxnType;
 
 class PreAuthTopUpRequestTest {
@@ -19,7 +20,7 @@ class PreAuthTopUpRequestTest {
         request.setTrack2("invalid track2");
         request.setAccountType(null);
         request.setRrn("invalid rrn");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("txnRef: Must not be empty., "
@@ -39,7 +40,7 @@ class PreAuthTopUpRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"
@@ -65,7 +66,7 @@ class PreAuthTopUpRequestTest {
 
         assertEquals(request.getPurchaseAnalysisData()
             .get(Constants.PurchaseAnalysisData.RFN), "test rfn");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("amount: Must be between or equal to 1 and 999,999,999. Entered value: 0",
@@ -77,7 +78,7 @@ class PreAuthTopUpRequestTest {
         PreAuthTopUpRequest request = new PreAuthTopUpRequest(1, null);
         request.setTxnRef("1234567");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("RFN does not exist in map.",

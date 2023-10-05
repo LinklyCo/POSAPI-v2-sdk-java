@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.ReferenceType;
 
 class RetrieveTransactionRequestTest {
@@ -20,7 +21,7 @@ class RetrieveTransactionRequestTest {
     void shuld_return_message_ifEmpty() {
         RetrieveTransactionRequest request = new RetrieveTransactionRequest();
         request.setReferenceType(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("referenceType: Enum null not found in the list: [ReferenceNo, RRN]., "

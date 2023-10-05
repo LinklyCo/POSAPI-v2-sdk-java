@@ -1,6 +1,7 @@
 package com.linkly.pos.sdk.models.transaction;
 
 import com.linkly.pos.sdk.common.IPurchaseAnalysisDataConverter;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 
 /**
  * Provides up to three tipping options to present to the customer as a percentage of the
@@ -17,17 +18,17 @@ public class TippingOptions implements IPurchaseAnalysisDataConverter {
      */
     public TippingOptions(byte[] tipPercentages) {
         if (tipPercentages.length < 1) {
-            throw new IllegalArgumentException("Must provide at least one tipping percentages");
+            throw new InvalidArgumentException("Must provide at least one tipping percentages");
         }
         if (tipPercentages.length > 3)
-            throw new IllegalArgumentException("Must provide at most three tipping percentages");
+            throw new InvalidArgumentException("Must provide at most three tipping percentages");
 
         for (int percentage : tipPercentages) {
             if (percentage < 1) {
-                throw new IllegalArgumentException("Tipping percentage must be greater than 1.");
+                throw new InvalidArgumentException("Tipping percentage must be greater than 1.");
             }
             if (percentage > 99) {
-                throw new IllegalArgumentException("Tipping percentage must be less than 99.");
+                throw new InvalidArgumentException("Tipping percentage must be less than 99.");
             }
         }
         this.tipPercentages = tipPercentages;

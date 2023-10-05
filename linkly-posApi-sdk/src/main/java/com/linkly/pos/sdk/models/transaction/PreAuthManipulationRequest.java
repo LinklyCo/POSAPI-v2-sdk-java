@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.Constants;
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.squareup.moshi.Json;
 
 /**
@@ -39,7 +40,7 @@ public abstract class PreAuthManipulationRequest extends FollowUpTransactionRequ
             .filter(m -> m != null)
             .collect(Collectors.toList());
         if(validationErrors.size() > 0) {
-        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }
 

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.StatusType;
 
 class StatusRequestTest {
@@ -15,7 +16,7 @@ class StatusRequestTest {
     void should_return_messages_ifEmpty() {
         StatusRequest request = new StatusRequest();
         request.setStatusType(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("statusType: Enum null not found in the list: [Standard, TerminalAppInfo, "
@@ -34,7 +35,7 @@ class StatusRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.ReprintType;
 
 class ReprintReceiptRequestTest {
@@ -15,7 +16,7 @@ class ReprintReceiptRequestTest {
     void should_return_messages_ifEmpty() {
         ReprintReceiptRequest request = new ReprintReceiptRequest();
         request.setReprintType(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("reprintType: Enum null not found in the list: [GetLast, Reprint].", exception
@@ -33,7 +34,7 @@ class ReprintReceiptRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty., "

@@ -23,6 +23,7 @@ public class ApiServiceEndpoint {
      * @param posApiHost
      *            Base URI of the POS API service.
      *            Example: http://pos.cloud.pceftpos.com
+     * @throws IllegalArgumentException
      */
     public ApiServiceEndpoint(String authApiHost, String posApiHost) {
         if (!isBaseUri(authApiHost)) {

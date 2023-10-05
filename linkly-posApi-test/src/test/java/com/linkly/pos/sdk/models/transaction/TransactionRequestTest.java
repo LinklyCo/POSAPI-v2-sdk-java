@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.Constants;
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.AccountType;
 import com.linkly.pos.sdk.models.enums.PanSource;
 import com.linkly.pos.sdk.models.transaction.surcharge.FixedSurcharge;
@@ -25,7 +26,7 @@ class TransactionRequestTest {
         request.setTrack2("invalid track2");
         request.setAccountType(null);
         request.setRrn("invalid rrn");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("txnRef: Must not be empty., "
@@ -77,7 +78,7 @@ class TransactionRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"
@@ -90,7 +91,7 @@ class TransactionRequestTest {
         TransactionRequest request = new TransactionRequest();
         request.setTxnRef("1234567");
         request.setPanSource(PanSource.PosKeyed);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("pan: Must not be empty., dateExpiry: Must not be empty.", exception
@@ -102,7 +103,7 @@ class TransactionRequestTest {
         TransactionRequest request = new TransactionRequest();
         request.setTxnRef("1234567");
         request.setPanSource(PanSource.PosSwiped);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("track2: Must not be empty.", exception.getMessage());

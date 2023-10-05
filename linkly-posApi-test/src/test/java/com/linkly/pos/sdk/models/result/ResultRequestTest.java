@@ -9,13 +9,14 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 
 class ResultRequestTest {
 
     @Test
     void should_return_messages_ifEmpty() {
         ResultRequest request = new ResultRequest(null);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("sessionId: Must not be empty.", exception.getMessage());

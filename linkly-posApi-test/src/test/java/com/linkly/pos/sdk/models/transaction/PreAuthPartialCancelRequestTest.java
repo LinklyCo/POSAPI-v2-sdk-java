@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.Constants;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.TxnType;
 
 class PreAuthPartialCancelRequestTest {
@@ -20,7 +21,7 @@ class PreAuthPartialCancelRequestTest {
         request.setAccountType(null);
         request.setRrn("invalid rrn");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("txnRef: Must not be empty., "
@@ -41,7 +42,7 @@ class PreAuthPartialCancelRequestTest {
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"
@@ -64,7 +65,7 @@ class PreAuthPartialCancelRequestTest {
     void should_return_messages_ifAmountEmpty() {
         PreAuthPartialCancelRequest request = new PreAuthPartialCancelRequest(0, "test rfn");
         request.setTxnRef("1234567");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("amount: Must be between or equal to 1 and 999,999,999. Entered value: 0",
@@ -76,7 +77,7 @@ class PreAuthPartialCancelRequestTest {
         PreAuthPartialCancelRequest request = new PreAuthPartialCancelRequest(1, null);
         request.setTxnRef("1234567");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("RFN does not exist in map.", exception

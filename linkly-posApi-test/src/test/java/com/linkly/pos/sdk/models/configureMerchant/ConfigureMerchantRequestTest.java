@@ -7,13 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 
 class ConfigureMerchantRequestTest {
 
     @Test
     void should_return_messages_ifEmpty() {
         ConfigureMerchantRequest request = new ConfigureMerchantRequest();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("catId: Must not be empty., caId: Must not be empty.", exception.getMessage());
@@ -34,7 +35,7 @@ class ConfigureMerchantRequestTest {
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty., "

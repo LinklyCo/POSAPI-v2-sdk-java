@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.PosApiRequest;
 import com.linkly.pos.sdk.models.enums.StatusType;
 
@@ -45,7 +46,7 @@ public class StatusRequest extends PosApiRequest {
             .filter(m -> m != null)
             .collect(Collectors.toList());
         if(validationErrors.size() > 0) {
-        	throw new IllegalArgumentException(String.join(", ", validationErrors));
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }
 }

@@ -27,6 +27,7 @@ public class PosVendorDetails {
      * @param posVendorId
      *            Persistent and unique POS product identifier. All instances of the
      *            POS application should provide the same UUID.
+     * @throws IllegalArgumentException
      */
     public PosVendorDetails(String posName, String posVersion, UUID posId, UUID posVendorId) {
         super();

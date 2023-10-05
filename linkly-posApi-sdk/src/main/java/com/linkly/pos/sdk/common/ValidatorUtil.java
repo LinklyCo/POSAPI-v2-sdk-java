@@ -159,7 +159,7 @@ public final class ValidatorUtil {
      *         otherwise returns 'null'.
      */
     public static String length(String value, String fieldName, int length) {
-        if (!isNullOrWhiteSpace(value) && value.length() != length) {
+        if (value != null && value.length() != length) {
             return format(LENGTH_NOT_EQUAL, fieldName, length);
         }
         return null;
@@ -242,7 +242,7 @@ public final class ValidatorUtil {
      *         otherwise returns 'null'.
      */
     public static String expiryDate(String value, String fieldName) {
-        if (!isNullOrWhiteSpace(value) && !value.matches(CARD_EXPIRY_REGEX)) {
+        if (value != null && !value.matches(CARD_EXPIRY_REGEX)) {
             return format(NOT_MATCH, fieldName, value);
         }
         return null;

@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.IBaseRequest;
 import com.linkly.pos.sdk.models.IValidatable;
 
@@ -46,7 +47,7 @@ public class ResultRequest implements IBaseRequest, IValidatable {
     /**
      * Validate the model using {@link ValidatorUtil}
      * 
-     * @throws IllegalArgumentException
+     * @throws InvalidArgumentException
      *             if contains validation errors
      */
     @Override
@@ -57,7 +58,7 @@ public class ResultRequest implements IBaseRequest, IValidatable {
             .filter(m -> m != null)
             .collect(Collectors.toList());
         if (validationErrors.size() > 0) {
-            throw new IllegalArgumentException(String.join(", ", validationErrors));
+            throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }
 

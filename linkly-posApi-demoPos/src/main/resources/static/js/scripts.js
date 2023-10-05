@@ -119,28 +119,56 @@ function getResponses() {
                         var boxContent = displayArr[0].trim() + '<br />' + displayArr[1].trim();
                         document.querySelector('.approveBox p').innerHTML = boxContent;
                         
-                        var btnDisplay = '';
-                        var key = '0';
-                        if(body['cancelKeyFlag'] === true){
-                            btnDisplay = 'Cancel';
-                        }
+                        var btnDisplay1 = '';
+                        var btnDisplay2 = '';
+                        var key1 = '0';
+                        var key2 = '0';
                         if(body['okKeyFlag'] === true) {
-                            btnDisplay = 'OK';
+                            btnDisplay1 = 'OK';
+                            key1 = "0";
                         }
-                        if(body['acceptYesKeyFlag'] === true) {
-                            btnDisplay = 'YES';
+                        else if(body['acceptYesKeyFlag'] === true) {
+                            btnDisplay1 = 'YES';
+                            key1 = '1';
+                        }
+                        else if(body['authoriseKeyFlag'] === true){
+							btnDisplay1 = 'AUTHORISE';
+							key1 = '3';
+						}
+						
+						if(body['cancelKeyFlag'] === true){
+							btnDisplay2 = 'Cancel';
+                            key2 = '0';
+						}
+                        else if(body['declineNoKeyFlag'] === true) {
+                            btnDisplay2 = 'No';
+                            key2 = '2';
                         }
                         document.querySelector('.approveBox').style.display = 'block';
+                                           
+                        var btn1 = document.querySelector('.approveBox button.btn1');                        
+                        var btn2 = document.querySelector('.approveBox button.btn2');
                         
-                        var btn = document.querySelector('.approveBox button');
-                        if(btnDisplay.length > 1){
-                            btn.setAttribute('data-key', key);
-                            btn.style.display = '';
-                            btn.setAttribute('data-sessionId', uuid);
-                            btn.innerHTML = btnDisplay;
+                        btn1.style.display = 'none';
+                        btn2.style.display = 'none';
+                        
+                        if(btnDisplay1.length > 1){
+                            btn1.setAttribute('data-key', key1);
+                            btn1.style.display = 'inline';
+                            btn1.setAttribute('data-sessionId', uuid);
+                            btn1.innerHTML = btnDisplay1;
                         } else {
-                            btn.style.display = 'none';
+                            btn1.style.display = 'none';
                         }
+
+                        if(btnDisplay2.length > 1){
+							btn2.setAttribute('data-key', key2);
+                            btn2.style.display = 'inline';
+                            btn2.setAttribute('data-sessionId', uuid);
+                            btn2.innerHTML = btnDisplay2;
+						} else {
+							btn2.style.display = 'none';
+						}
                       break;
                       
                       case 'RECEIPT':
@@ -402,12 +430,14 @@ document.getElementsByClassName('transactionGo')[0].addEventListener('click', fu
     
     // General
     var authCode = document.querySelector("#general input[name='authCode']").value;
-    var rrn = document.querySelector("#general input[name='rrn']").value;
+    
+    // c# demo does not pass rrn (yet).
+    //var rrn = document.querySelector("#general input[name='rrn']").value;
     var panSource = document.querySelector('#general select[name="panSource"]').value;
     var accountType = document.querySelector('#general select[name="accountType"]').value;
-    var pan = document.querySelector("#general input[name='pan']").value;
+    var pan = document.querySelector("#general input[name='pan']").value;;
+    var track2 = document.querySelector("#general input[name='track2']").value;;
     var dateExpiry = document.querySelector("#general input[name='dateExpiry']").value;
-    var track2 = document.querySelector("#general input[name='track2']").value;
     var currencyCode = document.querySelector('#general select[name="currencyCode"]').value;
     var trainingMode = document.querySelector('#general input[name="traningMode"]').checked;
     var plb = document.querySelector('#general input[name="plb"]').checked;
@@ -442,7 +472,7 @@ document.getElementsByClassName('transactionGo')[0].addEventListener('click', fu
         dateExpiry: dateExpiry,
         track2: track2,
         accountTypeTemp: accountType,
-        rrn: rrn,
+        rrn: null,
         tipOption: tipOption,
         tipOptions1: tipOptions1,
         tipOptions2: tipOptions2,
@@ -457,6 +487,7 @@ document.getElementsByClassName('transactionGo')[0].addEventListener('click', fu
         surchargeValue2: surchargeValue2,
         plb: plb
     };
+    
     var posApiRequest = buildPosApiRequestBody();
     request = {...request, ...posApiRequest};
     
@@ -700,6 +731,9 @@ function post(endpoint, body) {
         if(xhr.status == 200 && xhr.responseText.length > 2){
             populateLogs('Session Id: ' + xhr.responseText);
         }
+        if(xhr.status == 400){
+			alert(xhr.responseText);
+		}
     }
 }
 function refreshSessionOptions(uuid){
@@ -735,7 +769,7 @@ window.addEventListener('load', function () {
 });
 
 function sendKey(evt) {
-    var btn = document.querySelector('.approveBox button')
+    var btn = evt.target;
     var sessionId = btn.getAttribute('data-sessionId');
     var key = btn.getAttribute('data-key');
     let request = {
@@ -744,6 +778,7 @@ function sendKey(evt) {
         data: ""
     };
     let body = JSON.stringify(request);
+    console.log(body);
     post('sendKey', body);
     document.querySelector('.approveBox').style.display = "none";
 }
@@ -806,7 +841,29 @@ document.querySelector("#transaction select[name='transactionType']")
   }
 }
 
-function clearLogs(event){
+function panSourceSelections(event){
+  var selectedOption = event.target.value;
+  if(selectedOption == 'PinPad'){
+	  // account, pan, expir, currency, txn
+  }
+  if(selectedOption == 'PosKeyed'){
+	  // currency, aud
+  }
+  if(selectedOption == 'POSSWIPED'){
+	  // account, pan, expir, currency, txn
+  }
+  if(selectedOption == 'Internet'){
+	  // account, track2, currency, txn
+  }
+  if(selectedOption == 'teleorder'){
+	  // account, pan, expiry, currency, txn
+  }
+  
+  // show all input except track 2 for all pansource except poskeyed and internet
+  
+}
+
+function clearLogs(){
     document.getElementById('logs').innerHTML = '';
 }
 

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.linkly.pos.sdk.common.Constants;
 import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.TxnType;
 
 class RefundRequestTest {
@@ -21,7 +22,7 @@ class RefundRequestTest {
         request.setTrack2("invalid track2");
         request.setAccountType(null);
         request.setRrn("invalid rrn");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("txnRef: Must not be empty., "
@@ -42,7 +43,7 @@ class RefundRequestTest {
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
         request.setRfn("test rfn");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("merchant: Must not be empty., application: Must not be empty.,"
@@ -67,7 +68,7 @@ class RefundRequestTest {
         RefundRequest request = new RefundRequest(0, "rfn");
         request.setTxnRef("1234567");
         request.setRfn("test rfn");
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });
         assertEquals("amount: Must be between 0 and 999,999,999. Entered value: 0",
