@@ -158,7 +158,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
             dataManager.saveTransaction(uuid, request.getClass().getSimpleName(), request, null,
                 null);
         }
-        if (request.getPurchaseAnalysisData().size() > 0) {
+        if (!request.getPurchaseAnalysisData().isEmpty()) {
             dataManager.savePads(request.getPurchaseAnalysisData());
         }
         return uuid;
@@ -171,7 +171,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
             dataManager.saveTransaction(uuid, request.getClass().getSimpleName(), request, null,
                 null);
         }
-        if (request.getPurchaseAnalysisData().size() > 0) {
+        if (!request.getPurchaseAnalysisData().isEmpty()) {
             dataManager.savePads(request.getPurchaseAnalysisData());
         }
         return uuid;
@@ -184,7 +184,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
             dataManager.saveTransaction(uuid, request.getClass().getSimpleName(), request, null,
                 null);
         }
-        if (request.getPurchaseAnalysisData().size() > 0) {
+        if (!request.getPurchaseAnalysisData().isEmpty()) {
             dataManager.savePads(request.getPurchaseAnalysisData());
         }
         return uuid;
@@ -255,7 +255,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
             dataManager.saveTransaction(uuid, transactionRequest.getClass().getSimpleName(),
                 request, null, null);
         }
-        if (request.getPurchaseAnalysisData().size() > 0) {
+        if (!request.getPurchaseAnalysisData().isEmpty()) {
             dataManager.savePads(request.getPurchaseAnalysisData());
         }
         return uuid;
@@ -408,7 +408,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
 
     @Override
     public List<String> users() {
-        return dataManager.getLanes().stream().map(l -> l.getUsername()).filter(Objects::nonNull)
+        return dataManager.getLanes().stream().map(Lane::getUsername).filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 
@@ -515,15 +515,15 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
         transactionRequest.setAccountType(accountType);
     	
     	if (PanSource.PinPad != panSource) {
-            if (PanSource.PosSwiped != panSource || PanSource.PinPad != panSource) {
-                transactionRequest.setPan(request.getPan());
-                transactionRequest.setDateExpiry(request.getDateExpiry());
-                transactionRequest.setTrack2(null);
+    		if (StringUtil.isNullOrWhiteSpace(request.getAccountTypeTemp())) {
+    			transactionRequest.setAccountType(AccountType.valueOf(request.getAccountTypeTemp()));
+    		}
+            if (PanSource.PosSwiped == panSource) {
+                transactionRequest.setTrack2(request.getTrack2());
             }
             else {
-            	transactionRequest.setPan(null);
-                transactionRequest.setDateExpiry(null);
-                transactionRequest.setTrack2(request.getTrack2());
+                transactionRequest.setPan(request.getPan());
+                transactionRequest.setDateExpiry(request.getDateExpiry());
             }
         }
     }
@@ -597,17 +597,15 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
 
     @Override
     public List<SurchargeRates> surchargeRates() {
-        var percentageKey = "Percentage";
-        var fixedKey = "Fixed";
         var rates = dataManager.getSessions().getSurchargeRates();
         if (rates.size() == 1) {
-            String key = rates.get(0).getType().equalsIgnoreCase(fixedKey) ? fixedKey
-                : percentageKey;
+            String key = rates.get(0).getType().equalsIgnoreCase(FIXED) ? FIXED
+                : PERCENTAGE;
             rates.add(new SurchargeRates(key, "", ""));
         }
-        if (rates.size() == 0) {
-            rates.add(new SurchargeRates(percentageKey, "", ""));
-            rates.add(new SurchargeRates(fixedKey, "", ""));
+        if (rates.isEmpty()) {
+            rates.add(new SurchargeRates(PERCENTAGE, "", ""));
+            rates.add(new SurchargeRates(FIXED, "", ""));
         }
 
         return dataManager.getSessions().getSurchargeRates();
@@ -636,15 +634,15 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
         List<String> rfnList = new ArrayList<>();
         for (TransactionSessions session : dataManager.getCurrentLane().getTrasactions()) {
             Object response = session.getResponse();
-            if (response != null && response instanceof LinkedHashMap) {
+            if (response instanceof LinkedHashMap) {
 				LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) response;
-            	if(map.get("responseType") != null && ((String)map.get("responseType"))
-            			.equalsIgnoreCase(ResponseType.TRANSACTION)) {
-                    String rfn = map.get("rfn") != null ? (String) map.get("rfn") : null;
-                    if (rfn!= null && !isNullOrWhiteSpace(rfn)) {
-                        rfnList.add(rfn);
-                    }
-            	}
+            	boolean isTxnResponse = map.get("responseType") != null && ((String)map.get("responseType"))
+            			.equalsIgnoreCase(ResponseType.TRANSACTION);
+            	Object rfn = map.get("rfn");
+    			boolean hasRfnValue = rfn != null && !isNullOrWhiteSpace((String)rfn);
+				if(isTxnResponse && hasRfnValue) {
+                    rfnList.add((String)rfn);
+				}
             }
         }
         return rfnList;

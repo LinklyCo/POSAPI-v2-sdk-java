@@ -1,7 +1,6 @@
 package com.linkly.pos.sdk.adapters.enums;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -30,15 +29,15 @@ class GraphicCodeAdapterTest {
             "{\"type1\":\"0\",\"type2\":\"1\",\"type3\":\"2\",\"type4\":\"3\",\"type5\":"
                 + "\"4\",\"type6\":\"5\",\"type7\":\"6\",\"type8\":\" \",\"type9\":\"Unknown\"}";
         TestClass testClass = adapter.fromJson(content);
-        assertTrue(testClass.getType1().equals(GraphicCode.Processing));
-        assertTrue(testClass.getType2().equals(GraphicCode.Verify));
-        assertTrue(testClass.getType3().equals(GraphicCode.Question));
-        assertTrue(testClass.getType4().equals(GraphicCode.Card));
-        assertTrue(testClass.getType5().equals(GraphicCode.Account));
-        assertTrue(testClass.getType6().equals(GraphicCode.PIN));
-        assertTrue(testClass.getType7().equals(GraphicCode.Finished));
-        assertTrue(testClass.getType8().equals(GraphicCode.None));
-        assertTrue(testClass.getType9().equals(GraphicCode.Unknown));
+        assertEquals(GraphicCode.Processing, testClass.getType1());
+        assertEquals(GraphicCode.Verify, testClass.getType2());
+        assertEquals(GraphicCode.Question, testClass.getType3());
+        assertEquals(GraphicCode.Card, testClass.getType4());
+        assertEquals(GraphicCode.Account, testClass.getType5());
+        assertEquals(GraphicCode.PIN, testClass.getType6());
+        assertEquals(GraphicCode.Finished, testClass.getType7());
+        assertEquals(GraphicCode.None, testClass.getType8());
+        assertEquals(GraphicCode.Unknown, testClass.getType9());
     }
 
     private static class TestClass {

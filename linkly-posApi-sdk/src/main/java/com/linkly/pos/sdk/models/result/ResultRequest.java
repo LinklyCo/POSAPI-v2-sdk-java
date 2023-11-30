@@ -57,8 +57,8 @@ public class ResultRequest implements IBaseRequest, IValidatable {
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        if (validationErrors.size() > 0) {
-            throw new InvalidArgumentException(String.join(", ", validationErrors));
+        if (!validationErrors.isEmpty()) {
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }
 

@@ -1,7 +1,10 @@
 package com.linkly.pos.sdk.service.impl;
 
 import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,17 +39,33 @@ import com.squareup.moshi.Types;
 public class MockEventListener implements IPosApiEventListener {
 
     private final List<String> responseContents = new ArrayList<>();
-
-    public String getResponseContent(String responseType) {
-        for (String content : responseContents) {
-            if (content.contains(responseType)) {
-                return content;
+    
+    public String getResponseContent(String responseType, int secondsDelay) {
+    	Instant start = Instant.now();
+        long timeElapsed = Duration.between(start, start).toSeconds();
+        while (timeElapsed < secondsDelay) {
+        	List<String> synchedResponseContents = Collections.synchronizedList(
+        			new ArrayList<>(responseContents));
+    		for (String content : synchedResponseContents) {
+                if (content.contains(responseType)) {
+                    return content;
+                }
             }
+            timeElapsed = Duration.between(start, Instant.now()).toSeconds();
         }
         return String.join(", ", responseContents);
     }
 
-    public List<String> getResponseContents() {
+    public List<String> getResponseContents(int expectedNumberOfResponse, int seconds) {
+    	Instant start = Instant.now();
+        long timeElapsed = Duration.between(start, start).toSeconds();
+
+        while (timeElapsed < seconds) {
+        	if(responseContents.size() == expectedNumberOfResponse) {
+        		break;
+        	}
+            timeElapsed = Duration.between(start, Instant.now()).toSeconds();
+        }
         return responseContents;
     }
 

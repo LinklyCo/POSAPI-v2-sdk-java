@@ -1,7 +1,6 @@
 package com.linkly.pos.sdk.adapters;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,7 +26,7 @@ class DateAdapterTest {
     void should_serializeBool_toLocalDateTime() throws IOException {
         String date = "{\"date\":\"2023-01-13T01:01:00Z\"}";
         TestClass testClass = adapter.fromJson(date);
-        assertTrue(testClass.getDate().equals(DATE_TIME));
+        assertEquals(DATE_TIME, testClass.getDate());
     }
 
     private static class TestClass {

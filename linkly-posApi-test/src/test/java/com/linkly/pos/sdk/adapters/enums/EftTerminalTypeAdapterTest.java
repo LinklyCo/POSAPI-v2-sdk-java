@@ -1,7 +1,6 @@
 package com.linkly.pos.sdk.adapters.enums;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -32,15 +31,15 @@ class EftTerminalTypeAdapterTest {
             + "\"Verifone\",\"type7\":\"Keycorp\",\"type8\":\"PCEFTPOSVirtualPinpad\","
             + "\"type9\":\"Unknown\"}";
         TestClass testClass = adapter.fromJson(content);
-        assertTrue(testClass.getType1().equals(EftTerminalType.IngenicoNPT710));
-        assertTrue(testClass.getType2().equals(EftTerminalType.IngenicoPX328));
-        assertTrue(testClass.getType3().equals(EftTerminalType.Ingenicoi5110));
-        assertTrue(testClass.getType4().equals(EftTerminalType.Ingenicoi3070));
-        assertTrue(testClass.getType5().equals(EftTerminalType.Sagem));
-        assertTrue(testClass.getType6().equals(EftTerminalType.Verifone));
-        assertTrue(testClass.getType7().equals(EftTerminalType.Keycorp));
-        assertTrue(testClass.getType8().equals(EftTerminalType.LinklyVirtualPinPad));
-        assertTrue(testClass.getType9().equals(EftTerminalType.Unknown));
+        assertEquals(EftTerminalType.IngenicoNPT710, testClass.getType1());
+        assertEquals(EftTerminalType.IngenicoPX328, testClass.getType2());
+        assertEquals(EftTerminalType.Ingenicoi5110, testClass.getType3());
+        assertEquals(EftTerminalType.Ingenicoi3070, testClass.getType4());
+        assertEquals(EftTerminalType.Sagem, testClass.getType5());
+        assertEquals(EftTerminalType.Verifone, testClass.getType6());
+        assertEquals(EftTerminalType.Keycorp, testClass.getType7());
+        assertEquals(EftTerminalType.LinklyVirtualPinPad, testClass.getType8());
+        assertEquals(EftTerminalType.Unknown, testClass.getType9());
     }
 
     private static class TestClass {

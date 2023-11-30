@@ -15,7 +15,7 @@ public class SurchargeOptions implements IPurchaseAnalysisDataConverter {
     }
   
     public boolean isNotEmpty() {
-    	return surcharges.size() > 0;
+    	return !surcharges.isEmpty();
     }
 
     @Override

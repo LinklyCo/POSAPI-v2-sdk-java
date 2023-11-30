@@ -98,7 +98,7 @@ class DepositRequestTest {
     void should_not_return_messages_ifNotEmpty() {
         DepositRequest request = new DepositRequest(150, 0, 0);
         request.setTxnRef("1234567");
-        assertEquals(request.getTxnType(), TxnType.Deposit);
+        assertEquals(TxnType.Deposit, request.getTxnType());
         request.validate();
     }
 

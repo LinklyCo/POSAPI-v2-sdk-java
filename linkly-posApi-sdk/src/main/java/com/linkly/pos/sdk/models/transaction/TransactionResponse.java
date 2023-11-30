@@ -15,85 +15,41 @@ import com.squareup.moshi.Json;
 
 public class TransactionResponse extends PosApiResponseWithResult {
 
-    @Json(name = "TxnType")
-    private TxnType txntype;
-
-    @Json(name = "Merchant")
+    private TxnType txnType;
     private String merchant;
-
-    @Json(name = "CardType")
     private String cardType;
-
-    @Json(name = "CardName")
     private String cardName;
-
-    @Json(name = "RRN")
     private String rrn;
-
-    @Json(name = "DateSettlement")
     private LocalDateTime dateSettlement;
 
-    @Json(name = "AmtCash")
+    @Json(name = "amtCash")
     private int amountCash;
 
-    @Json(name = "AmtPurchase")
+    @Json(name = "amtPurchase")
     private int amount;
 
-    @Json(name = "AmtTip")
+    @Json(name = "amtTip")
     private int amountTip;
 
-    @Json(name = "AuthCode")
     private int authCode;
-
-    @Json(name = "TxnRef")
     private String txnRef;
-
-    @Json(name = "Pan")
     private String pan;
-
-    @Json(name = "DateExpiry")
     private String dateExpiry;
-
-    @Json(name = "Track2")
     private String track2;
-
-    @Json(name = "AccountType")
     private AccountType accountType;
-
-    @Json(name = "TxnFlags")
     private TransactionFlags txnFlags;
-
-    @Json(name = "BalanceReceived")
     private boolean balanceReceived;
-
-    @Json(name = "AvailableBalance")
     private int availableBalance;
-
-    @Json(name = "ClearedFundsBalance")
     private int clearedFundsBalance;
-
-    @Json(name = "Date")
     private LocalDateTime date;
 
-    @Json(name = "Catid")
+	@Json(name = "catid")
     private String catId;
 
-    @Json(name = "Caid")
+    @Json(name = "caid")
     private String caId;
-
-    @Json(name = "Stan")
+    
     private int stan;
-
-    @Json(name = "RFN")
-    private String rfn;
-
-    @Json(name = "AmountTotal")
-    private int amountTotal;
-
-    @Json(name = "AmountSurcharge")
-    private int amountSurcharge;
-
-    @Json(name = "Receipts")
     private List<ReceiptResponse> receipts;
 
     /**
@@ -102,8 +58,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
      * 
      * @return txntype
      */
-    public TxnType getTxntype() {
-        return txntype;
+    public TxnType getTxnType() {
+        return txnType;
     }
 
     /**
@@ -112,8 +68,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
      * @param txntype
      *            The TxnType value.
      */
-    public void setTxntype(TxnType txntype) {
-        this.txntype = txntype;
+    public void setTxnType(TxnType txnType) {
+        this.txnType = txnType;
     }
 
     /**
@@ -564,16 +520,6 @@ public class TransactionResponse extends PosApiResponseWithResult {
     }
 
     /**
-     * Sets the rfn.
-     * 
-     * @param rfn
-     *            The String value of rfn.
-     */
-    public void setRfn(String rfn) {
-        this.rfn = rfn;
-    }
-
-    /**
      * If tipping or surcharging is enabled this should return the total transaction amount (in
      * cents)
      * including tips and surcharges. This value comes from
@@ -592,16 +538,6 @@ public class TransactionResponse extends PosApiResponseWithResult {
     }
 
     /**
-     * Sets the amountTotal.
-     * 
-     * @param amountTotal
-     *            The int value of amountTotal.
-     */
-    public void setAmountTotal(int amountTotal) {
-        this.amountTotal = amountTotal;
-    }
-
-    /**
      * If surcharging is enabled this should return the surcharge amount (in cents). This value
      * comes from {@link PosApiResponse#getPurchaseAnalysisData()}
      * 
@@ -616,16 +552,6 @@ public class TransactionResponse extends PosApiResponseWithResult {
             totalSurcharge = Integer.parseInt(surchargeTotalStr);
         }
         return totalSurcharge;
-    }
-
-    /**
-     * Sets the amountSurcharge.
-     * 
-     * @param amountSurcharge
-     *            The int value of amountSurcharge.
-     */
-    public void setAmountSurcharge(int amountSurcharge) {
-        this.amountSurcharge = amountSurcharge;
     }
 
     /**

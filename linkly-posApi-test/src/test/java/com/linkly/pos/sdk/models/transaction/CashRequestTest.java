@@ -41,7 +41,7 @@ class CashRequestTest {
     void should_not_returnMessages_ifNotEmpty() {
         CashRequest request = new CashRequest(10);
         request.setTxnRef("1234567");
-        assertEquals(request.getTxnType(), TxnType.Cash);
+        assertEquals(TxnType.Cash, request.getTxnType());
         request.validate();
     }
 

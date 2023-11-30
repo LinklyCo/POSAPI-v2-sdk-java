@@ -12,7 +12,7 @@ class PosApiResponseWithResultTest {
 
     @Test
     void should_deserialize_success() throws IOException {
-        String json = "{\"ResponseCode\":\"200\",\"ResponseText\":\"success\",\"Success\":true}";
+        String json = "{\"responseCode\":\"200\",\"responseText\":\"success\",\"success\":true}";
         PosApiResponseWithResult response = MoshiUtil.fromJson(json,
             PosApiResponseWithResult.class);
         assertEquals("200", response.getResponseCode());

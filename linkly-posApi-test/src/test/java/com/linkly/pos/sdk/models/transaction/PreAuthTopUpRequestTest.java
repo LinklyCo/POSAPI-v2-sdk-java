@@ -53,9 +53,9 @@ class PreAuthTopUpRequestTest {
         PreAuthTopUpRequest request = new PreAuthTopUpRequest(1, "test rfn");
         request.setTxnRef("1234567");
 
-        assertEquals(request.getPurchaseAnalysisData()
-            .get(Constants.PurchaseAnalysisData.RFN), "test rfn");
-        assertEquals(request.getTxnType(), TxnType.PreAuthTopUp);
+        assertEquals("test rfn", request.getPurchaseAnalysisData()
+            .get(Constants.PurchaseAnalysisData.RFN));
+        assertEquals(TxnType.PreAuthTopUp, request.getTxnType());
         request.validate();
     }
 
@@ -64,8 +64,8 @@ class PreAuthTopUpRequestTest {
         PreAuthTopUpRequest request = new PreAuthTopUpRequest(0, "test rfn");
         request.setTxnRef("1234567");
 
-        assertEquals(request.getPurchaseAnalysisData()
-            .get(Constants.PurchaseAnalysisData.RFN), "test rfn");
+        assertEquals("test rfn", request.getPurchaseAnalysisData()
+            .get(Constants.PurchaseAnalysisData.RFN));
         InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
             request.validate();
         });

@@ -14,103 +14,45 @@ import com.squareup.moshi.Json;
  */
 public class StatusResponse extends PosApiResponseWithResult {
 
-    @Json(name = "Merchant")
     private String merchant;
-
-    @Json(name = "AIIC")
     private String aiic;
-
-    @Json(name = "NII")
     private int nii;
 
-    @Json(name = "Catid")
+    @Json(name = "catid")
     private String catId;
 
-    @Json(name = "Caid")
+    @Json(name = "caid")
     private String caId;
-
-    @Json(name = "TimeOut")
-    private int timeOut;
-
-    @Json(name = "LoggedOn")
+    private int timeout;
     private boolean loggedOn;
-
-    @Json(name = "PinPadSerialNumber")
     private String pinPadSerialNumber;
-
-    @Json(name = "PinPadVersion")
     private String pinPadVersion;
-
-    @Json(name = "BankCode")
     private String bankCode;
-
-    @Json(name = "BankDescription")
     private String bankDescription;
-
-    @Json(name = "KVC")
     private String kvc;
-
-    @Json(name = "SafCount")
     private int safCount;
-
-    @Json(name = "NetworkType")
     private NetworkType networkType;
-
-    @Json(name = "HardwareSerial")
     private String hardwareSerial;
-
-    @Json(name = "RetailerName")
     private String retailerName;
-
-    @Json(name = "OptionsFlags")
-    private PinPadOptionFlags optionFlags = new PinPadOptionFlags();
-
-    @Json(name = "SafCreditLimit")
+    private PinPadOptionFlags optionsFlags;
     private int safCreditLimit;
-
-    @Json(name = "SafDebitLimit")
     private int safDebitLimit;
 
-    @Json(name = "MaxSaf")
+    @Json(name = "maxSAF")
     private int maxSaf;
 
-    @Json(name = "KeyHandlingScheme")
     private KeyHandlingType keyHandlingScheme;
-
-    @Json(name = "CashoutLimit")
     private int cashOutLimit;
-
-    @Json(name = "RefundLimit")
     private int refundLimit;
-
-    @Json(name = "CPATVersion")
     private String cpatVersion;
-
-    @Json(name = "NameTableVersion")
     private String nameTableVersion;
-
-    @Json(name = "TerminalCommsType")
     private TerminalCommsType terminalCommsType;
-
-    @Json(name = "CardMisreadCount")
     private int cardMisreadCount;
-
-    @Json(name = "TotalMemoryInTerminal")
     private int totalMemoryInTerminal;
-
-    @Json(name = "FreeMemoryInTerminal")
     private int freeMemoryInTerminal;
-
-    @Json(name = "EFTTerminalType")
     private EftTerminalType eftTerminalType;
-
-    @Json(name = "NumAppsInTerminal")
     private int numAppsInTerminal;
-
-    @Json(name = "NumLinesOnDisplay")
     private int numLinesOnDisplay;
-
-    @Json(name = "HardwareInceptionDate")
     private LocalDateTime hardwareInceptionDate;
 
     /**
@@ -213,8 +155,8 @@ public class StatusResponse extends PosApiResponseWithResult {
      * 
      * @return int
      */
-    public int getTimeOut() {
-        return timeOut;
+    public int getTimeout() {
+        return timeout;
     }
 
     /**
@@ -222,8 +164,8 @@ public class StatusResponse extends PosApiResponseWithResult {
      * 
      * @param timeOut The int value of timeOut.
      */
-    public void setTimeOut(int timeOut) {
-        this.timeOut = timeOut;
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     /**
@@ -417,8 +359,8 @@ public class StatusResponse extends PosApiResponseWithResult {
      * 
      * @return PinPadOptionFlags
      */
-    public PinPadOptionFlags getOptionFlags() {
-        return optionFlags;
+    public PinPadOptionFlags getOptionsFlags() {
+        return optionsFlags;
     }
 
     /**
@@ -426,8 +368,8 @@ public class StatusResponse extends PosApiResponseWithResult {
      * 
      * @param optionFlags The PinPadOptionFlags value.
      */
-    public void setOptionFlags(PinPadOptionFlags optionFlags) {
-        this.optionFlags = optionFlags;
+    public void setOptionsFlags(PinPadOptionFlags optionsFlags) {
+        this.optionsFlags = optionsFlags;
     }
 
     /**

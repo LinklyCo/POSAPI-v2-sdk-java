@@ -12,7 +12,7 @@ class ReprintReceiptResponseTest {
 
     @Test
     void should_deserialize_success() throws IOException {
-        String json = "{\"Merchant\":\"001\",\"ReceiptText\":[\"receipt1\",\"receipt2\"]}";
+        String json = "{\"merchant\":\"001\",\"receiptText\":[\"receipt1\",\"receipt2\"]}";
         ReprintReceiptResponse response = MoshiUtil.fromJson(json, ReprintReceiptResponse.class);
         assertEquals("001", response.getMerchant());
         assertEquals("receipt1", response.getReceiptText().get(0));

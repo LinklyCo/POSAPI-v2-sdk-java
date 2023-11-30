@@ -13,10 +13,10 @@ class QueryCardResponseTest {
 
     @Test
     void should_deserialize_success() throws IOException {
-        String json = "{\"AccountType\":\"3\",\"CardName\":\"testcard\",\"IsTrack1Available\":"
-            + "true,\"IsTrack2Available\":true,\"IsTrack3Available\":true,\"Merchant\":"
-            + "\"merchant1\",\"Success\":false,\"Track1\":\"track1\",\"Track2\":\"track2\","
-            + "\"Track3\":\"track3\"}";
+        String json = "{\"accountType\":\"3\",\"cardName\":\"testcard\",\"isTrack1Available\":"
+            + "true,\"isTrack2Available\":true,\"isTrack3Available\":true,\"merchant\":"
+            + "\"merchant1\",\"success\":false,\"track1\":\"track1\",\"track2\":\"track2\","
+            + "\"track3\":\"track3\"}";
 
         QueryCardResponse response = MoshiUtil.fromJson(json, QueryCardResponse.class);
 

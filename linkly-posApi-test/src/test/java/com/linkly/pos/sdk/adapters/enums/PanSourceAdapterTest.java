@@ -1,7 +1,6 @@
 package com.linkly.pos.sdk.adapters.enums;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -29,15 +28,15 @@ class PanSourceAdapterTest {
         String content = "{\"type1\":\" \",\"type2\":\"K\",\"type3\":\"S\",\"type4\":\"0\","
             + "\"type5\":\"1\",\"type6\":\"2\",\"type7\":\"3\",\"type8\":\"4\",\"type9\":\"5\"}";
         TestClass testClass = adapter.fromJson(content);
-        assertTrue(testClass.getType1().equals(PanSource.PinPad));
-        assertTrue(testClass.getType2().equals(PanSource.PosKeyed));
-        assertTrue(testClass.getType3().equals(PanSource.PosSwiped));
-        assertTrue(testClass.getType4().equals(PanSource.Internet));
-        assertTrue(testClass.getType5().equals(PanSource.TeleOrder));
-        assertTrue(testClass.getType6().equals(PanSource.Moto));
-        assertTrue(testClass.getType7().equals(PanSource.CustomerPresent));
-        assertTrue(testClass.getType8().equals(PanSource.RecurringTransaction));
-        assertTrue(testClass.getType9().equals(PanSource.Installment));
+        assertEquals(PanSource.PinPad, testClass.getType1());
+        assertEquals(PanSource.PosKeyed, testClass.getType2());
+        assertEquals(PanSource.PosSwiped, testClass.getType3());
+        assertEquals(PanSource.Internet, testClass.getType4());
+        assertEquals(PanSource.TeleOrder, testClass.getType5());
+        assertEquals(PanSource.Moto, testClass.getType6());
+        assertEquals(PanSource.CustomerPresent, testClass.getType7());
+        assertEquals(PanSource.RecurringTransaction, testClass.getType8());
+        assertEquals(PanSource.Installment, testClass.getType9());
     }
 
     private static class TestClass {

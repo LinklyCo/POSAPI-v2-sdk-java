@@ -19,12 +19,4 @@ public class PreAuthTopUpRequest extends PreAuthManipulationRequest {
         setRfn(rfn);
         super.amount = amount;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validate() {
-        super.validate();
-    }
 }

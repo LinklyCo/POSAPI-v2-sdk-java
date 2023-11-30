@@ -12,7 +12,7 @@ class ConfigureMerchantResponseTest {
 
     @Test
     void should_deserialize_success() throws IOException {
-        String json = "{\"Merchant\":\"merchant1\",\"Success\":false}";
+        String json = "{\"merchant\":\"merchant1\",\"success\":false}";
         ConfigureMerchantResponse response = MoshiUtil.fromJson(json,
             ConfigureMerchantResponse.class);
         assertEquals("merchant1", response.getMerchant());

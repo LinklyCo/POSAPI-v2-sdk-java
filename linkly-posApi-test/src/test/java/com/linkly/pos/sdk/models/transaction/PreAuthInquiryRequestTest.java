@@ -55,9 +55,9 @@ class PreAuthInquiryRequestTest {
         PreAuthInquiryRequest request = new PreAuthInquiryRequest("rfn");
         request.setTxnRef("1234567");
 
-        assertEquals(request.getPurchaseAnalysisData()
-            .get(Constants.PurchaseAnalysisData.RFN), "rfn");
-        assertEquals(request.getTxnType(), TxnType.PreAuthInquiry);
+        assertEquals("rfn", request.getPurchaseAnalysisData()
+            .get(Constants.PurchaseAnalysisData.RFN));
+        assertEquals(TxnType.PreAuthInquiry, request.getTxnType());
         request.validate();
     }
 

@@ -44,7 +44,7 @@ public @interface BoolToBitString {
             if (value == null) {
                 return false;
             }
-            return value.equals("1") ? true : false;
+            return value.equals("1");
         }
     }
 }

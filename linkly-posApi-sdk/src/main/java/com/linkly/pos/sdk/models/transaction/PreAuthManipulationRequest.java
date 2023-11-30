@@ -39,7 +39,7 @@ public abstract class PreAuthManipulationRequest extends FollowUpTransactionRequ
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        if(validationErrors.size() > 0) {
+        if (!validationErrors.isEmpty()) {
         	throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }

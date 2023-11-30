@@ -1,19 +1,12 @@
 package com.linkly.pos.sdk.models;
 
-import com.squareup.moshi.Json;
-
 /**
  * Response type for requests which have a response code.
  */
 public class PosApiResponseWithResult extends PosApiResponse {
 
-    @Json(name = "Success")
     protected boolean success;
-
-    @Json(name = "ResponseCode")
     protected String responseCode;
-
-    @Json(name = "ResponseText")
     protected String responseText;
 
     /**

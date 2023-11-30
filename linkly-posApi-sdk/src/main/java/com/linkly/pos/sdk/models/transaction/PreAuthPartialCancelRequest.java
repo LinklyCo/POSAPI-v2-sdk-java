@@ -19,12 +19,4 @@ public class PreAuthPartialCancelRequest extends PreAuthManipulationRequest {
         setRfn(rfn);
         super.amount = amount;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validate() {
-        super.validate();
-    }
 }

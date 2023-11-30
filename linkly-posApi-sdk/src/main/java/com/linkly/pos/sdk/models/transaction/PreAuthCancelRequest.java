@@ -17,12 +17,4 @@ public class PreAuthCancelRequest extends FollowUpTransactionRequest {
         setRfn(rfn);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validate() {
-        super.validate();
-    }
-
 }

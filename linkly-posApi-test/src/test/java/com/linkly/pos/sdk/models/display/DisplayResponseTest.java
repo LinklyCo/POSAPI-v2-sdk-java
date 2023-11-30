@@ -14,10 +14,10 @@ class DisplayResponseTest {
 
     @Test
     void should_deserialize_success() throws IOException {
-        String json = "{\"AcceptYesKeyFlag\":true,\"AuthoriseKeyFlag\":true,\"CancelKeyFlag\":"
-            + "true,\"DeclineNoKeyFlag\":true,\"DisplayText\":[\"display1\",\"display2\"],"
-            + "\"GraphicCode\":\"3\",\"InputType\":\"3\",\"LineLength\":20,\"NumberOfLines\":"
-            + "100,\"OKKeyFlag\":true}";
+        String json = "{\"acceptYesKeyFlag\":true,\"authoriseKeyFlag\":true,\"cancelKeyFlag\":"
+            + "true,\"declineNoKeyFlag\":true,\"displayText\":[\"display1\",\"display2\"],"
+            + "\"graphicCode\":\"3\",\"inputType\":\"3\",\"lineLength\":20,\"numberOfLines\":"
+            + "100,\"okKeyFlag\":true}";
         DisplayResponse response = MoshiUtil.fromJson(json, DisplayResponse.class);
 
         assertEquals(100, response.getNumberOfLines());

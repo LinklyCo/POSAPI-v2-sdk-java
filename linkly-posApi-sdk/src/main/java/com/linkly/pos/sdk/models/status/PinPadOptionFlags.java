@@ -1,58 +1,24 @@
 package com.linkly.pos.sdk.models.status;
 
-import com.squareup.moshi.Json;
-
 /**
  * PIN pad terminal supported options.
  */
 public class PinPadOptionFlags {
-
-    @Json(name = "Tipping")
     private boolean tipping;
-
-    @Json(name = "PreAuth")
     private boolean preAuth;
-
-    @Json(name = "Completions")
     private boolean completions;
-
-    @Json(name = "CashOut")
     private boolean cashOut;
-
-    @Json(name = "Refund")
     private boolean refund;
-
-    @Json(name = "Balance")
     private boolean balance;
-
-    @Json(name = "Deposit")
     private boolean deposit;
-
-    @Json(name = "Voucher")
     private boolean voucher;
-
-    @Json(name = "Moto")
     private boolean moto;
-
-    @Json(name = "AutoCompletion")
     private boolean autoCompletion;
-
-    @Json(name = "EFB")
     private boolean efb;
-
-    @Json(name = "EMV")
     private boolean emv;
-
-    @Json(name = "Training")
     private boolean training;
-
-    @Json(name = "Withdrawal")
     private boolean withdrawal;
-
-    @Json(name = "Transfer")
     private boolean transfer;
-
-    @Json(name = "StartCash")
     private boolean startCash;
 
     /**

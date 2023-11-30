@@ -13,8 +13,8 @@ class SettlementResponseTest {
     @Test
     void should_deserialize_success() throws IOException {
 
-        String json = "{\"Merchant\":\"001\",\"SettlementData\":\"settlement data\","
-            + "\"Success\":false}";
+        String json = "{\"merchant\":\"001\",\"settlementData\":\"settlement data\","
+            + "\"success\":false}";
         SettlementResponse response = MoshiUtil.fromJson(json, SettlementResponse.class);
         assertEquals("001", response.getMerchant());
         assertEquals("settlement data", response.getSettlementData());

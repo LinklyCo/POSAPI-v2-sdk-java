@@ -2,38 +2,20 @@ package com.linkly.pos.sdk.models.queryCard;
 
 import com.linkly.pos.sdk.models.PosApiResponseWithResult;
 import com.linkly.pos.sdk.models.enums.AccountType;
-import com.squareup.moshi.Json;
 
 /**
  * Response to a {@link QueryCardRequest}.
  */
 public class QueryCardResponse extends PosApiResponseWithResult {
 
-    @Json(name = "Merchant")
     private String merchant;
-
-    @Json(name = "IsTrack1Available")
     private boolean isTrack1Available;
-
-    @Json(name = "IsTrack2Available")
     private boolean isTrack2Available;
-
-    @Json(name = "IsTrack3Available")
     private boolean isTrack3Available;
-
-    @Json(name = "Track1")
     private String track1;
-
-    @Json(name = "Track2")
     private String track2;
-
-    @Json(name = "Track3")
     private String track3;
-
-    @Json(name = "CardName")
     private String cardName;
-
-    @Json(name = "AccountType")
     private AccountType accountType;
 
     /**

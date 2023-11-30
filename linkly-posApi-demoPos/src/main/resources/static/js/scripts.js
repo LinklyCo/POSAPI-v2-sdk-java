@@ -96,6 +96,8 @@ function getResponses() {
                       case 'LOGON':
                         populateResult(body);
                         populateLogs('LogonComplete: ' + body['responseText'].replace(/\s/g, '&nbsp;'));
+                        console.log('test');
+                        console.log(document.querySelector('.approveBox'));
                         document.querySelector('.approveBox').style.display = 'none';
                         enableButtons();
                       break;
@@ -778,7 +780,6 @@ function sendKey(evt) {
         data: ""
     };
     let body = JSON.stringify(request);
-    console.log(body);
     post('sendKey', body);
     document.querySelector('.approveBox').style.display = "none";
 }

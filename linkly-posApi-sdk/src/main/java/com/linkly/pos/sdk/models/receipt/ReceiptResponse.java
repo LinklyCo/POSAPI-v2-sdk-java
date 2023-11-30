@@ -1,12 +1,10 @@
 package com.linkly.pos.sdk.models.receipt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.linkly.pos.sdk.models.PosApiResponse;
 import com.linkly.pos.sdk.models.enums.ReceiptType;
 import com.linkly.pos.sdk.service.IPosApiEventListener;
-import com.squareup.moshi.Json;
 
 /**
  * This message is returned asynchronously when a receipt event occurs on the PIN pad. To handle
@@ -15,13 +13,8 @@ import com.squareup.moshi.Json;
  */
 public class ReceiptResponse extends PosApiResponse {
 
-    @Json(name = "ReceiptType")
-    private ReceiptType receiptType;
-
-    @Json(name = "ReceiptText")
-    private List<String> receiptText = new ArrayList<>();
-
-    @Json(name = "IsPrePrint")
+    private ReceiptType type;
+    private List<String> receiptText;
     private boolean isPrePrint;
 
     /**
@@ -29,18 +22,18 @@ public class ReceiptResponse extends PosApiResponse {
      * 
      * @return ReceiptType
      */
-    public ReceiptType getReceiptType() {
-        return receiptType;
+    public ReceiptType getType() {
+        return type;
     }
 
     /**
-     * Sets the receiptType.
+     * Sets the type.
      * 
-     * @param receiptType
+     * @param type
      *            The ReceiptType value.
      */
-    public void setReceiptType(ReceiptType receiptType) {
-        this.receiptType = receiptType;
+    public void setType(ReceiptType type) {
+        this.type = type;
     }
 
     /**

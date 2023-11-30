@@ -37,6 +37,10 @@ public class DateAdapter {
      */
     @FromJson
     public LocalDateTime fromJson(String value) {
-        return LocalDateTime.parse(value, DTF_PARSE);
+    	try {
+    		return LocalDateTime.parse(value, DTF_PARSE);
+    	} catch (Exception e) {
+    		return LocalDateTime.now();
+    	}
     }
 }

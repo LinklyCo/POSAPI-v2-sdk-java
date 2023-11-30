@@ -7,7 +7,6 @@ import com.linkly.pos.sdk.models.PosApiResponse;
 import com.linkly.pos.sdk.models.enums.GraphicCode;
 import com.linkly.pos.sdk.models.enums.InputType;
 import com.linkly.pos.sdk.service.IPosApiEventListener;
-import com.squareup.moshi.Json;
 
 /**
  * This message is returned asynchronously when a display event occurs on the PIN pad. To handle
@@ -17,34 +16,15 @@ import com.squareup.moshi.Json;
  */
 public class DisplayResponse extends PosApiResponse {
 
-    @Json(name = "NumberOfLines")
     private int numberOfLines;
-
-    @Json(name = "LineLength")
     private int lineLength;
-
-    @Json(name = "DisplayText")
     private List<String> displayText = new ArrayList<>();
-
-    @Json(name = "CancelKeyFlag")
     private boolean cancelKeyFlag;
-
-    @Json(name = "AcceptYesKeyFlag")
     private boolean acceptYesKeyFlag;
-
-    @Json(name = "DeclineNoKeyFlag")
     private boolean declineNoKeyFlag;
-
-    @Json(name = "AuthoriseKeyFlag")
     private boolean authoriseKeyFlag;
-
-    @Json(name = "OKKeyFlag")
     private boolean okKeyFlag;
-
-    @Json(name = "InputType")
     private InputType inputType;
-
-    @Json(name = "GraphicCode")
     private GraphicCode graphicCode;
 
     /**

@@ -88,6 +88,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 public class PosApiService implements IPosApiService {
 
     private static final String COMMON_REQUEST_WRAPPER = "request";
+    private static final String RESPONSE_TYPE_KEY = "responseType";
 
     private final IPosApiEventListener eventListener;
     private final PosVendorDetails posVendorDetails;
@@ -495,12 +496,11 @@ public class PosApiService implements IPosApiService {
         }
 
         logger.log(Level.INFO, "Result request successful. {0}", new Object[] { sessionId });
-
         try {
             JSONArray jsonArray = new JSONArray(apiResponse.getBody());
             for (int ctr = 0; ctr < jsonArray.length(); ctr++) {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(ctr);
-                String responseIdentifier = String.valueOf(jsonObject.get("ResponseType"));
+                String responseIdentifier = String.valueOf(jsonObject.get(RESPONSE_TYPE_KEY));
                 PosApiResponse posApiResponse = null;
                 switch (responseIdentifier) {
                     case ResponseType.LOGON:

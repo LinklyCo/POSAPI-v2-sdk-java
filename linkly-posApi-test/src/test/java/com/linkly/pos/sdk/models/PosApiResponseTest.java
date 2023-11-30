@@ -13,7 +13,7 @@ class PosApiResponseTest {
 
     @Test
     void should_deserialize_success() throws IOException {
-        String json = "{\"PurchaseAnalysisData\":{\"key\":\"value\"},\"ResponseType\":\"logon\"}";
+        String json = "{\"purchaseAnalysisData\":{\"key\":\"value\"},\"responseType\":\"logon\"}";
         PosApiResponse response = MoshiUtil.fromJson(json, PosApiResponse.class);
 
         assertEquals(ResponseType.Logon, response.getResponseType());

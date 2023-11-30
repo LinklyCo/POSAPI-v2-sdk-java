@@ -1,7 +1,6 @@
 package com.linkly.pos.sdk.adapters.enums;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
@@ -28,11 +27,11 @@ class CommsMethodTypeAdapterTest {
         String content =
             "{\"type1\":\" \",\"type2\":\"0\",\"type3\":\"1\",\"type4\":\"2\",\"type5\":\"3\"}";
         TestClass testClass = adapter.fromJson(content);
-        assertTrue(testClass.getType1().equals(CommsMethodType.NotSet));
-        assertTrue(testClass.getType2().equals(CommsMethodType.Unknown));
-        assertTrue(testClass.getType3().equals(CommsMethodType.P66));
-        assertTrue(testClass.getType4().equals(CommsMethodType.Argen));
-        assertTrue(testClass.getType5().equals(CommsMethodType.X25));
+        assertEquals(CommsMethodType.NotSet, testClass.getType1());
+        assertEquals(CommsMethodType.Unknown, testClass.getType2());
+        assertEquals(CommsMethodType.P66, testClass.getType3());
+        assertEquals(CommsMethodType.Argen, testClass.getType4());
+        assertEquals(CommsMethodType.X25, testClass.getType5());
     }
 
     private static class TestClass {

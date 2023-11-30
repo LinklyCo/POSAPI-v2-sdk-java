@@ -1,9 +1,8 @@
 package com.linkly.pos.sdk.common;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,13 +11,13 @@ class EnumLookupTest {
     @Test
     void should_lookupEnum_withCorrectValues() {
         TestEnum foundEnum = EnumLookup.findEnumValue(TestEnum.class, "enum2");
-        assertTrue(foundEnum == TestEnum.ENUM2);
+        assertEquals(TestEnum.ENUM2, foundEnum);
     }
 
     @Test
     void should_lookupEnum_notFound() {
         TestEnum foundEnum = EnumLookup.findEnumValue(TestEnum.class, "enum3");
-        assertFalse(foundEnum == TestEnum.ENUM2);
+        assertNotEquals(TestEnum.ENUM2, foundEnum);
     }
 
     @Test

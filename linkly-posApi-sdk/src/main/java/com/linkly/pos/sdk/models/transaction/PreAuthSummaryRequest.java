@@ -26,12 +26,4 @@ public class PreAuthSummaryRequest extends TransactionRequest {
         getPurchaseAnalysisData().put(Constants.PurchaseAnalysisData.PAI, String.valueOf(
             value));
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validate() {
-        super.validate();
-    }
 }

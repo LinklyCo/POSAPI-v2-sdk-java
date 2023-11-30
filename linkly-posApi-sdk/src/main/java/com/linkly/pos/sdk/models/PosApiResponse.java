@@ -3,17 +3,13 @@ package com.linkly.pos.sdk.models;
 import java.util.Map;
 
 import com.linkly.pos.sdk.models.enums.ResponseType;
-import com.squareup.moshi.Json;
 
 /**
  * Common model for POS API responses.
  */
 public class PosApiResponse {
 
-    @Json(name = "ResponseType")
     protected ResponseType responseType;
-
-    @Json(name = "PurchaseAnalysisData")
     protected Map<String, String> purchaseAnalysisData;
 
     /**

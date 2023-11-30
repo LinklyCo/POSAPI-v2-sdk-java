@@ -16,12 +16,4 @@ public class PreAuthExtendRequest extends FollowUpTransactionRequest {
         setTxnType(TxnType.PreAuthExtend);
         setRfn(rfn);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validate() {
-        super.validate();
-    }
 }

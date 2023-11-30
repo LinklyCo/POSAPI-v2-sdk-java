@@ -4,35 +4,19 @@ import com.linkly.pos.sdk.models.enums.CardEntryType;
 import com.linkly.pos.sdk.models.enums.CommsMethodType;
 import com.linkly.pos.sdk.models.enums.CurrencyStatus;
 import com.linkly.pos.sdk.models.enums.PayPassStatus;
-import com.squareup.moshi.Json;
 
 /**
  * The flags that apply to the transaction.
  */
 public class TransactionFlags {
 
-    @Json(name = "Offline")
     private String offline;
-
-    @Json(name = "ReceiptPrinted")
     private String receiptPrinted;
-
-    @Json(name = "CardEntry")
     private CardEntryType cardEntry;
-
-    @Json(name = "CommsMethod")
     private CommsMethodType commsMethod;
-
-    @Json(name = "Currency")
     private CurrencyStatus currency;
-
-    @Json(name = "PayPass")
     private PayPassStatus payPass;
-
-    @Json(name = "UndefinedFlag6")
     private String undefinedFlag6;
-
-    @Json(name = "UndefinedFlag7")
     private String undefinedFlag7;
 
     /**

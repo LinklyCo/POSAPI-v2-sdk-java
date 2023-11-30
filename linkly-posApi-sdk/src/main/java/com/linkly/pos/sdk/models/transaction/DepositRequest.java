@@ -97,7 +97,7 @@ public class DepositRequest extends TransactionRequest implements IValidatable {
         if (totalChequesError != null) {
             validationErrors.add(totalChequesError);
         }
-        if(validationErrors.size() > 0) {
+        if (!validationErrors.isEmpty()) {
         	throw new InvalidArgumentException(String.join(", ", validationErrors));
         }
     }
