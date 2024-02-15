@@ -1,5 +1,7 @@
 package com.linkly.pos.demoPos;
 
+import com.linkly.pos.sdk.models.enums.AccountType;
+import com.linkly.pos.sdk.models.enums.PanSource;
 import com.linkly.pos.sdk.models.transaction.TransactionRequest;
 
 public class DemoPosTransactionRequest extends TransactionRequest {
@@ -23,8 +25,8 @@ public class DemoPosTransactionRequest extends TransactionRequest {
 	private String amountCash;
 	private String totalCheques;
 	private boolean plb;
-	private String panSourceTemp;
-	private String accountTypeTemp;
+	private String panSourceTemp = PanSource.PinPad.name();
+	private String accountTypeTemp = AccountType.Default.name();
 		
 	public String getTotalCheques() {
 		return totalCheques;

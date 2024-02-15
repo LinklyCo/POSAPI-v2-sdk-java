@@ -32,7 +32,7 @@ public class MoshiUtilTest {
     void should_serialize_forClass() throws IOException {
         String testClassContent = "{\"str\": \"123\"}";
         TestClass testClass = MoshiUtil.fromJson(testClassContent, TestClass.class);
-        assertEquals(testClass.getStr(), "123");
+        assertEquals("123", testClass.getStr());
     }
 
     @Test
@@ -40,9 +40,9 @@ public class MoshiUtilTest {
         String testClassContent = "[{\"str\":\"123\"},{\"str\":\"1234\"}]";
         Type type = Types.newParameterizedType(List.class, TestClass.class);
         List<TestClass> testClasses = MoshiUtil.fromJson(testClassContent, type);
-        assertEquals(testClasses.size(), 2);
-        assertEquals(testClasses.get(0).getStr(), "123");
-        assertEquals(testClasses.get(1).getStr(), "1234");
+        assertEquals(2, testClasses.size());
+        assertEquals("123", testClasses.get(0).getStr());
+        assertEquals("1234", testClasses.get(1).getStr());
     }
 
     private static class TestClass {

@@ -1,6 +1,6 @@
 package com.linkly.pos.sdk.common;
 
-import static com.linkly.pos.sdk.common.StringUtil.*;
+import static com.linkly.pos.sdk.common.StringUtil.isNullOrWhiteSpace;
 import static java.text.MessageFormat.format;
 
 import java.util.Arrays;
@@ -31,8 +31,10 @@ public final class ValidatorUtil {
     /**
      * Validates the the provided value is not null.
      * 
-     * @param value The string for checking.
-     * @param fieldName The field name of the string for checking.
+     * @param value
+     *            The string for checking.
+     * @param fieldName
+     *            The field name of the string for checking.
      * @return A validation error message if the value is null, otherwise returns 'null'.
      */
     public static String notNull(String value, String fieldName) {
@@ -45,9 +47,12 @@ public final class ValidatorUtil {
     /**
      * Validates the the provided value is not null or contains only white spaces.
      * 
-     * @param value The string for checking.
-     * @param fieldName The field name of the string for checking.
-     * @return A validation error message if the value is null or contains only white spaces, otherwise returns 'null'.
+     * @param value
+     *            The string for checking.
+     * @param fieldName
+     *            The field name of the string for checking.
+     * @return A validation error message if the value is null or contains only white spaces,
+     *         otherwise returns 'null'.
      */
     public static String notEmpty(String value, String fieldName) {
         if (StringUtil.isNullOrWhiteSpace(value)) {
@@ -59,8 +64,10 @@ public final class ValidatorUtil {
     /**
      * Validates the the provided UUID is not null.
      * 
-     * @param uuid The unique identifier for checking.
-     * @param fieldName The field name of the string for checking.
+     * @param uuid
+     *            The unique identifier for checking.
+     * @param fieldName
+     *            The field name of the string for checking.
      * @return A validation error message if the value is null, otherwise returns 'null'.
      */
     public static String notEmpty(UUID uuid, String fieldName) {
@@ -73,10 +80,14 @@ public final class ValidatorUtil {
     /**
      * Validates the the provided value is not null and is present within the provided enum class.
      * 
-     * @param enumType The enum class to find the provided value.
-     * @param value The enum value to lookup.
-     * @param field The field name of the string for checking.
-     * @return A validation error message if the value is null or if it is not found, otherwise returns 'null'.
+     * @param enumType
+     *            The enum class to find the provided value.
+     * @param value
+     *            The enum value to lookup.
+     * @param field
+     *            The field name of the string for checking.
+     * @return A validation error message if the value is null or if it is not found, otherwise
+     *         returns 'null'.
      */
     public static String isInEnum(Class<?> enumType, Enum<?> value, String field) {
         boolean inEnum = false;
@@ -99,10 +110,14 @@ public final class ValidatorUtil {
     /**
      * Validates the that the provided Integer value is greater than the specified number.
      * 
-     * @param value The Integer value to be checked.
-     * @param field The field name of the string for checking.
-     * @param num The number the value should be greater than.
-     * @return A validation error message if the value is not greater than the specified number, otherwise returns 'null'.
+     * @param value
+     *            The Integer value to be checked.
+     * @param fieldName
+     *            The field name of the string for checking.
+     * @param num
+     *            The number the value should be greater than.
+     * @return A validation error message if the value is not greater than the specified number,
+     *         otherwise returns 'null'.
      */
     public static String greaterThan(int value, String fieldName, int num) {
         if (value <= num) {
@@ -112,12 +127,17 @@ public final class ValidatorUtil {
     }
 
     /**
-     * Validates the that the provided Integer value is greater than or equal to the specified number.
+     * Validates the that the provided Integer value is greater than or equal to the specified
+     * number.
      * 
-     * @param value The Integer value to be checked.
-     * @param field The field name of the string for checking.
-     * @param num The number the value should be greater than or equal to.
-     * @return A validation error message if the value is not greater than or equal to the specified number, otherwise returns 'null'.
+     * @param value
+     *            The Integer value to be checked.
+     * @param fieldName
+     *            The field name of the string for checking.
+     * @param num
+     *            The number the value should be greater than or equal to.
+     * @return A validation error message if the value is not greater than or equal to the specified
+     *         number, otherwise returns 'null'.
      */
     public static String greaterThanOrEqual(int value, String fieldName, int num) {
         if (value < num) {
@@ -129,26 +149,36 @@ public final class ValidatorUtil {
     /**
      * Validates the that the provided value is greater than the specified number.
      * 
-     * @param value The string for checking.
-     * @param field The field name of the string for checking.
-     * @param length The length the string length should be equal to.
-     * @return A validation error message if the value length is not equal to the specified length, otherwise returns 'null'.
+     * @param value
+     *            The string for checking.
+     * @param fieldName
+     *            The field name of the string for checking.
+     * @param length
+     *            The length the string length should be equal to.
+     * @return A validation error message if the value length is not equal to the specified length,
+     *         otherwise returns 'null'.
      */
     public static String length(String value, String fieldName, int length) {
-        if (!isNullOrWhiteSpace(value) && value.length() != length) {
+        if (value != null && value.length() != length) {
             return format(LENGTH_NOT_EQUAL, fieldName, length);
         }
         return null;
     }
 
     /**
-     * Validates the that the provided Integer value is between the specified min and max or equal to either the specified min or max.
+     * Validates the that the provided Integer value is between the specified min and max or equal
+     * to either the specified min or max.
      * 
-     * @param value The Integer value to be checked.
-     * @param field The field name of the string for checking.
-     * @param min The number the value should be greater than or equal to.
-     * @param max The number the value should be less than or equal to.
-     * @return A validation error message if the value is not between the specified min and max or equal to either the specified min or max, otherwise returns 'null'.
+     * @param value
+     *            The Integer value to be checked.
+     * @param fieldName
+     *            The field name of the string for checking.
+     * @param min
+     *            The number the value should be greater than or equal to.
+     * @param max
+     *            The number the value should be less than or equal to.
+     * @return A validation error message if the value is not between the specified min and max or
+     *         equal to either the specified min or max, otherwise returns 'null'.
      */
     public static String inclusiveBetween(int value, String fieldName, int min, int max) {
         boolean greaterThanMin = value >= min;
@@ -162,11 +192,16 @@ public final class ValidatorUtil {
     /**
      * Validates the that the provided Integer value is between the specified min and max.
      * 
-     * @param value The Integer value to be checked.
-     * @param field The field name of the string for checking.
-     * @param min The number the value should be greater than.
-     * @param max The number the value should be less than.
-     * @return A validation error message if the value is not between the specified min and max, otherwise returns 'null'.
+     * @param value
+     *            The Integer value to be checked.
+     * @param fieldName
+     *            The field name of the string for checking.
+     * @param min
+     *            The number the value should be greater than.
+     * @param max
+     *            The number the value should be less than.
+     * @return A validation error message if the value is not between the specified min and max,
+     *         otherwise returns 'null'.
      */
     public static String exclusiveBetween(int value, String fieldName, int min, int max) {
         boolean greaterThanMin = value > min;
@@ -180,10 +215,14 @@ public final class ValidatorUtil {
     /**
      * Validates the that the provided String value length does not exceed the specified max length.
      * 
-     * @param value The string for checking.
-     * @param field The field name of the string for checking.
-     * @param length The length the string length should not exceed.
-     * @return A validation error message if the string length exceeds the specified max length, otherwise returns 'null'.
+     * @param value
+     *            The string for checking.
+     * @param fieldName
+     *            The field name of the string for checking.
+     * @param length
+     *            The length the string length should not exceed.
+     * @return A validation error message if the string length exceeds the specified max length,
+     *         otherwise returns 'null'.
      */
     public static String maxLength(String value, String fieldName, int length) {
         if (!isNullOrWhiteSpace(value) && value.length() > length) {
@@ -195,12 +234,15 @@ public final class ValidatorUtil {
     /**
      * Validates the that the provided value matches the card expiration regular expression pattern.
      * 
-     * @param value The string for checking.
-     * @param field The field name of the string for checking.
-     * @return A validation error message if the string does not match the card expiration pattern, otherwise returns 'null'.
+     * @param value
+     *            The string for checking.
+     * @param fieldName
+     *            The field name of the string for checking.
+     * @return A validation error message if the string does not match the card expiration pattern,
+     *         otherwise returns 'null'.
      */
     public static String expiryDate(String value, String fieldName) {
-        if (!isNullOrWhiteSpace(value) && !value.matches(CARD_EXPIRY_REGEX)) {
+        if (value != null && !value.matches(CARD_EXPIRY_REGEX)) {
             return format(NOT_MATCH, fieldName, value);
         }
         return null;
@@ -209,13 +251,16 @@ public final class ValidatorUtil {
     /**
      * Validates the that the provided map contains the specified key.
      * 
-     * @param map The map to check the specified key.
-     * @param key The key name to check within the provided map.
-     * @return A validation error message if the map does not contain the specified key, otherwise returns 'null'.
+     * @param map
+     *            The map to check the specified key.
+     * @param key
+     *            The key name to check within the provided map.
+     * @return A validation error message if the map does not contain the specified key, otherwise
+     *         returns 'null'.
      */
     public static String hasValue(Map<String, String> map, String key) {
         String value = map.get(key);
-        if (value == null) {
+        if (isNullOrWhiteSpace(value)) {
             return format(NOT_IN_MAP, key);
         }
         return null;

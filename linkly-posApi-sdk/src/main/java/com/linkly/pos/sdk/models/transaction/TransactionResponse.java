@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.linkly.pos.sdk.common.Constants.PurchaseAnalysisData;
+import com.linkly.pos.sdk.models.PosApiResponse;
 import com.linkly.pos.sdk.models.PosApiResponseWithResult;
 import com.linkly.pos.sdk.models.enums.AccountType;
 import com.linkly.pos.sdk.models.enums.TxnType;
@@ -14,87 +15,44 @@ import com.squareup.moshi.Json;
 
 public class TransactionResponse extends PosApiResponseWithResult {
 
-    @Json(name = "TxnType")
-    private TxnType txntype;
-
-    @Json(name = "Merchant")
+    private TxnType txnType;
     private String merchant;
-
-    @Json(name = "CardType")
     private String cardType;
-
-    @Json(name = "CardName")
     private String cardName;
-
+    
     @Json(name = "RRN")
     private String rrn;
-
-    @Json(name = "DateSettlement")
     private LocalDateTime dateSettlement;
 
-    @Json(name = "AmtCash")
+    @Json(name = "amtCash")
     private int amountCash;
 
-    @Json(name = "AmtPurchase")
+    @Json(name = "amtPurchase")
     private int amount;
 
-    @Json(name = "AmtTip")
+    @Json(name = "amtTip")
     private int amountTip;
 
-    @Json(name = "AuthCode")
     private int authCode;
-
-    @Json(name = "TxnRef")
     private String txnRef;
-
-    @Json(name = "Pan")
     private String pan;
-
-    @Json(name = "DateExpiry")
     private String dateExpiry;
-
-    @Json(name = "Track2")
     private String track2;
-
-    @Json(name = "AccountType")
     private AccountType accountType;
-
-    @Json(name = "TxnFlags")
     private TransactionFlags txnFlags;
-
-    @Json(name = "BalanceReceived")
     private boolean balanceReceived;
-
-    @Json(name = "AvailableBalance")
     private int availableBalance;
-
-    @Json(name = "ClearedFundsBalance")
     private int clearedFundsBalance;
-
-    @Json(name = "Date")
     private LocalDateTime date;
 
-    @Json(name = "Catid")
+	@Json(name = "catid")
     private String catId;
 
-    @Json(name = "Caid")
+    @Json(name = "caid")
     private String caId;
-
-    @Json(name = "Stan")
+    
     private int stan;
-
-    @Json(name = "RFN")
-    private String rfn;
-
-    @Json(name = "AmountTotal")
-    private int amountTotal;
-
-    @Json(name = "AmountSurcharge")
-    private int amountSurcharge;
-
-    @Json(name = "Receipts")
     private List<ReceiptResponse> receipts;
-
 
     /**
      * The type of transaction to perform.
@@ -102,17 +60,18 @@ public class TransactionResponse extends PosApiResponseWithResult {
      * 
      * @return txntype
      */
-    public TxnType getTxntype() {
-        return txntype;
+    public TxnType getTxnType() {
+        return txnType;
     }
 
     /**
      * Sets the txntype.
      * 
-     * @param txntype The TxnType value.
+     * @param txntype
+     *            The TxnType value.
      */
-    public void setTxntype(TxnType txntype) {
-        this.txntype = txntype;
+    public void setTxnType(TxnType txnType) {
+        this.txnType = txnType;
     }
 
     /**
@@ -128,17 +87,20 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the merchant.
      * 
-     * @param merchant The String value of merchant.
+     * @param merchant
+     *            The String value of merchant.
      */
     public void setMerchant(String merchant) {
         this.merchant = merchant;
     }
 
     /**
-     * Indicates the card type used for the transaction as described by the bank. Examples may include:
-     * 'AMEX', 'VISA', 'DEBIT'. The possible values of this field may change between acquirers and PIN pad
+     * Indicates the card type used for the transaction as described by the bank. Examples may
+     * include:
+     * 'AMEX', 'VISA', 'DEBIT'. The possible values of this field may change between acquirers and
+     * PIN pad
      * versions. To identify the payment type used, reference the cardName field.
-     * Example" "AMEX CARD           "
+     * Example" "AMEX CARD "
      * 
      * @return String
      */
@@ -149,7 +111,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the cardType.
      * 
-     * @param cardType The String value of cardType.
+     * @param cardType
+     *            The String value of cardType.
      */
     public void setCardType(String cardType) {
         this.cardType = cardType;
@@ -167,7 +130,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the cardName.
      * 
-     * @param cardName The String value of cardName.
+     * @param cardName
+     *            The String value of cardName.
      */
     public void setCardName(String cardName) {
         this.cardName = cardName;
@@ -186,7 +150,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
      * Sets the rrn.
      * Example: 123456789012
      * 
-     * @param rrn The String value of rrn.
+     * @param rrn
+     *            The String value of rrn.
      */
     public void setRrn(String rrn) {
         this.rrn = rrn;
@@ -204,7 +169,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the dateSettlement.
      * 
-     * @param dateSettlement The LocalDateTime value of dateSettlement.
+     * @param dateSettlement
+     *            The LocalDateTime value of dateSettlement.
      */
     public void setDateSettlement(LocalDateTime dateSettlement) {
         this.dateSettlement = dateSettlement;
@@ -223,7 +189,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
      * Sets the amountCash.
      * Example: 0
      * 
-     * @param amountCash The int value of amountCash.
+     * @param amountCash
+     *            The int value of amountCash.
      */
     public void setAmountCash(int amountCash) {
         this.amountCash = amountCash;
@@ -242,7 +209,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the amount.
      * 
-     * @param amount The int value of amount.
+     * @param amount
+     *            The int value of amount.
      */
     public void setAmount(int amount) {
         this.amount = amount;
@@ -261,7 +229,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the amountTip.
      * 
-     * @param amountTip The int value of amountTip.
+     * @param amountTip
+     *            The int value of amountTip.
      */
     public void setAmountTip(int amountTip) {
         this.amountTip = amountTip;
@@ -280,7 +249,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the authCode.
      * 
-     * @param authCode The int value of autCode.
+     * @param authCode
+     *            The int value of autCode.
      */
     public void setAuthCode(int authCode) {
         this.authCode = authCode;
@@ -299,7 +269,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the txnRef
      * 
-     * @param txnRef The String value of txnRef.
+     * @param txnRef
+     *            The String value of txnRef.
      */
     public void setTxnRef(String txnRef) {
         this.txnRef = txnRef;
@@ -307,7 +278,7 @@ public class TransactionResponse extends PosApiResponseWithResult {
 
     /**
      * The card number to use when pan source of POS keyed is used.
-     * Example: "37601234567890      "
+     * Example: "37601234567890 "
      * 
      * @return String
      */
@@ -318,7 +289,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the pan.
      * 
-     * @param pan The String value of pan.
+     * @param pan
+     *            The String value of pan.
      */
     public void setPan(String pan) {
         this.pan = pan;
@@ -336,7 +308,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the dateExpiry.
      * 
-     * @param dateExpiry The String value of dateExpiry.
+     * @param dateExpiry
+     *            The String value of dateExpiry.
      */
     public void setDateExpiry(String dateExpiry) {
         this.dateExpiry = dateExpiry;
@@ -344,7 +317,7 @@ public class TransactionResponse extends PosApiResponseWithResult {
 
     /**
      * The track 2 to use when of POS swiped is used.
-     * Example: "37601234567890=0949                     "
+     * Example: "37601234567890=0949 "
      * 
      * @return String
      */
@@ -355,7 +328,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the track2.
      * 
-     * @param track2 The String value of track2.
+     * @param track2
+     *            The String value of track2.
      */
     public void setTrack2(String track2) {
         this.track2 = track2;
@@ -374,7 +348,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the accountType.
      * 
-     * @param accountType The AccountType value.
+     * @param accountType
+     *            The AccountType value.
      */
     public void setAccountType(AccountType accountType) {
         this.accountType = accountType;
@@ -392,7 +367,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the txnFlags.
      * 
-     * @param txnFlags The TransactionFlags value.
+     * @param txnFlags
+     *            The TransactionFlags value.
      */
     public void setTxnFlags(TransactionFlags txnFlags) {
         this.txnFlags = txnFlags;
@@ -410,7 +386,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the balancedReceived.
      * 
-     * @param balanceReceived The boolean value of balancedReceived.
+     * @param balanceReceived
+     *            The boolean value of balancedReceived.
      */
     public void setBalanceReceived(boolean balanceReceived) {
         this.balanceReceived = balanceReceived;
@@ -428,7 +405,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the availableBalance.
      * 
-     * @param availableBalance The int value of availableBalance.
+     * @param availableBalance
+     *            The int value of availableBalance.
      */
     public void setAvailableBalance(int availableBalance) {
         this.availableBalance = availableBalance;
@@ -446,7 +424,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the clearedFundsBalance.
      * 
-     * @param clearedFundsBalance The int value of clearedFundsBalance.
+     * @param clearedFundsBalance
+     *            The int value of clearedFundsBalance.
      */
     public void setClearedFundsBalance(int clearedFundsBalance) {
         this.clearedFundsBalance = clearedFundsBalance;
@@ -464,7 +443,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the date.
      * 
-     * @param date The LocalDateTime value of date.
+     * @param date
+     *            The LocalDateTime value of date.
      */
     public void setDate(LocalDateTime date) {
         this.date = date;
@@ -483,7 +463,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the catId.
      * 
-     * @param catId The String value of catId.
+     * @param catId
+     *            The String value of catId.
      */
     public void setCatId(String catId) {
         this.catId = catId;
@@ -502,7 +483,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the caId.
      * 
-     * @param caId The String value of caId.
+     * @param caId
+     *            The String value of caId.
      */
     public void setCaId(String caId) {
         this.caId = caId;
@@ -520,14 +502,16 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the stan.
      * 
-     * @param stan The int value of stan.
+     * @param stan
+     *            The int value of stan.
      */
     public void setStan(int stan) {
         this.stan = stan;
     }
 
     /**
-     * Transaction reference number returned by the bank or acquirer, required for follow-up transactions
+     * Transaction reference number returned by the bank or acquirer, required for follow-up
+     * transactions
      * such as refunds, pre-auth completions, pre-auth cancellations, etc. This value comes from
      * {@link PurchaseAnalysisData}
      * 
@@ -538,20 +522,12 @@ public class TransactionResponse extends PosApiResponseWithResult {
     }
 
     /**
-     * Sets the rfn.
-     * 
-     * @param rfn The String value of rfn.
-     */
-    public void setRfn(String rfn) {
-        this.rfn = rfn;
-    }
-
-    /**
-     * If tipping or surcharging is enabled this should return the total transaction amount (in cents)
+     * If tipping or surcharging is enabled this should return the total transaction amount (in
+     * cents)
      * including tips and surcharges. This value comes from
      * {@link PurchaseAnalysisData}
      * 
-     * @return
+     * @return total amount from {@link PosApiResponse#getPurchaseAnalysisData()}
      */
     public int getAmountTotal() {
         String amountTotalStr = getValueOrDefault(getPurchaseAnalysisData(),
@@ -560,22 +536,12 @@ public class TransactionResponse extends PosApiResponseWithResult {
         if (amountTotalStr != null) {
             totalAmt = Integer.parseInt(amountTotalStr);
         }
-
         return totalAmt;
     }
 
     /**
-     * Sets the amountTotal.
-     * 
-     * @param amountTotal The int value of amountTotal.
-     */
-    public void setAmountTotal(int amountTotal) {
-        this.amountTotal = amountTotal;
-    }
-
-    /**
-     * If surcharging is enabled this should return the surcharge amount (in cents). This value comes from
-     * {@link PurchaseAnalysisData}
+     * If surcharging is enabled this should return the surcharge amount (in cents). This value
+     * comes from {@link PosApiResponse#getPurchaseAnalysisData()}
      * 
      * @return int
      */
@@ -591,18 +557,9 @@ public class TransactionResponse extends PosApiResponseWithResult {
     }
 
     /**
-     * Sets the amountSurcharge.
-     * 
-     * @param amountSurcharge The int value of amountSurcharge.
-     */
-    public void setAmountSurcharge(int amountSurcharge) {
-        this.amountSurcharge = amountSurcharge;
-    }
-
-    /**
      * Receipts generated by the transaction.
      * 
-     * @return List<ReceiptResponse>
+     * @return list of {@link ReceiptResponse}
      */
     public List<ReceiptResponse> getReceipts() {
         return receipts;
@@ -611,7 +568,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     /**
      * Sets the receipts.
      * 
-     * @param receipts The List<ReceiptResponse> value.
+     * @param receipts
+     *            {@link List} of receipts.
      */
     public void setReceipts(List<ReceiptResponse> receipts) {
         this.receipts = receipts;

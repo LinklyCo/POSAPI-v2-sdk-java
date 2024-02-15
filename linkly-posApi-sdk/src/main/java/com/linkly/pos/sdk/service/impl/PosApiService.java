@@ -31,6 +31,7 @@ import com.linkly.pos.sdk.common.HttpStatusCodeUtil;
 import com.linkly.pos.sdk.common.JSONUtil;
 import com.linkly.pos.sdk.common.MoshiUtil;
 import com.linkly.pos.sdk.common.StringUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.ApiServiceEndpoint;
 import com.linkly.pos.sdk.models.AuthToken;
 import com.linkly.pos.sdk.models.ErrorResponse;
@@ -82,11 +83,12 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  * which handles all the methods accordingly.
  * 
  * To use this service the PIN pad must first be paired using {@link PairingRequest} or if
- * the PIN pad was previously paired use {@link SetPairSecret} to set the pairing secret.
+ * the PIN pad was previously paired use {@link #setPairSecret(String)} to set the pairing secret.
  */
 public class PosApiService implements IPosApiService {
 
     private static final String COMMON_REQUEST_WRAPPER = "request";
+    private static final String RESPONSE_TYPE_KEY = "responseType";
 
     private final IPosApiEventListener eventListener;
     private final PosVendorDetails posVendorDetails;
@@ -113,12 +115,12 @@ public class PosApiService implements IPosApiService {
      * @param serviceEndpoints
      *            Auth and POS API endpoint URIs.
      * @param logger
-     *            custom implementation of {@link java.util.logging.Logging Logger}
+     *            custom implementation of {@link Logger}
      */
     public PosApiService(IPosApiEventListener eventListener, AsyncHttpClient httpClient,
         PosVendorDetails posVendorDetails, PosApiServiceOptions options,
         ApiServiceEndpoint serviceEndpoints, Logger logger) {
-        this.eventListener = eventListener;
+        this.eventListener = new PosApiEventListenerProxy(eventListener);
         httpClient = httpClient == null
             ? Dsl.asyncHttpClient()
             : httpClient;
@@ -138,7 +140,7 @@ public class PosApiService implements IPosApiService {
         logger.log(Level.INFO, "Setting pair-secret");
         if (StringUtil.isNullOrWhiteSpace(pairSecret)) {
             logger.log(Level.WARNING, "pairSecret must not be null or whitespace");
-            throw new IllegalArgumentException("Required pairSecret");
+            throw new InvalidArgumentException("Required pairSecret");
         }
         // Pair secret has not changed. Do nothing.
         if (this.pairSecret != null && this.pairSecret.equals(pairSecret)) {
@@ -162,21 +164,32 @@ public class PosApiService implements IPosApiService {
 
         String uri = uri(ApiType.AUTH, ApiEndpoints.PAIR_ENDPOINT);
         String requestBody = getAdapter(PairingRequest.class).toJson(request);
-        Response completeResponse = asyncHttpExecutor.post(uri, requestBody);
-        boolean failed = invokeErrorIfFailed(request, completeResponse);
-        if (!failed) {
-            try {
-                PairingResponse pairingResponse = MoshiUtil.fromJson(completeResponse
-                    .getResponseBody(), PairingResponse.class);
-                setPairSecret(pairingResponse.getSecret());
-                eventListener.pairingComplete(request, pairingResponse);
-            }
-            catch (IOException e) {
-                logger.log(Level.SEVERE, "pairingRequest: Error: {0}", new Object[] { e
-                    .getMessage() });
-                eventListener.error(null, request, new ErrorResponse(ErrorSource.Internal, null, e
-                    .getMessage(), e));
-            }
+
+        Response completeResponse;
+        try {
+            completeResponse = asyncHttpExecutor.post(uri, requestBody);
+        }
+        catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API,
+                HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), e.getMessage(), e);
+            eventListener.error(null, request, errorResponse);
+            throw e;
+        }
+        if (isRequestFailed(request, completeResponse, null)) {
+            return;
+        }
+        try {
+            PairingResponse pairingResponse = MoshiUtil.fromJson(completeResponse
+                .getResponseBody(), PairingResponse.class);
+            setPairSecret(pairingResponse.getSecret());
+            eventListener.pairingComplete(request, pairingResponse);
+        }
+        catch (IOException e) {
+            logger.log(Level.SEVERE, "pairingRequest: Error: {0}", new Object[] { e
+                .getMessage() });
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.Internal, null, e
+                .getMessage(), e);
+            eventListener.error(null, request, errorResponse);
         }
     }
 
@@ -272,9 +285,7 @@ public class PosApiService implements IPosApiService {
         logger.log(Level.INFO, "Starting sendKeyRequest");
         setPosVendorDetails(request);
         validatePairing("sendKeyRequest");
-        if (validateRequest(request)) {
-            return;
-        }
+        validateRequest(request);
 
         String unformattedUri = uri(ApiType.POS, ApiEndpoints.SEND_KEY_ENDPOINT);
         String uri = MessageFormat.format(unformattedUri, request.getSessionId());
@@ -325,46 +336,54 @@ public class PosApiService implements IPosApiService {
         catch (IOException e) {
             logger.log(Level.SEVERE, "retrieveTransactionRequest: Error: {0}", new Object[] { e
                 .getMessage() });
-            throw new RuntimeException("retrieveTransactionRequest: Error!", e);
+            throw new UnsupportedOperationException("retrieveTransactionRequest: Error!", e);
         }
-
     }
 
-    private void authenticate() {
+    private <T extends IBaseRequest> void authenticate(T request, UUID uuid) {
         logger.log(Level.INFO, "authenticate");
         TokenRequest tokenRequest = new TokenRequest(this.pairSecret, posVendorDetails.getPosName(),
             posVendorDetails.getPosVersion(), posVendorDetails.getPosId(), posVendorDetails
                 .getPosVendorId());
-        try {
-            String uri = uri(ApiType.AUTH, ApiEndpoints.TOKENS_ENDPOINT);
-            String requestBody = getAdapter(TokenRequest.class).toJson(tokenRequest);
-            Response completeResponse = asyncHttpExecutor.post(uri, requestBody);
-            boolean failed = invokeErrorIfFailed(tokenRequest, completeResponse);
 
-            if (!failed) {
-                TokenResponse tokenResponse = MoshiUtil.fromJson(completeResponse.getResponseBody(),
-                    TokenResponse.class);
-                LocalDateTime expiry = LocalDateTime.now().plus(tokenResponse.getExpirySeconds(),
-                    ChronoUnit.SECONDS);
-                authToken = new AuthToken(tokenResponse.getToken(), expiry);
+        String uri = uri(ApiType.AUTH, ApiEndpoints.TOKENS_ENDPOINT);
+        String requestBody = getAdapter(TokenRequest.class).toJson(tokenRequest);
+        Response completeResponse = null;
+        try {
+            completeResponse = asyncHttpExecutor.post(uri, requestBody);
+            if (isRequestFailed(request, completeResponse, uuid)) {
+                return;
             }
+        }
+        catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API,
+                HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), e.getMessage(), e);
+            eventListener.error(uuid, request, errorResponse);
+            throw e;
+        }
+        try {
+            TokenResponse tokenResponse = MoshiUtil.fromJson(completeResponse.getResponseBody(),
+                TokenResponse.class);
+            LocalDateTime expiry = LocalDateTime.now().plus(tokenResponse.getExpirySeconds(),
+                ChronoUnit.SECONDS);
+            authToken = new AuthToken(tokenResponse.getToken(), expiry);
+
         }
         catch (IOException e) {
             logger.log(Level.SEVERE, "authenticate: Error: {0}", new Object[] { e.getMessage() });
-            throw new RuntimeException("authenticate: Error parsing Token Request", e);
         }
     }
 
     private <T extends IBaseRequest> ApiResponse sendPosRequestAsync(T request,
         HttpMethod method, String uri, UUID sessionId) {
 
-        try {
-            if (authToken == null || authToken.isExpiringSoon()) {
-                authenticate();
-            }
-            String authHeaderValue = AuthTokenExtensions.getAuthenticationHeaderValue(authToken);
-            Response completeResponse = null;
+        if (authToken == null || authToken.isExpiringSoon()) {
+            authenticate(request, sessionId);
+        }
+        Response completeResponse = null;
+        String authHeaderValue = AuthTokenExtensions.getAuthenticationHeaderValue(authToken);
 
+        try {
             if (HttpMethod.POST == method) {
                 String requestBody = getAdapter(request.getClass()).toJson(request);
                 requestBody = JSONUtil.wrapRequest(COMMON_REQUEST_WRAPPER, requestBody);
@@ -373,39 +392,37 @@ public class PosApiService implements IPosApiService {
             else if (HttpMethod.GET == method) {
                 completeResponse = asyncHttpExecutor.get(uri, authHeaderValue);
             }
-
-            int statusCode = completeResponse.getStatusCode();
-            if (statusCode == HttpResponseStatus.UNAUTHORIZED.code()) {
-                logger.log(Level.INFO,
-                    "sendPosRequestAsync: Clearing auth token due to failed authentication");
-                authToken = null;
-            }
-            String responseBody = completeResponse.getResponseBody();
-            if (!HttpStatusCodeUtil.isSuccess(statusCode) && !HttpStatusCodeUtil.tooEarly(
-                statusCode) && !(request instanceof SendKeyRequest)) {
-                logger.log(Level.SEVERE, "sendPosRequestAsync: Request unsuccessful. {0}",
-                    new Object[] { responseBody });
-                eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.API,
-                    statusCode, responseBody, null));
-            }
-            return new ApiResponse(HttpStatusCodeUtil.isSuccess(statusCode), statusCode,
-                responseBody);
         }
         catch (Exception e) {
-            eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.API, null, e
-                .getMessage(), e));
-            throw new RuntimeException(e);
+            ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API,
+                HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), e.getMessage(), e);
+            eventListener.error(sessionId, request, errorResponse);
+            throw e;
         }
+
+        int statusCode = completeResponse.getStatusCode();
+        if (statusCode == HttpResponseStatus.UNAUTHORIZED.code()) {
+            logger.log(Level.INFO,
+                "sendPosRequestAsync: Clearing auth token due to failed authentication");
+            authToken = null;
+        }
+        String responseBody = completeResponse.getResponseBody();
+        if (!HttpStatusCodeUtil.isSuccess(statusCode) && !HttpStatusCodeUtil.tooEarly(
+            statusCode) && !(request instanceof SendKeyRequest)) {
+            logger.log(Level.SEVERE, "sendPosRequestAsync: Request unsuccessful. {0}",
+                new Object[] { responseBody });
+            eventListener.error(sessionId, request, new ErrorResponse(ErrorSource.API,
+                statusCode, responseBody, null));
+        }
+        return new ApiResponse(HttpStatusCodeUtil.isSuccess(statusCode), statusCode,
+            responseBody);
     }
 
     private <T extends IBaseRequest> UUID executeCommon(T request, String endpoint) {
         logger.log(Level.INFO, "Validating request");
-        if (validateRequest(request)) {
-            return null;
-        }
+        validateRequest(request);
 
         UUID sessionId = UUID.randomUUID();
-
         String unformattedUri = uri(ApiType.POS, endpoint);
         String uri = MessageFormat.format(unformattedUri, sessionId);
 
@@ -473,17 +490,17 @@ public class PosApiService implements IPosApiService {
                 sessionId });
             logger.log(Level.SEVERE, "HTTP Status: {0}", new Object[] { apiResponse
                 .getStatusCode() });
-            throw new RuntimeException("sendResultRequestAsync(). Result request unsuccessful."
-                + " Status: " + apiResponse.getStatusCode());
+            throw new UnsupportedOperationException(
+                "sendResultRequestAsync(). Result request unsuccessful."
+                    + " Status: " + apiResponse.getStatusCode());
         }
 
         logger.log(Level.INFO, "Result request successful. {0}", new Object[] { sessionId });
-
         try {
             JSONArray jsonArray = new JSONArray(apiResponse.getBody());
             for (int ctr = 0; ctr < jsonArray.length(); ctr++) {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(ctr);
-                String responseIdentifier = String.valueOf(jsonObject.get("ResponseType"));
+                String responseIdentifier = String.valueOf(jsonObject.get(RESPONSE_TYPE_KEY));
                 PosApiResponse posApiResponse = null;
                 switch (responseIdentifier) {
                     case ResponseType.LOGON:
@@ -536,17 +553,9 @@ public class PosApiService implements IPosApiService {
         return posApiResponses;
     }
 
-    private boolean validateRequest(IBaseRequest validatableRequest) {
+    private void validateRequest(IBaseRequest validatableRequest) {
         IValidatable request = (IValidatable) validatableRequest;
-        List<String> errors = request.validate();
-        if (!errors.isEmpty()) {
-            String concatenatedErrors = String.join(", ", errors);
-            logger.log(Level.SEVERE, "Validation failed. {0}", new Object[] { concatenatedErrors });
-            eventListener.error(null, validatableRequest,
-                new ErrorResponse(ErrorSource.API, 500, concatenatedErrors, null));
-            return true;
-        }
-        return false;
+        request.validate();
     }
 
     private String uri(ApiType apiType, String relativeUri) {
@@ -596,7 +605,7 @@ public class PosApiService implements IPosApiService {
     private void validatePairing(String method) {
         if (pairSecret == null) {
             logger.log(Level.SEVERE, "{0}: Invoked without pairing", new Object[] { method });
-            throw new IllegalArgumentException("Pairing is required");
+            throw new InvalidArgumentException("Pairing is required");
         }
     }
 
@@ -606,11 +615,18 @@ public class PosApiService implements IPosApiService {
         request.setPosId(posVendorDetails.getPosId());
     }
 
-    private boolean invokeErrorIfFailed(IBaseRequest request, Response response) {
+    private <T extends IBaseRequest> boolean isRequestFailed(T request, Response response,
+        UUID sessionId) {
         if (!HttpStatusCodeUtil.isSuccess(response.getStatusCode())) {
+            String responseBody = response.getResponseBody();
+            if (StringUtil.isNullOrWhiteSpace(responseBody)) {
+                responseBody = response.getStatusText();
+            }
+            logger.log(Level.SEVERE, "{0}: Error: {1}", new Object[] { request.getClass()
+                .getSimpleName(), responseBody });
             ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API, response
-                .getStatusCode(), response.getResponseBody(), null);
-            eventListener.error(null, request, errorResponse);
+                .getStatusCode(), responseBody, null);
+            eventListener.error(sessionId, request, errorResponse);
             return true;
         }
         return false;

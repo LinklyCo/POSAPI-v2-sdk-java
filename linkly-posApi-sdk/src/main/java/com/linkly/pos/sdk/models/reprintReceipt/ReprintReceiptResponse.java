@@ -1,21 +1,16 @@
 package com.linkly.pos.sdk.models.reprintReceipt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.linkly.pos.sdk.models.PosApiResponseWithResult;
-import com.squareup.moshi.Json;
 
 /**
  * Response to a {@link ReprintReceiptRequest}.
  */
 public class ReprintReceiptResponse extends PosApiResponseWithResult {
 
-    @Json(name = "Merchant")
     private String merchant;
-    
-    @Json(name = "ReceiptText")
-    private List<String> receiptText = new ArrayList<>();
+    private List<String> receiptText;
     
     /**
      * Receipt text

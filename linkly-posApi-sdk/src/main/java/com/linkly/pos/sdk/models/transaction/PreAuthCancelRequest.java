@@ -1,7 +1,5 @@
 package com.linkly.pos.sdk.models.transaction;
 
-import java.util.List;
-
 import com.linkly.pos.sdk.models.enums.TxnType;
 
 /**
@@ -17,14 +15,6 @@ public class PreAuthCancelRequest extends FollowUpTransactionRequest {
     public PreAuthCancelRequest(String rfn) {
         setTxnType(TxnType.PreAuthCancel);
         setRfn(rfn);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> validate() {
-        return super.validate();
     }
 
 }

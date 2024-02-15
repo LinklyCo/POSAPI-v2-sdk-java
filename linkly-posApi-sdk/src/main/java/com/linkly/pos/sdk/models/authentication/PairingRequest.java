@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.IBaseRequest;
 import com.linkly.pos.sdk.models.IValidatable;
 
@@ -23,9 +24,12 @@ public class PairingRequest implements IBaseRequest, IValidatable {
     /**
      * Initialise a new pairing request.
      * 
-     * @param username Linkly cloud username.
-     * @param password Linkly cloud password.
-     * @param pairCode Pairing code as displayed on the pin-pad.
+     * @param username
+     *            Linkly cloud username.
+     * @param password
+     *            Linkly cloud password.
+     * @param pairCode
+     *            Pairing code as displayed on the pin-pad.
      */
     public PairingRequest(String username, String password, String pairCode) {
         super();
@@ -46,7 +50,8 @@ public class PairingRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the username.
      * 
-     * @param username The String value of username.
+     * @param username
+     *            The String value of username.
      */
     public void setUsername(String username) {
         this.username = username;
@@ -64,7 +69,8 @@ public class PairingRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the password.
      * 
-     * @param password The String value of password.
+     * @param password
+     *            The String value of password.
      */
     public void setPassword(String password) {
         this.password = password;
@@ -82,7 +88,8 @@ public class PairingRequest implements IBaseRequest, IValidatable {
     /**
      * Sets the paircode.
      * 
-     * @param pairCode The String value of pairCode.
+     * @param pairCode
+     *            The String value of pairCode.
      */
     public void setPairCode(String pairCode) {
         this.pairCode = pairCode;
@@ -91,16 +98,20 @@ public class PairingRequest implements IBaseRequest, IValidatable {
     /**
      * Validate the model using {@link ValidatorUtil}
      * 
-     * @return Validation results containing list of model errors (if any)
+     * @throws InvalidArgumentException
+     *             if contains validation errors
      */
     @Override
-    public List<String> validate() {
-        return Arrays.asList(
+    public void validate() {
+        List<String> validationErrors = Arrays.asList(
             ValidatorUtil.notEmpty(this.username, "username"),
             ValidatorUtil.notEmpty(this.password, "pairCode"),
             ValidatorUtil.notEmpty(this.pairCode, "username"))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
+        if (!validationErrors.isEmpty()) {
+            throw new InvalidArgumentException(String.join(", ", validationErrors));
+        }
     }
 }

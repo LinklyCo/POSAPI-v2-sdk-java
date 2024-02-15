@@ -1,24 +1,38 @@
 package com.linkly.pos.sdk.models.result;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
+
+import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 
 class ResultRequestTest {
 
     @Test
     void should_return_messages_ifEmpty() {
         ResultRequest request = new ResultRequest(null);
-        assertEquals("[sessionId: Must not be empty.]", request.validate()
-            .toString());
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("sessionId: Must not be empty.", exception.getMessage());
     }
 
     @Test
     void should_not_returnMessages_ifNotEmpty() {
-        ResultRequest request = new ResultRequest(UUID.randomUUID());
-        assertEquals(0, request.validate().size());
+        new ResultRequest(UUID.randomUUID()).validate();
     }
 
+    @Test
+    void should_deserialize_success() {
+        UUID uuid = UUID.randomUUID();
+        ResultRequest request = new ResultRequest(uuid);
+
+        String json = MoshiUtil.getAdapter(ResultRequest.class).toJson(request);
+        assertTrue(json.contains("\"sessionId\":\"" + uuid.toString() + "\""));
+    }
 }

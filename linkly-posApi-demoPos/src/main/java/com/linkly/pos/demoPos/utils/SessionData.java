@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.linkly.pos.sdk.models.ErrorResponse;
-import com.linkly.pos.sdk.models.PosApiResponse;
 import com.linkly.pos.sdk.models.enums.ReceiptAutoPrint;
 
 public class SessionData {
@@ -236,7 +235,7 @@ public class SessionData {
         }
 
         public TransactionSessions(String type, UUID sessionId, String requestTimestamp,
-            String responseTimestamp, Object request, PosApiResponse response,
+            String responseTimestamp, Object request, Object response,
             ErrorResponse error) {
             super();
             this.type = type;

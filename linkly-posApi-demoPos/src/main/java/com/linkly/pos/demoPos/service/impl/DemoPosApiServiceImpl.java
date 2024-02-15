@@ -13,6 +13,7 @@ import static com.linkly.pos.sdk.models.enums.ResponseType.Transaction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -34,6 +35,8 @@ import com.linkly.pos.demoPos.utils.NumberUtils;
 import com.linkly.pos.demoPos.utils.SessionData.Lane;
 import com.linkly.pos.demoPos.utils.SessionData.Pad;
 import com.linkly.pos.demoPos.utils.SessionData.SurchargeRates;
+import com.linkly.pos.demoPos.utils.SessionData.TransactionSessions;
+import com.linkly.pos.sdk.common.Constants.ResponseType;
 import com.linkly.pos.sdk.common.StringUtil;
 import com.linkly.pos.sdk.models.ApiServiceEndpoint;
 import com.linkly.pos.sdk.models.ErrorResponse;
@@ -155,7 +158,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
             dataManager.saveTransaction(uuid, request.getClass().getSimpleName(), request, null,
                 null);
         }
-        if (request.getPurchaseAnalysisData().size() > 0) {
+        if (!request.getPurchaseAnalysisData().isEmpty()) {
             dataManager.savePads(request.getPurchaseAnalysisData());
         }
         return uuid;
@@ -168,7 +171,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
             dataManager.saveTransaction(uuid, request.getClass().getSimpleName(), request, null,
                 null);
         }
-        if (request.getPurchaseAnalysisData().size() > 0) {
+        if (!request.getPurchaseAnalysisData().isEmpty()) {
             dataManager.savePads(request.getPurchaseAnalysisData());
         }
         return uuid;
@@ -181,7 +184,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
             dataManager.saveTransaction(uuid, request.getClass().getSimpleName(), request, null,
                 null);
         }
-        if (request.getPurchaseAnalysisData().size() > 0) {
+        if (!request.getPurchaseAnalysisData().isEmpty()) {
             dataManager.savePads(request.getPurchaseAnalysisData());
         }
         return uuid;
@@ -229,17 +232,11 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
 
         var options = surchargeOptions(request);
         var transactionRequest = transactionRequestFactory(request);
-        if (!isNullOrWhiteSpace(request.getPanSourceTemp())) {
-            transactionRequest.setPanSource(PanSource.valueOf(request.getPanSourceTemp()));
-        }
-        if (!isNullOrWhiteSpace(request.getAccountTypeTemp())) {
-            transactionRequest.setAccountType(AccountType.valueOf(request.getAccountTypeTemp()));
-        }
+        
         transactionRequest.setTxnRef(request.getTxnRef());
         transactionRequest.setCurrencyCode(request.getCurrencyCode());
         transactionRequest.setTrainingMode(request.isTrainingMode());
         transactionRequest.setAuthCode(request.getAuthCode());
-        transactionRequest.setDateExpiry(request.getDateExpiry());
         transactionRequest.setProductLevelBlock(request.isPlb());
         transactionRequest.setRrn(request.getRrn());
         transactionRequest.setMerchant(request.getMerchant());
@@ -258,7 +255,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
             dataManager.saveTransaction(uuid, transactionRequest.getClass().getSimpleName(),
                 request, null, null);
         }
-        if (request.getPurchaseAnalysisData().size() > 0) {
+        if (!request.getPurchaseAnalysisData().isEmpty()) {
             dataManager.savePads(request.getPurchaseAnalysisData());
         }
         return uuid;
@@ -411,7 +408,7 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
 
     @Override
     public List<String> users() {
-        return dataManager.getLanes().stream().map(l -> l.getUsername()).filter(Objects::nonNull)
+        return dataManager.getLanes().stream().map(Lane::getUsername).filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 
@@ -509,19 +506,24 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
 
     private void updatePanSource(DemoPosTransactionRequest request,
         TransactionRequest transactionRequest) {
-        if (!isNullOrWhiteSpace(request.getPanSourceTemp())) {
-            PanSource panSource = PanSource.valueOf(request.getPanSourceTemp());
-            if (PanSource.PinPad != panSource) {
-                if (isNullOrWhiteSpace(request.getAccountTypeTemp())) {
-                    transactionRequest.setAccountType(AccountType.valueOf(request
-                        .getAccountTypeTemp()));
-                }
-                if (PanSource.PosSwiped != panSource) {
-                    transactionRequest.setPan(request.getPan());
-                }
-                else {
-                    transactionRequest.setTrack2(request.getTrack2());
-                }
+
+        var panSource = isNullOrWhiteSpace(request.getPanSourceTemp())
+        			? PanSource.PinPad : PanSource.valueOf(request.getPanSourceTemp());
+        var accountType = isNullOrWhiteSpace(request.getAccountTypeTemp())
+        			? AccountType.Default : AccountType.valueOf(request.getAccountTypeTemp());
+        transactionRequest.setPanSource(panSource);
+        transactionRequest.setAccountType(accountType);
+    	
+    	if (PanSource.PinPad != panSource) {
+    		if (StringUtil.isNullOrWhiteSpace(request.getAccountTypeTemp())) {
+    			transactionRequest.setAccountType(AccountType.valueOf(request.getAccountTypeTemp()));
+    		}
+            if (PanSource.PosSwiped == panSource) {
+                transactionRequest.setTrack2(request.getTrack2());
+            }
+            else {
+                transactionRequest.setPan(request.getPan());
+                transactionRequest.setDateExpiry(request.getDateExpiry());
             }
         }
     }
@@ -595,17 +597,15 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
 
     @Override
     public List<SurchargeRates> surchargeRates() {
-        var percentageKey = "Percentage";
-        var fixedKey = "Fixed";
         var rates = dataManager.getSessions().getSurchargeRates();
         if (rates.size() == 1) {
-            String key = rates.get(0).getType().equalsIgnoreCase(fixedKey) ? fixedKey
-                : percentageKey;
+            String key = rates.get(0).getType().equalsIgnoreCase(FIXED) ? FIXED
+                : PERCENTAGE;
             rates.add(new SurchargeRates(key, "", ""));
         }
-        if (rates.size() == 0) {
-            rates.add(new SurchargeRates(percentageKey, "", ""));
-            rates.add(new SurchargeRates(fixedKey, "", ""));
+        if (rates.isEmpty()) {
+            rates.add(new SurchargeRates(PERCENTAGE, "", ""));
+            rates.add(new SurchargeRates(FIXED, "", ""));
         }
 
         return dataManager.getSessions().getSurchargeRates();
@@ -623,5 +623,28 @@ public class DemoPosApiServiceImpl implements DemoPosApiService, IPosApiEventLis
     public List<String> getLogs() {
         var demoLogger = (DemoLogger) logger;
         return demoLogger.getLogs();
+    }
+
+    @Override
+	@SuppressWarnings("unchecked")
+    public List<String> rfnList() {
+        if (CollectionUtils.isEmpty(dataManager.getCurrentLane().getTrasactions())) {
+            return Collections.emptyList();
+        }
+        List<String> rfnList = new ArrayList<>();
+        for (TransactionSessions session : dataManager.getCurrentLane().getTrasactions()) {
+            Object response = session.getResponse();
+            if (response instanceof LinkedHashMap) {
+				LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) response;
+            	boolean isTxnResponse = map.get("responseType") != null && ((String)map.get("responseType"))
+            			.equalsIgnoreCase(ResponseType.TRANSACTION);
+            	Object rfn = map.get("rfn");
+    			boolean hasRfnValue = rfn != null && !isNullOrWhiteSpace((String)rfn);
+				if(isTxnResponse && hasRfnValue) {
+                    rfnList.add((String)rfn);
+				}
+            }
+        }
+        return rfnList;
     }
 }

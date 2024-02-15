@@ -1,8 +1,14 @@
 package com.linkly.pos.sdk.models.reprintReceipt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import com.linkly.pos.sdk.common.MoshiUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
+import com.linkly.pos.sdk.models.enums.ReprintType;
 
 class ReprintReceiptRequestTest {
 
@@ -10,15 +16,16 @@ class ReprintReceiptRequestTest {
     void should_return_messages_ifEmpty() {
         ReprintReceiptRequest request = new ReprintReceiptRequest();
         request.setReprintType(null);
-        assertEquals("[reprintType: Enum null not found in the list: [GetLast, Reprint].]", request
-            .validate()
-            .toString());
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("reprintType: Enum null not found in the list: [GetLast, Reprint].", exception
+            .getMessage());
     }
 
     @Test
     void should_not_returnMessages_ifNotEmpty() {
-        ReprintReceiptRequest request = new ReprintReceiptRequest();
-        assertEquals(0, request.validate().size());
+        new ReprintReceiptRequest().validate();
     }
 
     @Test
@@ -27,9 +34,21 @@ class ReprintReceiptRequestTest {
         request.setMerchant(null);
         request.setApplication(null);
         request.setReceiptAutoPrint(null);
-        assertEquals("[merchant: Must not be empty., application: Must not be empty.,"
-            + " receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].]", request
-                .validate().toString());
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            request.validate();
+        });
+        assertEquals("merchant: Must not be empty., application: Must not be empty., "
+            + "receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].",
+            exception.getMessage());
+    }
+
+    @Test
+    void should_deserialize_success() {
+        ReprintReceiptRequest request = new ReprintReceiptRequest();
+        request.setReprintType(ReprintType.Reprint);
+
+        String json = MoshiUtil.getAdapter(ReprintReceiptRequest.class).toJson(request);
+        assertTrue(json.contains("\"reprintType\":\"1\""));
     }
 
 }

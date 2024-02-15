@@ -13,14 +13,19 @@
 	<name>linkly-posApi-test</name>
 	<description>Linkly POS API Test</description>
 
-
 	<properties>
-		<junit-jupiter.version>5.10.0</junit-jupiter.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<java.version>11</java.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
 
 	<dependencies>
+		<dependency>
+        	<groupId>junit</groupId>
+        	<artifactId>junit</artifactId>
+        	<version>4.13</version>
+        	<scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>com.linkly.pos</groupId>
 			<artifactId>linkly-posApi-sdk</artifactId>
@@ -46,20 +51,20 @@
 	</dependencies>
 	<build>
 		<plugins>
-
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
+				<version>3.0.0-M7</version>
 				<configuration>
-				    <includes>
-				      <include>**/*Test.java</include>
-				    </includes>
-				  </configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.5</version>
+				<version>0.8.10</version>
 				<executions>
 					<execution>
 						<goals>
@@ -68,10 +73,10 @@
 					</execution>
 					<!-- attached to Maven test phase -->
 					<execution>
-						<id>report</id>
+						<id>report-aggregate</id>
 						<phase>test</phase>
 						<goals>
-							<goal>report</goal>
+							<goal>report-aggregate</goal>
 						</goals>
 					</execution>
 				</executions>

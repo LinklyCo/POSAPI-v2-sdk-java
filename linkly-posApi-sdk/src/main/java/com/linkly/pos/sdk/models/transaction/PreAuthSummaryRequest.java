@@ -1,7 +1,5 @@
 package com.linkly.pos.sdk.models.transaction;
 
-import java.util.List;
-
 import com.linkly.pos.sdk.common.Constants;
 import com.linkly.pos.sdk.models.enums.TxnType;
 
@@ -27,13 +25,5 @@ public class PreAuthSummaryRequest extends TransactionRequest {
     public void setPreAuthIndex(int value) {
         getPurchaseAnalysisData().put(Constants.PurchaseAnalysisData.PAI, String.valueOf(
             value));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> validate() {
-        return super.validate();
     }
 }

@@ -1,58 +1,24 @@
 package com.linkly.pos.sdk.models.status;
 
-import com.squareup.moshi.Json;
-
 /**
  * PIN pad terminal supported options.
  */
 public class PinPadOptionFlags {
-
-    @Json(name = "Tipping")
     private boolean tipping;
-
-    @Json(name = "PreAuth")
     private boolean preAuth;
-
-    @Json(name = "Completions")
     private boolean completions;
-
-    @Json(name = "CashOut")
     private boolean cashOut;
-
-    @Json(name = "Refund")
     private boolean refund;
-
-    @Json(name = "Balance")
     private boolean balance;
-
-    @Json(name = "Deposit")
     private boolean deposit;
-
-    @Json(name = "Voucher")
     private boolean voucher;
-
-    @Json(name = "Moto")
     private boolean moto;
-
-    @Json(name = "AutoCompletion")
     private boolean autoCompletion;
-
-    @Json(name = "EFB")
     private boolean efb;
-
-    @Json(name = "EMV")
     private boolean emv;
-
-    @Json(name = "Training")
     private boolean training;
-
-    @Json(name = "Withdrawal")
     private boolean withdrawal;
-
-    @Json(name = "Transfer")
     private boolean transfer;
-
-    @Json(name = "")
     private boolean startCash;
 
     /**
@@ -67,7 +33,8 @@ public class PinPadOptionFlags {
     /**
      * Sets tipping.
      * 
-     * @param tipping The boolean value of tipping.
+     * @param tipping
+     *            The boolean value of tipping.
      */
     public void setTipping(boolean tipping) {
         this.tipping = tipping;
@@ -85,7 +52,8 @@ public class PinPadOptionFlags {
     /**
      * Sets preAuth
      * 
-     * @param preAuth The boolean value of preAuth.
+     * @param preAuth
+     *            The boolean value of preAuth.
      */
     public void setPreAuth(boolean preAuth) {
         this.preAuth = preAuth;
@@ -103,7 +71,8 @@ public class PinPadOptionFlags {
     /**
      * Sets completions
      * 
-     * @param completions The boolean value of completions.
+     * @param completions
+     *            The boolean value of completions.
      */
     public void setCompletions(boolean completions) {
         this.completions = completions;
@@ -121,7 +90,8 @@ public class PinPadOptionFlags {
     /**
      * Sets cashOut.
      * 
-     * @param cashOut The boolean value of cashOut.
+     * @param cashOut
+     *            The boolean value of cashOut.
      */
     public void setCashOut(boolean cashOut) {
         this.cashOut = cashOut;
@@ -139,7 +109,8 @@ public class PinPadOptionFlags {
     /**
      * Sets refund.
      * 
-     * @param refund The boolean value of refund.
+     * @param refund
+     *            The boolean value of refund.
      */
     public void setRefund(boolean refund) {
         this.refund = refund;
@@ -157,7 +128,8 @@ public class PinPadOptionFlags {
     /**
      * Sets balance.
      * 
-     * @param balance The boolean value of balance.
+     * @param balance
+     *            The boolean value of balance.
      */
     public void setBalance(boolean balance) {
         this.balance = balance;
@@ -175,7 +147,8 @@ public class PinPadOptionFlags {
     /**
      * Sets deposit.
      * 
-     * @param deposit The boolean value of deposit.
+     * @param deposit
+     *            The boolean value of deposit.
      */
     public void setDeposit(boolean deposit) {
         this.deposit = deposit;
@@ -193,7 +166,8 @@ public class PinPadOptionFlags {
     /**
      * Sets voucher.
      * 
-     * @param voucher The boolean value of voucher.
+     * @param voucher
+     *            The boolean value of voucher.
      */
     public void setVoucher(boolean voucher) {
         this.voucher = voucher;
@@ -211,7 +185,8 @@ public class PinPadOptionFlags {
     /**
      * Sets moto.
      * 
-     * @param moto The boolean value of moto.
+     * @param moto
+     *            The boolean value of moto.
      */
     public void setMoto(boolean moto) {
         this.moto = moto;
@@ -225,11 +200,12 @@ public class PinPadOptionFlags {
     public boolean isAutoCompletion() {
         return autoCompletion;
     }
- 
+
     /**
      * Sets the autoCompletion.
      * 
-     * @param autoCompletion The boolean value of autoCompletion.
+     * @param autoCompletion
+     *            The boolean value of autoCompletion.
      */
     public void setAutoCompletion(boolean autoCompletion) {
         this.autoCompletion = autoCompletion;
@@ -247,7 +223,8 @@ public class PinPadOptionFlags {
     /**
      * Sets efb.
      * 
-     * @param efb The boolean value of efb.
+     * @param efb
+     *            The boolean value of efb.
      */
     public void setEfb(boolean efb) {
         this.efb = efb;
@@ -265,7 +242,8 @@ public class PinPadOptionFlags {
     /**
      * Sets the emv.
      * 
-     * @param emv The boolean value of emv.
+     * @param emv
+     *            The boolean value of emv.
      */
     public void setEmv(boolean emv) {
         this.emv = emv;
@@ -283,7 +261,8 @@ public class PinPadOptionFlags {
     /**
      * Sets the training.
      * 
-     * @param training The boolean value of training.
+     * @param training
+     *            The boolean value of training.
      */
     public void setTraining(boolean training) {
         this.training = training;
@@ -301,7 +280,8 @@ public class PinPadOptionFlags {
     /**
      * Sets the withdrawal.
      * 
-     * @param withdrawal The boolean value of withdrawal.
+     * @param withdrawal
+     *            The boolean value of withdrawal.
      */
     public void setWithdrawal(boolean withdrawal) {
         this.withdrawal = withdrawal;
@@ -319,7 +299,8 @@ public class PinPadOptionFlags {
     /**
      * Sets the transfer.
      * 
-     * @param transfer The boolean value of transfer.
+     * @param transfer
+     *            The boolean value of transfer.
      */
     public void setTransfer(boolean transfer) {
         this.transfer = transfer;
@@ -337,7 +318,8 @@ public class PinPadOptionFlags {
     /**
      * Sets the startCash
      * 
-     * @param startCash The boolean value of startCash.
+     * @param startCash
+     *            The boolean value of startCash.
      */
     public void setStartCash(boolean startCash) {
         this.startCash = startCash;

@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.PosApiRequest;
 
 /**
@@ -76,8 +77,8 @@ public class SendKeyRequest extends PosApiRequest {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        List<String> parentValidationErrors = super.validate();
+    public void validate() {
+        super.validate();
         List<String> validationErrors = Arrays.asList(
             ValidatorUtil.notEmpty(this.sessionId, "sessionId"),
             ValidatorUtil.notEmpty(this.key, "key"),
@@ -85,8 +86,9 @@ public class SendKeyRequest extends PosApiRequest {
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        validationErrors.addAll(parentValidationErrors);
-        return validationErrors;
+        if (!validationErrors.isEmpty()) {
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.Constants;
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.enums.TxnType;
 import com.squareup.moshi.Json;
 
@@ -40,15 +41,16 @@ public class VoidRequest extends TransactionRequest {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        List<String> parentValidationErrors = super.validate();
+    public void validate() {
+        super.validate();
         List<String> validationErrors = Arrays.asList(
             ValidatorUtil.inclusiveBetween(this.amount, "amount", 1,
                 Constants.Validation.MAX_AMOUNT))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        validationErrors.addAll(parentValidationErrors);
-        return validationErrors;
+        if(!validationErrors.isEmpty()) {
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
+        }
     }
 }

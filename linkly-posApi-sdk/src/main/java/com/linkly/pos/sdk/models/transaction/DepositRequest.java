@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.Constants;
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.IValidatable;
 import com.linkly.pos.sdk.models.enums.TxnType;
 import com.squareup.moshi.Json;
@@ -70,10 +71,9 @@ public class DepositRequest extends TransactionRequest implements IValidatable {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        List<String> parentValidationErrors = super.validate();
+    public void validate() {
+        super.validate();
         List<String> validationErrors = new ArrayList<>();
-
         if (this.amountCheque == 0) {
             validationErrors.addAll(
                 Arrays.asList(
@@ -97,8 +97,9 @@ public class DepositRequest extends TransactionRequest implements IValidatable {
         if (totalChequesError != null) {
             validationErrors.add(totalChequesError);
         }
-        validationErrors.addAll(parentValidationErrors);
-        return validationErrors;
+        if (!validationErrors.isEmpty()) {
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
+        }
     }
 
 }

@@ -9,6 +9,13 @@
   width: 33.33%;
   padding: 10px;
   min-height: 800px;
+  background: #fff;
+}
+
+.page-column:nth-child(1) {
+  z-index: 999;
+  position: relative;
+  min-width: 550px !important;
 }
 
 /* Clear floats after the columns */
@@ -213,8 +220,9 @@ button.go {
   font-size: 30px;
 }
 .approveBox button {
-  padding: 20px 140px;
+  padding: 15px 50px;
 }
+
 #transaction .rfn, #transaction .totalCheques,
 #transaction .pai {
   display: none;
@@ -229,4 +237,10 @@ span.loading {
 	margin-left: 30px;
 	color: cornflowerblue;
 	display: none;
+}
+
+@media only screen and (max-width: 800px) {
+  .page-column:nth-child(2), .page-column:nth-child(3) {
+      width: 50%;
+    }
 }

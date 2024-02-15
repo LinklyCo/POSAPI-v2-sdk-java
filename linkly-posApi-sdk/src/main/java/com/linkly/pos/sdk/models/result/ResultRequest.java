@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.IBaseRequest;
 import com.linkly.pos.sdk.models.IValidatable;
 
@@ -16,8 +17,9 @@ public class ResultRequest implements IBaseRequest, IValidatable {
 
     private UUID sessionId;
 
-    public ResultRequest() { }
-    
+    public ResultRequest() {
+    }
+
     public ResultRequest(UUID sessionId) {
         super();
         this.sessionId = sessionId;
@@ -31,11 +33,12 @@ public class ResultRequest implements IBaseRequest, IValidatable {
     public UUID getSessionId() {
         return sessionId;
     }
- 
+
     /**
      * Sets the sessionId.
      * 
-     * @param sessionId The UUID value of sessionId.
+     * @param sessionId
+     *            The UUID value of sessionId.
      */
     public void setSessionId(UUID sessionId) {
         this.sessionId = sessionId;
@@ -44,15 +47,19 @@ public class ResultRequest implements IBaseRequest, IValidatable {
     /**
      * Validate the model using {@link ValidatorUtil}
      * 
-     * @return Validation results containing list of model errors (if any)
+     * @throws InvalidArgumentException
+     *             if contains validation errors
      */
     @Override
-    public List<String> validate() {
-        return Arrays.asList(
+    public void validate() {
+        List<String> validationErrors = Arrays.asList(
             ValidatorUtil.notEmpty(sessionId, "sessionId"))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
+        if (!validationErrors.isEmpty()) {
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
+        }
     }
 
 }

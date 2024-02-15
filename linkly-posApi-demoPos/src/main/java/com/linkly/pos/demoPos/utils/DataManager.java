@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,8 +30,8 @@ import com.linkly.pos.sdk.models.PosApiResponse;
 
 public class DataManager {
 
-    private final static String FILE_NAME = "sessions.json";
-    private final static ObjectMapper MAPPER = new ObjectMapper();
+    private static final String FILE_NAME = "sessions.json";
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private SessionData sessions = new SessionData();
     private Lane currentLane;
@@ -70,38 +71,51 @@ public class DataManager {
     }
 
     public void changeLane(String username) {
-        Lane newCurrentLane = sessions.getLanes()
+        Optional<Lane> newCurrentLane = sessions.getLanes()
             .stream()
             .filter(l -> l.getUsername().equals(username))
-            .findFirst()
-            .get();
-        currentLane = newCurrentLane;
+            .findFirst();
+        if(newCurrentLane.isPresent()) {
+        	currentLane = newCurrentLane.get();
+        }
     }
 
     public void saveCurrent(Lane lane) {
-        if (lane != null) {
-            List<Lane> lanes = sessions.getLanes();
-            lanes.forEach(l -> {
-                if (l.getUsername() != null && !l.getUsername().equals(lane.getUsername())) {
-                    l.setLastActive(false);
-                }
-            });
-            boolean anyMatch = false;
-            if (lanes.size() == 1 && isNullOrWhiteSpace(lanes.get(0).getSecret())) {
-                lanes.set(0, lane);
-                anyMatch = true;
-            }
-            anyMatch = sessions.getLanes()
-                .stream().anyMatch(l -> l.getUsername() != null
-                    && lane.getUsername().equals(l.getUsername()));
-
-            lane.setLastActive(true);
-            currentLane = lane;
-            if (!anyMatch) {
-                sessions.getLanes().add(lane);
-            }
-            save();
+        if (lane == null) {
+        	return;
         }
+        List<Lane> lanes = sessions.getLanes();
+        setLastActive(lanes, lane);
+        
+        boolean hasSecret  = lanes.size() == 1 && isNullOrWhiteSpace(
+        		lanes.get(0).getSecret());
+        if(hasSecret) {
+        	lanes.set(0, lane);
+        }
+        
+        boolean withExistingUserFromLanes = false;
+        for (Lane l : lanes) {
+            if (l.getUsername() != null && l.getUsername().equals(lane.getUsername())) {
+                l.setSecret(lane.getSecret());
+                withExistingUserFromLanes = true;
+            }
+        }
+        lane.setLastActive(true);
+        currentLane = lane;
+        
+        boolean noMatch = !hasSecret && !withExistingUserFromLanes;
+        if (noMatch) {
+            sessions.getLanes().add(lane);
+        }
+        save();
+    }
+    
+    private void setLastActive(List<Lane> lanes, Lane lane)  {
+    	lanes.forEach(l -> {
+            if (l.getUsername() != null && !l.getUsername().equals(lane.getUsername())) {
+                l.setLastActive(false);
+            }
+        });
     }
 
     public void load() {
@@ -116,14 +130,14 @@ public class DataManager {
                 if (sessions != null) {
                     sessions = fileSessions;
                 }
-                if (sessions.getLanes().size() == 0) {
+                if (sessions.getLanes().isEmpty()) {
                     sessions.getLanes().add(new Lane());
                 }
             }
             else {
                 sessions.getLanes().add(new Lane());
             }
-            currentLane = sessions.getLanes().stream().filter(l -> l.isLastActive()).findFirst()
+            currentLane = sessions.getLanes().stream().filter(Lane::isLastActive).findFirst()
                 .orElse(sessions.getLanes().get(0));
             if (!CollectionUtils.isEmpty(currentLane.getTrasactions())) {
                 List<TransactionSessions> foundTransactions = currentLane.getTrasactions()
@@ -139,20 +153,19 @@ public class DataManager {
             }
         }
         catch (IOException e) {
+        	e.printStackTrace();
             // happening in the background and not user-facing
         }
     }
 
     public void saveTransaction(UUID sessionId, String type, IBaseRequest request,
-        PosApiResponse response,
-        ErrorResponse errorResponse) {
+        PosApiResponse response, ErrorResponse errorResponse) {
         if (currentLane != null) {
             TransactionSessions transaction = currentLane.getTrasactions().stream()
                 .filter(l -> l.getSessionId().equals(sessionId)).findFirst().orElse(null);
             if (transaction == null) {
-                var newTransaction = new TransactionSessions(type, sessionId, type, type, request,
-                    response,
-                    errorResponse);
+                var newTransaction = new TransactionSessions(type, sessionId, LocalDateTime.now()
+                		.toString(), type, request, response, errorResponse);
                 currentLane.getTrasactions().add(newTransaction);
             }
             else {
@@ -171,9 +184,9 @@ public class DataManager {
     private void save() {
         try {
             var json = MAPPER.writeValueAsString(sessions);
-            var writer = new BufferedWriter(new FileWriter(FILE_NAME));
-            writer.write(json);
-            writer.close();
+            try(var writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
+	            writer.write(json);
+            }
         }
         catch (IOException e) {
             // happening in the background and not user-facing

@@ -1,17 +1,13 @@
 package com.linkly.pos.sdk.models.settlement;
 
 import com.linkly.pos.sdk.models.PosApiResponseWithResult;
-import com.squareup.moshi.Json;
 
 /**
  * Response to a {@link SettlementRequest}.
  */
 public class SettlementResponse extends PosApiResponseWithResult {
 
-    @Json(name = "Merchant")
     private String merchant;
-
-    @Json(name = "SettlementData")
     private String settlementData;
 
      /**

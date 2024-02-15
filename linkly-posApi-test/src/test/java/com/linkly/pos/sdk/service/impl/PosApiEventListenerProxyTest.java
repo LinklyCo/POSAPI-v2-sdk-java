@@ -44,21 +44,21 @@ class PosApiEventListenerProxyTest {
     private PosApiEventListenerProxy proxyListener = new PosApiEventListenerProxy(mockListener);
 
     @Test
-    public void should_invoke_receipt() {
+    void should_invoke_receipt() {
         proxyListener.receipt(UUID.randomUUID(), new PosApiRequest(), new ReceiptResponse());
         verify(mockListener, times(1)).receipt(any(UUID.class), any(PosApiRequest.class), any(
             ReceiptResponse.class));
     }
 
     @Test
-    public void should_invoke_display() {
+    void should_invoke_display() {
         proxyListener.display(UUID.randomUUID(), new PosApiRequest(), new DisplayResponse());
         verify(mockListener, times(1)).display(any(UUID.class), any(PosApiRequest.class), any(
             DisplayResponse.class));
     }
 
     @Test
-    public void should_invoke_error() {
+    void should_invoke_error() {
         ErrorResponse errorResponse = new ErrorResponse(ErrorSource.API, 500, "error", null);
         proxyListener.error(UUID.randomUUID(), new PosApiRequest(), errorResponse);
         verify(mockListener, times(1)).error(any(UUID.class), any(PosApiRequest.class), any(
@@ -66,14 +66,14 @@ class PosApiEventListenerProxyTest {
     }
 
     @Test
-    public void should_invoke_pairingComplete() {
+    void should_invoke_pairingComplete() {
         proxyListener.pairingComplete(new PairingRequest(), new PairingResponse());
         verify(mockListener, times(1)).pairingComplete(any(PairingRequest.class), any(
             PairingResponse.class));
     }
 
     @Test
-    public void should_invoke_transactionComplete() {
+    void should_invoke_transactionComplete() {
         proxyListener.transactionComplete(UUID.randomUUID(), new TransactionRequest(),
             new TransactionResponse());
         verify(mockListener, times(1)).transactionComplete(any(UUID.class), any(
@@ -81,7 +81,7 @@ class PosApiEventListenerProxyTest {
     }
 
     @Test
-    public void should_invoke_statusComplete() {
+    void should_invoke_statusComplete() {
         proxyListener.statusComplete(UUID.randomUUID(), new StatusRequest(),
             new StatusResponse());
         verify(mockListener, times(1)).statusComplete(any(UUID.class), any(
@@ -89,7 +89,7 @@ class PosApiEventListenerProxyTest {
     }
 
     @Test
-    public void should_invoke_logonComplete() {
+    void should_invoke_logonComplete() {
         proxyListener.logonComplete(UUID.randomUUID(), new LogonRequest(),
             new LogonResponse());
         verify(mockListener, times(1)).logonComplete(any(UUID.class), any(
@@ -97,7 +97,7 @@ class PosApiEventListenerProxyTest {
     }
 
     @Test
-    public void should_invoke_settlementComplete() {
+    void should_invoke_settlementComplete() {
         proxyListener.settlementComplete(UUID.randomUUID(), new SettlementRequest(),
             new SettlementResponse());
         verify(mockListener, times(1)).settlementComplete(any(UUID.class), any(
@@ -105,7 +105,7 @@ class PosApiEventListenerProxyTest {
     }
 
     @Test
-    public void should_invoke_queryCardComplete() {
+    void should_invoke_queryCardComplete() {
         proxyListener.queryCardComplete(UUID.randomUUID(), new QueryCardRequest(),
             new QueryCardResponse());
         verify(mockListener, times(1)).queryCardComplete(any(UUID.class), any(
@@ -113,7 +113,7 @@ class PosApiEventListenerProxyTest {
     }
 
     @Test
-    public void should_invoke_configureMerchantComplete() {
+    void should_invoke_configureMerchantComplete() {
         proxyListener.configureMerchantComplete(UUID.randomUUID(), new ConfigureMerchantRequest(),
             new ConfigureMerchantResponse());
         verify(mockListener, times(1)).configureMerchantComplete(any(UUID.class), any(
@@ -121,7 +121,7 @@ class PosApiEventListenerProxyTest {
     }
 
     @Test
-    public void should_invoke_reprintReceiptComplete() {
+    void should_invoke_reprintReceiptComplete() {
         proxyListener.reprintReceiptComplete(UUID.randomUUID(), new ReprintReceiptRequest(),
             new ReprintReceiptResponse());
         verify(mockListener, times(1)).reprintReceiptComplete(any(UUID.class), any(
@@ -129,14 +129,14 @@ class PosApiEventListenerProxyTest {
     }
 
     @Test
-    public void should_invoke_resultComplete() {
+    void should_invoke_resultComplete() {
         List<PosApiResponse> responses = Arrays.asList(new PosApiResponse());
         proxyListener.resultComplete(new ResultRequest(UUID.randomUUID()), responses);
         verify(mockListener, times(1)).resultComplete(any(ResultRequest.class), any(List.class));
     }
 
     @Test
-    public void should_invoke_retrieveTransactionComplete() {
+    void should_invoke_retrieveTransactionComplete() {
         List<TransactionResponse> responses = Arrays.asList(new TransactionResponse());
         proxyListener.retrieveTransactionComplete(new RetrieveTransactionRequest(), responses);
         verify(mockListener, times(1)).retrieveTransactionComplete(any(

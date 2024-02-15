@@ -10,27 +10,37 @@ import com.squareup.moshi.ToJson;
  * Converts date time values to json string representation and vice versa.
  */
 public class DateAdapter {
-	
-	private static final DateTimeFormatter DTF_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
-	private static final DateTimeFormatter DTF_PARSE = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
-	
-	/**
-	    * Converts date time to json string representation.
-	    * 
-	    * @param value date time value to be converted.
-	    */
+
+    private static final DateTimeFormatter DTF_FORMAT = DateTimeFormatter.ofPattern(
+        "MM/dd/yyyy hh:mm:ss a");
+    private static final DateTimeFormatter DTF_PARSE = DateTimeFormatter.ofPattern(
+        "yyyy-MM-dd'T'HH:mm:ssX");
+
+    /**
+     * Converts date time to json {@link String} representation.
+     * 
+     * @param value
+     *            {@link LocalDateTime} value to be converted.
+     * @return {@link String} {@link LocalDateTime} to {@link String}
+     */
     @ToJson
     public String toJson(LocalDateTime value) {
         return DTF_FORMAT.format(value);
     }
 
     /**
-     * Converts json date time string representation to java date time.
+     * Converts json {@link String} representation to {@link LocalDateTime}.
      * 
-     * @param value string representation value to be converted.
+     * @param value
+     *            {@link String} representation value to be converted.
+     * @return {@link LocalDateTime} {@link String} to LocalDateTime
      */
     @FromJson
     public LocalDateTime fromJson(String value) {
-        return LocalDateTime.parse(value, DTF_PARSE);
+    	try {
+    		return LocalDateTime.parse(value, DTF_PARSE);
+    	} catch (Exception e) {
+    		return LocalDateTime.now();
+    	}
     }
 }

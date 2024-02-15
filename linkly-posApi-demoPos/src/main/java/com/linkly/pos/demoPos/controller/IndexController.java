@@ -6,8 +6,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,11 +18,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.linkly.pos.demoPos.DemoPosTransactionRequest;
 import com.linkly.pos.demoPos.SimplifiedResponse;
 import com.linkly.pos.demoPos.service.DemoPosApiService;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.authentication.PairingRequest;
 import com.linkly.pos.sdk.models.configureMerchant.ConfigureMerchantRequest;
 import com.linkly.pos.sdk.models.enums.AccountType;
@@ -65,6 +70,7 @@ public class IndexController {
         predefinedValue.put("currentUser", posService.currentUser());
         predefinedValue.put("pads", posService.purchaseAnalysisData());
         predefinedValue.put("surchargeRates", posService.surchargeRates());
+        predefinedValue.put("rfnList", posService.rfnList());
 
         return new ModelAndView("index", predefinedValue);
     }
@@ -142,5 +148,13 @@ public class IndexController {
     @GetMapping("/logs")
     public @ResponseBody List<String> getLogs() {
         return posService.getLogs();
+    }
+    
+    @ExceptionHandler({ InvalidArgumentException.class })
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleValidationException(InvalidArgumentException exception) {
+    	return ResponseEntity
+    	        .status(HttpStatus.BAD_REQUEST)
+    	        .body(exception.getMessage());
     }
 }

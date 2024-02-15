@@ -1,7 +1,5 @@
 package com.linkly.pos.sdk.models.transaction;
 
-import java.util.List;
-
 import com.linkly.pos.sdk.models.enums.TxnType;
 
 /**
@@ -20,13 +18,5 @@ public class PreAuthCompletionRequest extends PreAuthManipulationRequest {
         setTxnType(TxnType.PreAuthComplete);
         setRfn(rfn);
         super.amount = amount;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> validate() {
-        return super.validate();
     }
 }

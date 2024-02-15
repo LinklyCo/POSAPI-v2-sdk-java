@@ -17,13 +17,17 @@ public class PosVendorDetails {
     /**
      * Initialise a new instance.
      * 
-     * @param posName Name of the POS vendor.
-     * @param posVersion POS software version.
-     * @param posId Persistent and unique POS instance identifier. Must differ across separate
-     * deployments of the same POS application.
-     * @param posVendorId Persistent and unique POS product identifier. All instances of the
-     * POS application should provide the same UUID.
-     * @exception IllegalArgumentException
+     * @param posName
+     *            Name of the POS vendor.
+     * @param posVersion
+     *            POS software version.
+     * @param posId
+     *            Persistent and unique POS instance identifier. Must differ across separate
+     *            deployments of the same POS application.
+     * @param posVendorId
+     *            Persistent and unique POS product identifier. All instances of the
+     *            POS application should provide the same UUID.
+     * @throws IllegalArgumentException
      */
     public PosVendorDetails(String posName, String posVersion, UUID posId, UUID posVendorId) {
         super();

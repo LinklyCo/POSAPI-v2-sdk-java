@@ -46,6 +46,7 @@ public class PosApiEventListenerProxy implements IPosApiEventListener {
      * Initialise a new Pos Api Event Listener Proxy.
      * 
      * @param eventListener listener to use.
+     * @throws IllegalArgumentException
      */
     public PosApiEventListenerProxy(IPosApiEventListener eventListener) {
         if (eventListener == null) {
@@ -53,7 +54,7 @@ public class PosApiEventListenerProxy implements IPosApiEventListener {
             LOGGER.error(message);
             throw new IllegalArgumentException(message);
         }
-        this.eventListener = new WeakReference<IPosApiEventListener>(eventListener);
+        this.eventListener = new WeakReference<>(eventListener);
     }
 
     /**
@@ -216,14 +217,14 @@ public class PosApiEventListenerProxy implements IPosApiEventListener {
     private void invokeListener(Runnable action, String listenerName) {
         try {
             LOGGER.debug("{}: Invoking {}() listener", getEventListener().getClass()
-                .getCanonicalName());
+                .getCanonicalName(), listenerName);
             action.run();
             LOGGER.debug("{}: Invoking {}() listener completed", getEventListener().getClass()
-                .getCanonicalName());
+                .getCanonicalName(), listenerName);
         }
         catch (Exception e) {
             LOGGER.error("{}: Invoking {}() listener threw an exception", getEventListener()
-                .getClass().getCanonicalName(), e);
+                .getClass().getCanonicalName(), listenerName, e);
         }
     }
 }

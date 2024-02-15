@@ -1,8 +1,10 @@
 package com.linkly.pos.sdk.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -15,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -24,7 +27,11 @@ import org.asynchttpclient.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.mockito.ArgumentCaptor;
 
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 import com.linkly.pos.sdk.models.ApiServiceEndpoint;
 import com.linkly.pos.sdk.models.AuthToken;
 import com.linkly.pos.sdk.models.PosApiServiceOptions;
@@ -69,6 +76,7 @@ import com.linkly.pos.sdk.service.impl.testData.SettlementMock;
 import com.linkly.pos.sdk.service.impl.testData.StatusMock;
 import com.linkly.pos.sdk.service.impl.testData.TransactionMock;
 
+@RunWith(Parameterized.class)
 class PosApiServiceTest {
 
     private static final String AUTH_API = "http://auth.mock";
@@ -85,6 +93,11 @@ class PosApiServiceTest {
     private Response response;
     private Logger logger;
 
+    @Parameterized.Parameters
+    public static Object[][] data() {
+        return new Object[10][0];
+    }
+    
     @BeforeEach
     public void beforeEach() {
         if (!objectsInitialized) {
@@ -104,10 +117,145 @@ class PosApiServiceTest {
     }
 
     @Test
+    void pairingRequest_throws_apiCallException() throws InterruptedException {
+        when(asyncHttpExecutor.post(anyString(), anyString()))
+            .thenThrow(new RuntimeException("socket timeout"));
+        
+        PairingRequest request = PairingMock.request();
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+            () -> {
+                service.pairingRequest(request);
+            });
+        String listenerResponse = eventListener.getResponseContent("500", 1);
+        assertEquals("{\"httpStatusCode\":500,\"message\":\"socket timeout\",\"source\":\"API\"}",
+            listenerResponse);
+        assertEquals("socket timeout", thrown.getMessage());
+    }
+    @Test
+    void authenticate_throws_apiCallException() throws InterruptedException {
+        pairingRequest();
+        when(asyncHttpExecutor.post(anyString(), anyString()))
+            .thenThrow(new RuntimeException("unknown host")); // authenticate mock call
+
+        LogonRequest request = new LogonRequest();
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+            () -> {
+                service.logonRequest(request);
+            });
+        String listenerResponse = eventListener.getResponseContent("500", 1);
+        assertEquals("{\"httpStatusCode\":500,\"message\":\"unknown host\",\"source\":\"API\"}",
+            listenerResponse);
+        assertEquals("unknown host", thrown.getMessage());
+    }
+    @Test
+    void logonRequest_throws_apiCallException() throws InterruptedException {
+        pairingRequest();
+        when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.post(anyString(), anyString(), anyString()))
+            .thenThrow(new RuntimeException("no route to host exception"));
+        when(response.getStatusCode()).thenReturn(200).thenReturn(200);
+        when(response.getResponseBody())
+            .thenReturn(AuthTokenMock.tokenResponseContent());
+        
+        LogonRequest request = new LogonRequest();
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+            () -> {
+                service.logonRequest(request);
+            });
+        String listenerResponse = eventListener.getResponseContent("500", 1);
+        assertEquals(
+            "{\"httpStatusCode\":500,\"message\":\"no route to host exception\",\"source\":\"API\"}",
+            listenerResponse);
+        assertEquals("no route to host exception", thrown.getMessage());
+    }
+    @Test
+    void resultRequest_throws_apiCallException() throws InterruptedException {
+        pairingRequest();
+        when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.get(anyString(), anyString()))
+            .thenThrow(new RuntimeException("port unreachable exception"));
+        when(response.getStatusCode()).thenReturn(200).thenReturn(200);
+        when(response.getResponseBody())
+            .thenReturn(AuthTokenMock.tokenResponseContent());
+        
+        ResultRequest request = new ResultRequest(UUID.randomUUID());
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class,
+            () -> {
+                service.resultRequest(request);
+            });
+        String listenerResponse = eventListener.getResponseContent("500", 1);
+        assertEquals(
+            "{\"httpStatusCode\":500,\"message\":\"port unreachable exception\",\"source\":\"API\"}",
+            listenerResponse);
+        assertEquals("port unreachable exception", thrown.getMessage());
+    }
+
+    
+    @Test
+    void should_not_refreshSession_success() {
+        pairingRequest();
+        injectAuthTokenNotExpiringSoon();
+
+        when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.post(anyString(), anyString(), anyString())).thenReturn(response);
+        when(response.getStatusCode()).thenReturn(200).thenReturn(200);
+        when(response.getResponseBody())
+            .thenReturn("Mock content")
+            .thenReturn(LogonMock.logonResponseContent());
+
+        service.logonRequest(new LogonRequest());
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(asyncHttpExecutor, atLeast(1)).post(argumentCaptor.capture(), argumentCaptor
+            .capture());
+
+        List<String> arguments = argumentCaptor.getAllValues();
+        for (String arg : arguments) {
+            // verify that the captured argument does not contain the endpoint for Authentication
+            // This simply means that refreshing of session is not invoked.
+            assertFalse(arg.contains("/v1/tokens/cloudpos"));
+        }
+    }
+
+    @Test
+    void should_refreshSession_success() {
+        pairingRequest();
+
+        LocalDateTime dateDateTimeNow = LocalDateTime.now();
+        injectAuthToken(dateDateTimeNow);
+
+        when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
+        when(asyncHttpExecutor.post(anyString(), anyString(), anyString())).thenReturn(response);
+        when(response.getStatusCode()).thenReturn(200).thenReturn(200).thenReturn(200);
+        when(response.getResponseBody())
+            .thenReturn(AuthTokenMock.tokenResponseContent())
+            .thenReturn("Mock content")
+            .thenReturn(LogonMock.logonResponseContent());
+
+        service.logonRequest(new LogonRequest());
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(asyncHttpExecutor, atLeast(1)).post(argumentCaptor.capture(), argumentCaptor
+            .capture());
+
+        List<String> arguments = argumentCaptor.getAllValues();
+
+        // Verify that token is in the capture argument
+        // If value below is present, it means that session is refreshed
+        // by calling the authenticate method
+        assertEquals("http://auth.mock/v1/tokens/cloudpos", arguments.get(2));
+
+        // Verify that session token expiry has been increased to 30 minutes
+        AuthToken authToken = getAuthToken();
+        assertEquals(30, ChronoUnit.MINUTES.between(dateDateTimeNow, authToken.getExpiry()));
+    }
+
+    @Test
     void pairingRequest_success() {
         String content = pairingRequest();
         assertEquals("{\"secret\":\"test12345secret\"}", eventListener.getResponseContent(
-            "pairing"));
+            "pairing", 1));
         verify(asyncHttpExecutor, times(1)).post(AUTH_API + "/v1/pairing/cloudpos", content);
         verifySecretAndAuthTokenAfterPair(false);
     }
@@ -125,7 +273,7 @@ class PosApiServiceTest {
 
         service.pairingRequest(pairingRequest);
         assertEquals("{\"httpStatusCode\":401,\"message\":\"Error\",\"source\":\"API\"}",
-            eventListener.getResponseContent("pairing"));
+            eventListener.getResponseContent("pairing", 1));
         verify(asyncHttpExecutor, times(1)).post(AUTH_API + "/v1/pairing/cloudpos", requestContent);
         verifySecretAndAuthTokenAfterPair(true);
     }
@@ -142,7 +290,7 @@ class PosApiServiceTest {
         when(asyncHttpExecutor.post(AUTH_API + "/v1/pairing/cloudpos", requestContent))
             .thenReturn(response);
 
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
                 service.pairingRequest(pairingRequest);
             });
@@ -163,22 +311,22 @@ class PosApiServiceTest {
 
         service.pairingRequest(pairingRequest);
 
-        Thread.sleep(2000);
-        String firstContent = eventListener.getResponseContent("secret");
+        String firstContent = eventListener.getResponseContent("secret", 2);
         injectAuthToken();
         service.pairingRequest(pairingRequest);
         AuthToken token = getAuthToken();
 
-        assertEquals(firstContent, eventListener.getResponseContent("secret"));
+        assertEquals(firstContent, eventListener.getResponseContent("secret", 1));
         assertTrue(token.getToken().length() > 1);
     }
 
     @Test
     void logonRequest_pairingFailed() {
 
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	LogonRequest request = new LogonRequest();
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.logonRequest(new LogonRequest());
+                service.logonRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -189,8 +337,11 @@ class PosApiServiceTest {
         pairingRequest();
         LogonRequest request = new LogonRequest();
         request.setLogonType(null);
-        service.logonRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            service.logonRequest(request);
+        });
+        assertEquals("logonType: Enum null not found in the list: [Standard, RSA, TmsFull, "
+            + "TmsParams, TmsSoftware, Logoff, Diagnostics].", exception.getMessage());
     }
 
     @Test
@@ -209,8 +360,7 @@ class PosApiServiceTest {
 
         UUID uuid = service.logonRequest(new LogonRequest());
 
-        Thread.sleep(2000);
-        String listener = eventListener.getResponseContent("logon");
+        String listener = eventListener.getResponseContent("logon", 2);
         AuthToken authToken = getAuthToken();
 
         verify(response, atLeast(3)).getStatusCode();
@@ -236,7 +386,7 @@ class PosApiServiceTest {
 
         service.logonRequest(new LogonRequest());
 
-        String listener = eventListener.getResponseContent("unknown");
+        String listener = eventListener.getResponseContent("unknown", 1);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -246,29 +396,34 @@ class PosApiServiceTest {
     }
 
     @Test
-    void sendResultRequestAsync_timeExhausted_tooEarlyResponse() {
+    void sendResultRequestAsync_timeExhausted_tooEarlyResponse() throws InterruptedException {
+        reInitializeService();
         pairingRequest();
-        injectOptionValue();
 
         when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
         when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
         when(response.getStatusCode()).thenReturn(200).thenReturn(200).thenReturn(425);
         when(response.getResponseBody())
             .thenReturn(AuthTokenMock.tokenResponseContent())
-            .thenReturn("Mock content")
-            .thenReturn(LogonMock.logonResponseContent());
+            .thenReturn("Mock content");
 
         when(asyncHttpExecutor.post(anyString(), anyString(), anyString())).thenReturn(response);
 
         service.logonRequest(new LogonRequest());
 
-        eventListener.getResponseContent("");
+        /*
+         * wait is needed because the result process takes a minute to be exhausted
+         * 75000 is 1m 25s. Add 25 seconds to make sure that response has been capture by the
+         * listener
+         */
+        String errorResponse = eventListener.getResponseContent("Timed out", 75);
+        assertEquals("{\"message\":\"Timed out waiting for response\",\"source\":\"Internal\"}", errorResponse);
     }
 
     @Test
     void sendResultRequestAsync_failed() throws InterruptedException {
+        reInitializeService();
         pairingRequest();
-        injectOptionValue();
 
         when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
         when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
@@ -282,8 +437,7 @@ class PosApiServiceTest {
 
         service.logonRequest(new LogonRequest());
 
-        Thread.sleep(2000);
-        String listener = eventListener.getResponseContent("unknown");
+        String listener = eventListener.getResponseContent("unknown", 2);
 
         assertTrue(listener.contains("500"));
         assertTrue(listener.contains("Internal Server Exception"));
@@ -292,9 +446,10 @@ class PosApiServiceTest {
 
     @Test
     void transactionRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	CashRequest request = new CashRequest(0);
+    	InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.transactionRequest(new CashRequest(0));
+                service.transactionRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -312,9 +467,11 @@ class PosApiServiceTest {
         when(response.getResponseBody()).thenReturn(responseContent);
         when(asyncHttpExecutor.post(anyString(), eq(requestContent)))
             .thenReturn(response);
-
-        service.transactionRequest(cashRequest);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            service.transactionRequest(cashRequest);
+        });
+        assertEquals("txnRef: Must not be empty.", exception.getMessage());
     }
 
     @Test
@@ -334,20 +491,19 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(cashRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
-
+        
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
+        
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
 
         assertNotNull(uuid);
-        assertTrue(getResponseContents.get(0).equals("{\"secret\":\"test12345secret\"}"));
-        assertTrue(getResponseContents.get(1).contains("\"ResponseType\":\"display\""));
+        assertEquals("{\"secret\":\"test12345secret\"}", getResponseContents.get(0));
+        assertTrue(getResponseContents.get(1).contains("\"responseType\":\"display\""));
         assertTrue(getResponseContents.get(1).contains("Started Transaction"));
-        assertTrue(getResponseContents.get(2).contains("\"ResponseType\":\"receipt\""));
+        assertTrue(getResponseContents.get(2).contains("\"responseType\":\"receipt\""));
         assertTrue(getResponseContents.get(2).contains("Receipt"));
-        assertTrue(getResponseContents.get(3).contains("\"ResponseType\":\"transaction\""));
+        assertTrue(getResponseContents.get(3).contains("\"responseType\":\"transaction\""));
         assertTrue(getResponseContents.get(3).contains("Transaction Done"));
     }
 
@@ -367,10 +523,9 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(depositRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
-
+       
+    	List<String> getResponseContents = eventListener.getResponseContents(4, 2);
+    	
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
 
@@ -395,9 +550,7 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(preAuthCancelRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -423,9 +576,7 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(preAuthCompletionRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -450,9 +601,7 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(preAuthExtendRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -477,9 +626,7 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(preAuthInquiryRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -505,9 +652,7 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(preAuthPartialCancelRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -532,9 +677,7 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(preAuthRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -559,9 +702,7 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(preAuthSummaryRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -586,9 +727,7 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(preAuthTopUpRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -613,9 +752,8 @@ class PosApiServiceTest {
             .thenReturn(response);
 
         UUID uuid = service.transactionRequest(purchaseRequest);
-
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -639,10 +777,9 @@ class PosApiServiceTest {
         when(asyncHttpExecutor.post(anyString(), eq("Bearer testvalidtoken"), anyString()))
             .thenReturn(response);
 
-        Thread.sleep(2000);
         UUID uuid = service.transactionRequest(refundRequest);
 
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(1, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -668,8 +805,7 @@ class PosApiServiceTest {
 
         UUID uuid = service.transactionRequest(voidRequest);
 
-        Thread.sleep(2000);
-        List<String> getResponseContents = eventListener.getResponseContents();
+        List<String> getResponseContents = eventListener.getResponseContents(4, 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
@@ -693,17 +829,16 @@ class PosApiServiceTest {
         when(asyncHttpExecutor.get(anyString(), eq("Bearer testvalidtoken")))
             .thenReturn(response);
 
-        RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            service.retrieveTransactionRequest(retrieveTransactionRequest);
-        });
-        assertEquals("No Implementation Yet!", exception.getMessage());
+        service.retrieveTransactionRequest(retrieveTransactionRequest);
+        assertTrue(eventListener.getResponseContent("unknown", 1).contains("No Implementation Yet!"));
     }
 
     @Test
     void statusRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	StatusRequest request = new StatusRequest();
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.statusRequest(new StatusRequest());
+                service.statusRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -714,9 +849,12 @@ class PosApiServiceTest {
         pairingRequest();
         StatusRequest request = new StatusRequest();
         request.setStatusType(null);
-        service.statusRequest(request);
 
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            service.statusRequest(request);
+        });
+        assertEquals("statusType: Enum null not found in the list: [Standard, TerminalAppInfo, "
+            + "AppCpat, AppNameTable, Undefined, Preswipe].", exception.getMessage());
     }
 
     @Test
@@ -735,30 +873,31 @@ class PosApiServiceTest {
 
         UUID uuid = service.statusRequest(StatusMock.statusRequest());
 
-        Thread.sleep(2000);
-        String listener = eventListener.getResponseContent("status");
+        String listener = eventListener.getResponseContent("status", 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
 
         assertNotNull(uuid);
-        assertEquals("{\"AIIC\":\"TESTAIIC\",\"CardMisreadCount\":0,\"CashoutLimit\":0,"
-            + "\"FreeMemoryInTerminal\":0,\"LoggedOn\":false,\"MaxSaf\":0,\"NII\":0,"
-            + "\"NumAppsInTerminal\":0,\"NumLinesOnDisplay\":0,\"OptionsFlags\":"
-            + "{\"\":false,\"AutoCompletion\":false,\"Balance\":false,\"CashOut\":"
-            + "false,\"Completions\":false,\"Deposit\":false,\"EFB\":false,\"EMV\":"
-            + "false,\"Moto\":false,\"PreAuth\":false,\"Refund\":false,\"Tipping\":"
-            + "false,\"Training\":false,\"Transfer\":false,\"Voucher\":false,"
-            + "\"Withdrawal\":false},\"RefundLimit\":0,\"ResponseType\":\"status\","
-            + "\"SafCount\":0,\"SafCreditLimit\":0,\"SafDebitLimit\":0,\"Success\":"
-            + "false,\"TimeOut\":0,\"TotalMemoryInTerminal\":0}", listener);
+        
+        String expected = "{\"aiic\":\"TESTAIIC\",\"cardMisreadCount\":0,\"cashOutLimit\":0,"
+                + "\"freeMemoryInTerminal\":0,\"loggedOn\":false,\"maxSAF\":0,\"nii\":0,"
+                + "\"numAppsInTerminal\":0,\"numLinesOnDisplay\":0,\"optionsFlags\":"
+                + "{\"autoCompletion\":false,\"balance\":false,\"cashOut\":false,\"completions\":"
+                + "false,\"deposit\":false,\"efb\":false,\"emv\":false,\"moto\":false,\"preAuth\":"
+                + "false,\"refund\":false,\"startCash\":false,\"tipping\":false,\"training\":false,"
+                + "\"transfer\":false,\"voucher\":false,\"withdrawal\":false},\"refundLimit\":0,"
+                + "\"responseType\":\"status\",\"safCount\":0,\"safCreditLimit\":0,\"safDebitLimit\":"
+                + "0,\"success\":false,\"timeout\":0,\"totalMemoryInTerminal\":0}";
+        assertEquals(expected, listener);
     }
 
     @Test
     void settlementRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	SettlementRequest request = SettlementMock.settlementRequest();
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.settlementRequest(SettlementMock.settlementRequest());
+                service.settlementRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -769,8 +908,12 @@ class PosApiServiceTest {
         pairingRequest();
         SettlementRequest request = SettlementMock.settlementRequest();
         request.setSettlementType(null);
-        service.settlementRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            service.settlementRequest(request);
+        });
+        assertEquals("settlementType: Enum null not found in the list: [Settlement, PreSettlement, "
+            + "LastSettlement, SummaryTotals, SubShiftTotals, DetailedTransactionListing, "
+            + "StartCash, StoreAndForwardTotals, DailyCashStatement].", exception.getMessage());
     }
 
     @Test
@@ -790,22 +933,22 @@ class PosApiServiceTest {
 
         UUID uuid = service.settlementRequest(request);
 
-        Thread.sleep(2000);
-        String listener = eventListener.getResponseContent("settlement");
+        String listener = eventListener.getResponseContent("settlement", 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
 
         assertNotNull(uuid);
-        assertEquals("{\"Merchant\":\"00\",\"ResponseType\":\"settlement\",\"SettlementData\":"
-            + "\"Settlement Data\",\"Success\":false}", listener);
+        assertEquals("{\"merchant\":\"00\",\"responseType\":\"settlement\",\"settlementData\":"
+            + "\"Settlement Data\",\"success\":false}", listener);
     }
 
     @Test
     void queryCardRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	QueryCardRequest request = new QueryCardRequest();
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.queryCardRequest(new QueryCardRequest());
+                service.queryCardRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -816,8 +959,13 @@ class PosApiServiceTest {
         pairingRequest();
         QueryCardRequest request = new QueryCardRequest();
         request.setQueryCardType(null);
-        service.queryCardRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            service.queryCardRequest(request);
+        });
+        assertEquals("queryCardType: Enum null not found in the list: [ReadCard, "
+            + "ReadCardAndSelectAccount, SelectAccount, PreSwipe, PreSwipeSpecial].", exception
+                .getMessage());
     }
 
     @Test
@@ -837,23 +985,23 @@ class PosApiServiceTest {
 
         UUID uuid = service.queryCardRequest(request);
 
-        Thread.sleep(2000);
-        String listener = eventListener.getResponseContent("query");
+        String listener = eventListener.getResponseContent("query", 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
 
         assertNotNull(uuid);
-        assertEquals("{\"AccountType\":\"3\",\"CardName\":\"card 001\",\"IsTrack1Available\":true,"
-            + "\"IsTrack2Available\":false,\"IsTrack3Available\":false,\"ResponseType\":"
-            + "\"querycard\",\"Success\":false,\"Track1\":\"track1 value\"}", listener);
+        assertEquals("{\"accountType\":\"3\",\"cardName\":\"card 001\",\"isTrack1Available\":true,"
+            + "\"isTrack2Available\":false,\"isTrack3Available\":false,\"responseType\":"
+            + "\"querycard\",\"success\":false,\"track1\":\"track1 value\"}", listener);
     }
 
     @Test
     void configureMerchantRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	ConfigureMerchantRequest request = new ConfigureMerchantRequest();
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.configureMerchantRequest(new ConfigureMerchantRequest());
+                service.configureMerchantRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -863,8 +1011,10 @@ class PosApiServiceTest {
         eventListener.clear();
         pairingRequest();
         ConfigureMerchantRequest request = new ConfigureMerchantRequest();
-        service.configureMerchantRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            service.configureMerchantRequest(request);
+        });
+        assertEquals("catId: Must not be empty., caId: Must not be empty.", exception.getMessage());
     }
 
     @Test
@@ -884,22 +1034,22 @@ class PosApiServiceTest {
 
         UUID uuid = service.configureMerchantRequest(request);
 
-        Thread.sleep(2000);
-        String listener = eventListener.getResponseContent("configuremerchant");
+        String listener = eventListener.getResponseContent("configuremerchant", 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
 
         assertNotNull(uuid);
-        assertEquals("{\"ResponseCode\":\"200\",\"ResponseType\":\"configuremerchant\","
-            + "\"Success\":true}", listener);
+        assertEquals("{\"responseCode\":\"200\",\"responseType\":\"configuremerchant\","
+            + "\"success\":true}", listener);
     }
 
     @Test
     void reprintReceiptRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	ReprintReceiptRequest request = new ReprintReceiptRequest();
+    	InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.reprintReceiptRequest(new ReprintReceiptRequest());
+                service.reprintReceiptRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -910,12 +1060,17 @@ class PosApiServiceTest {
         pairingRequest();
         ReprintReceiptRequest request = ReprintReceiptMock.request();
         request.setReceiptAutoPrint(null);
-        service.reprintReceiptRequest(request);
-        assertTrue(eventListener.getResponseContents().size() > 1);
+
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            service.reprintReceiptRequest(request);
+        });
+        assertEquals("receiptAutoPrint: Enum null not found in the list: [POS, PinPad, Both].",
+            exception.getMessage());
     }
 
     @Test
-    void reprintReceiptRequest_success() {
+    void reprintReceiptRequest_success() throws InterruptedException {
+        eventListener.clear();
         pairingRequest();
 
         when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
@@ -930,19 +1085,22 @@ class PosApiServiceTest {
 
         UUID uuid = service.reprintReceiptRequest(ReprintReceiptMock.request());
 
-        String listener = eventListener.getResponseContent("reprintReceipt");
+        String listener = eventListener.getResponseContent("reprintreceipt", 1);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
 
         assertNotNull(uuid);
+        assertEquals("{\"merchant\":\"01\",\"receiptText\":[\"Official Receipt\"],"
+            + "\"responseType\":\"reprintreceipt\",\"success\":false}", listener);
     }
 
     @Test
     void sendKeyRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	SendKeyRequest request = new SendKeyRequest();
+    	InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.sendKeyRequest(new SendKeyRequest());
+                service.sendKeyRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -951,8 +1109,12 @@ class PosApiServiceTest {
     void sendKeyRequest_validaitonFailed() {
         eventListener.clear();
         pairingRequest();
-        service.sendKeyRequest(new SendKeyRequest());
-        assertTrue(eventListener.getResponseContents().size() > 1);
+    	SendKeyRequest request = new SendKeyRequest();
+        InvalidArgumentException exception = assertThrows(InvalidArgumentException.class, () -> {
+            service.sendKeyRequest(request);
+        });
+        assertEquals("sessionId: Must not be empty., key: Must not be empty.", exception
+            .getMessage());
     }
 
     @Test
@@ -970,14 +1132,12 @@ class PosApiServiceTest {
 
         service.sendKeyRequest(SendKeyMock.request());
 
-        Thread.sleep(2000);
-        String listener = eventListener.getResponseContent("Internal");
+        String listener = eventListener.getResponseContent("Internal", 2);
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
         assertEquals("{\"httpStatusCode\":500,\"message\":\"Internal server error!\","
             + "\"source\":\"API\"}", listener);
-
     }
 
     @Test
@@ -1001,9 +1161,10 @@ class PosApiServiceTest {
 
     @Test
     void resultRequest_pairingFailed() {
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
+    	ResultRequest request = new ResultRequest(UUID.randomUUID());
+        InvalidArgumentException thrown = Assertions.assertThrows(InvalidArgumentException.class,
             () -> {
-                service.resultRequest(new ResultRequest(UUID.randomUUID()));
+                service.resultRequest(request);
             });
         assertEquals("Pairing is required", thrown.getMessage());
     }
@@ -1011,6 +1172,8 @@ class PosApiServiceTest {
     @Test
     void resultRequest_success() throws InterruptedException {
         pairingRequest();
+
+        UUID uuid = UUID.randomUUID();
 
         when(asyncHttpExecutor.post(anyString(), anyString())).thenReturn(response);
         when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
@@ -1021,15 +1184,38 @@ class PosApiServiceTest {
 
         when(asyncHttpExecutor.get(anyString(), anyString())).thenReturn(response);
 
-        service.resultRequest(new ResultRequest(UUID.randomUUID()));
+        service.resultRequest(new ResultRequest(uuid));
 
-        Thread.sleep(2000);
-        String listener = eventListener.getResponseContent("logon");
+        String listener = eventListener.getResponseContent("logon", 2);
+
+        ArgumentCaptor<String> getArgument = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> postArgument = ArgumentCaptor.forClass(String.class);
+        verify(asyncHttpExecutor, times(1)).get(getArgument.capture(), getArgument.capture());
+        verify(asyncHttpExecutor, times(2)).post(postArgument.capture(), postArgument.capture());
+
+        List<String> getArguments = getArgument.getAllValues();
+        List<String> postArguments = postArgument.getAllValues();
+
+        assertEquals("http://pos.mock/v2/sessions/" + uuid.toString() + "/result?all=true",
+            getArguments.get(0));
+        assertEquals("Bearer testvalidtoken", getArguments.get(1));
+        assertEquals("http://auth.mock/v1/tokens/cloudpos", postArguments.get(2));
+        assertEquals("{\"pairCode\":\"testcode\",\"password\":\"p@szw0rd\",\"username\":"
+            + "\"testuser\"}", postArguments.get(1));
 
         verify(response, atLeast(3)).getStatusCode();
         verify(response, atLeast(3)).getResponseBody();
-        assertEquals("[{\"PurchaseAnalysisData\":{\"testkey\":\"Test Value\"},\"ResponseType\":"
+        assertEquals("[{\"purchaseAnalysisData\":{\"testkey\":\"Test Value\"},\"responseType\":"
             + "\"logon\"}]", listener);
+    }
+
+    public void reInitializeService() {
+        injectOptionValue();
+        eventListener = new MockEventListener();
+        service = new PosApiService(eventListener, httpClient, posVendorDetails, options,
+            serviceEndpoints, logger);
+        injectAsyncHttpExector();
+        reset(asyncHttpExecutor, response, httpClient);
     }
 
     private String pairingRequest() {
@@ -1063,16 +1249,24 @@ class PosApiServiceTest {
         }
     }
 
-    private void injectAuthToken() {
+    private void injectAuthTokenNotExpiringSoon() {
+        injectAuthToken(LocalDateTime.now().plus(1, ChronoUnit.HOURS));
+    }
+
+    private void injectAuthToken(LocalDateTime dateTime) {
         Field authTokenField;
         try {
             authTokenField = service.getClass().getDeclaredField("authToken");
             authTokenField.setAccessible(true);
-            authTokenField.set(service, new AuthToken("validtoken", LocalDateTime.now()));
+            authTokenField.set(service, new AuthToken("validtoken", dateTime));
         }
         catch (Exception e) {
             throw new AssertionError(e);
         }
+    }
+
+    private void injectAuthToken() {
+        injectAuthToken(LocalDateTime.now());
     }
 
     private AuthToken getAuthToken() {
@@ -1101,11 +1295,10 @@ class PosApiServiceTest {
     private void verifySecretAndAuthTokenAfterPair(boolean failed) {
         try {
             Field secretField = service.getClass().getDeclaredField("pairSecret");
-            Field authTokenField = service.getClass().getDeclaredField("authToken");
+
             secretField.setAccessible(true);
-            authTokenField.setAccessible(true);
             String secret = (String) secretField.get(service);
-            AuthToken authToken = (AuthToken) authTokenField.get(service);
+            AuthToken authToken = getAuthToken();
             if (failed) {
                 assertNull(secret);
             }

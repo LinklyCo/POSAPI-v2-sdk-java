@@ -10,19 +10,12 @@ import com.squareup.moshi.Json;
  */
 public class LogonResponse extends PosApiResponseWithResult {
 
-    @Json(name = "PinPadVersion")
     private String pinPadVersion;
-
-    @Json(name = "Date")
     private LocalDateTime date;
-
-    @Json(name = "Catid")
+    @Json(name = "catid")
     private String catId;
-
-    @Json(name = "Caid")
+    @Json(name = "caid")
     private String caId;
-
-    @Json(name = "Stan")
     private int stan;
 
     /**

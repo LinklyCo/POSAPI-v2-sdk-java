@@ -4,38 +4,22 @@ import com.linkly.pos.sdk.models.enums.CardEntryType;
 import com.linkly.pos.sdk.models.enums.CommsMethodType;
 import com.linkly.pos.sdk.models.enums.CurrencyStatus;
 import com.linkly.pos.sdk.models.enums.PayPassStatus;
-import com.squareup.moshi.Json;
 
 /**
  * The flags that apply to the transaction.
  */
 public class TransactionFlags {
 
-	@Json(name = "Offline")
     private String offline;
-
-	@Json(name = "ReceiptPrinted")
     private String receiptPrinted;
-
-	@Json(name = "CardEntry")
     private CardEntryType cardEntry;
-
-	@Json(name = "CommsMethod")
     private CommsMethodType commsMethod;
-
-	@Json(name = "Currency")
     private CurrencyStatus currency;
-
-	@Json(name = "PayPass")
     private PayPassStatus payPass;
-
-	@Json(name = "UndefinedFlag6")
     private String undefinedFlag6;
-
-	@Json(name = "UndefinedFlag7")
     private String undefinedFlag7;
 
-	  /**
+    /**
      * Indicates the transaction connectivity state.
      * 
      * @return String
@@ -47,7 +31,8 @@ public class TransactionFlags {
     /**
      * Sets the offline.
      * 
-     * @param offline The String value of offline.
+     * @param offline
+     *            The String value of offline.
      */
     public void setOffline(String offline) {
         this.offline = offline;
@@ -65,7 +50,8 @@ public class TransactionFlags {
     /**
      * Sets the receiptPrinted.
      * 
-     * @param receiptPrinted The String value of receiptPrinted.
+     * @param receiptPrinted
+     *            The String value of receiptPrinted.
      */
     public void setReceiptPrinted(String receiptPrinted) {
         this.receiptPrinted = receiptPrinted;
@@ -83,7 +69,8 @@ public class TransactionFlags {
     /**
      * Sets the cardEntryType.
      * 
-     * @param cardEntry The CardEntryType value.
+     * @param cardEntry
+     *            The CardEntryType value.
      */
     public void setCardEntry(CardEntryType cardEntry) {
         this.cardEntry = cardEntry;
@@ -101,7 +88,8 @@ public class TransactionFlags {
     /**
      * Sets the commsMethod.
      * 
-     * @param commsMethod The CommsMethodType value.
+     * @param commsMethod
+     *            The CommsMethodType value.
      */
     public void setCommsMethod(CommsMethodType commsMethod) {
         this.commsMethod = commsMethod;
@@ -119,7 +107,8 @@ public class TransactionFlags {
     /**
      * Sets the currency.
      * 
-     * @param currency The CurrencyStatus value.
+     * @param currency
+     *            The CurrencyStatus value.
      */
     public void setCurrency(CurrencyStatus currency) {
         this.currency = currency;
@@ -137,7 +126,8 @@ public class TransactionFlags {
     /**
      * Sets the payPass.
      * 
-     * @param payPass The PayPassStatus value.
+     * @param payPass
+     *            The PayPassStatus value.
      */
     public void setPayPass(PayPassStatus payPass) {
         this.payPass = payPass;
@@ -155,7 +145,8 @@ public class TransactionFlags {
     /**
      * Sets the undefinedFlag6.
      * 
-     * @param undefinedFlag6 The String value of undefinedFlag6.
+     * @param undefinedFlag6
+     *            The String value of undefinedFlag6.
      */
     public void setUndefinedFlag6(String undefinedFlag6) {
         this.undefinedFlag6 = undefinedFlag6;
@@ -173,7 +164,8 @@ public class TransactionFlags {
     /**
      * Sets the undefinedFlag7.
      * 
-     * @param undefinedFlag7 The String value of undefinedFlag7.
+     * @param undefinedFlag7
+     *            The String value of undefinedFlag7.
      */
     public void setUndefinedFlag7(String undefinedFlag7) {
         this.undefinedFlag7 = undefinedFlag7;

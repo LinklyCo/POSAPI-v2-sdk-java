@@ -3,21 +3,19 @@ package com.linkly.pos.sdk.models;
 import java.util.Map;
 
 import com.linkly.pos.sdk.models.enums.ResponseType;
-import com.squareup.moshi.Json;
 
 /**
  * Common model for POS API responses.
  */
 public class PosApiResponse {
 
-    @Json(name = "ResponseType")
     protected ResponseType responseType;
-
-    @Json(name = "PurchaseAnalysisData")
     protected Map<String, String> purchaseAnalysisData;
 
     /**
      * Type of API response.
+     * 
+     * @return {@link ResponseType} type of response
      */
     public ResponseType getResponseType() {
         return responseType;
@@ -26,7 +24,8 @@ public class PosApiResponse {
     /**
      * Sets the type of API response.
      * 
-     * @param responseType The ResponseType value of API response.
+     * @param responseType
+     *            The ResponseType value of API response.
      */
     public void setResponseType(ResponseType responseType) {
         this.responseType = responseType;
@@ -34,6 +33,8 @@ public class PosApiResponse {
 
     /**
      * Additional data to be sent or received directly from the PIN pad.
+     * 
+     * @return {@link Map} key: {@link String}, value: {@link String}
      */
     public Map<String, String> getPurchaseAnalysisData() {
         return purchaseAnalysisData;
@@ -42,7 +43,8 @@ public class PosApiResponse {
     /**
      * Sets the purchaseAnalysisData.
      * 
-     * @param purchaseAnalysisData TheMap<String,String> value of purchaseAnalysisData.
+     * @param purchaseAnalysisData
+     *            {@link Map} key: {@link String}, value: {@link String}
      */
     public void setPurchaseAnalysisData(Map<String, String> purchaseAnalysisData) {
         this.purchaseAnalysisData = purchaseAnalysisData;

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.linkly.pos.sdk.common.Constants;
 import com.linkly.pos.sdk.common.ValidatorUtil;
+import com.linkly.pos.sdk.exception.InvalidArgumentException;
 
 /**
  * Transaction request which is linked to an original transaction via a reference number.
@@ -25,14 +26,15 @@ public abstract class FollowUpTransactionRequest extends TransactionRequest {
      * {@inheritDoc}
      */
     @Override
-    public List<String> validate() {
-        List<String> parentValidationErrors = super.validate();
+    public void validate() {
+        super.validate();
         List<String> validationErrors = Arrays.asList(
             ValidatorUtil.hasValue(getPurchaseAnalysisData(), Constants.PurchaseAnalysisData.RFN))
             .stream()
             .filter(m -> m != null)
             .collect(Collectors.toList());
-        validationErrors.addAll(parentValidationErrors);
-        return validationErrors;
+        if (!validationErrors.isEmpty()) {
+        	throw new InvalidArgumentException(String.join(", ", validationErrors));
+        }
     }
 }

@@ -1,7 +1,13 @@
 package com.linkly.pos.sdk.models.enums;
 
+import com.linkly.pos.sdk.service.IPosApiEventListener;
+import com.linkly.pos.sdk.service.impl.PosApiService;
+
 /**
- * Source causing the {@link IPosApiEventListener#Error}  handler to be invoked.
+ * Source causing the
+ * {@link IPosApiEventListener#error(java.util.UUID, com.linkly.pos.sdk.models.IBaseRequest,
+ * com.linkly.pos.sdk.models.ErrorResponse)}
+ * handler to be invoked.
  */
 public enum ErrorSource {
 
