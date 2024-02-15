@@ -19,6 +19,8 @@ public class TransactionResponse extends PosApiResponseWithResult {
     private String merchant;
     private String cardType;
     private String cardName;
+    
+    @Json(name = "RRN")
     private String rrn;
     private LocalDateTime dateSettlement;
 
